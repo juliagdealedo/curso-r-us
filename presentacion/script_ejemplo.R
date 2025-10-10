@@ -1,2 +1,0 @@
-setwd(sladald)
-fwjdklmxlñsa
