@@ -20,7 +20,7 @@ format:
 
 ## Introduccion a R
 
-Bleblabla blablabla
+Bleblabla blablabla blibliblibliblibli
 
 ```{r}
 #| echo: true
