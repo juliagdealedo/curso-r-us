@@ -1,0 +1,144 @@
+---
+title: "Modelos lineales"
+subtitle: "Regresión y factoriales (ANOVA y ANCOVA)"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+## Introducción
+
+-   Definición
+
+-   Tipos
+
+-   Supuestos
+
+-   Flujo de trabajo
+
+## Definición
+
+Relación lineal entre dos o más variables, dependiendo una (variable dependiente) de la(s) otra(s) (variable(s) explicativa(s))
+
+Modelo matemático lineal: y = 2x o y = 3 - 2x
+
+### Objetivos
+
+1.  Descripción de la relación
+
+2.  Inferencia, o generalización de los resultados
+
+3.  Predicciones
+
+## Tipos
+
+Variable dependiente: siempre cuantitativa
+
+Variables explicativas:
+
+-   Cuantitativas: modelos de regresión (simple o múltiple)
+
+-   Cualitativas o categóricas: ANOVA
+
+-   Cuantitativas y categóricas: ANCOVA
+
+## Supuestos del modelo
+
+1.  Independencia
+
+2.  Linealidad
+
+3.  Normalidad
+
+4.  Homocedasticidad
+
+## Flujo de trabajo
+
+![Pasos a seguir análisis de datos con modelos lineales (Cayuela y de la Cruz, 2022)](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Flujo.png)
+
+------------------------------------------------------------------------
+
+### Formular problema correctamente
+
+1.  Comprender problema y contexto
+
+2.  Comprender objetivo del estudio
+
+3.  Plantear problema en términos estadísticos
+
+4.  Entender bien los datos
+
+## Regresión simple y regresión múltiple
+
+------------------------------------------------------------------------
+
+### Estructura
+
+![Ecuación regresión](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Ecuacion_regresion.png){width="500px" height="100px" fig-align="left"}
+
+[*β~0~*: ordenada en el origen]{style="font-size:25px"}
+
+[*β~1~*: pendiente]{style="font-size:25px"}
+
+[*Ɛ~i~*: residuos]{style="font-size:25px"}
+
+### Ajuste modelo lineal
+
+Función lm(y \~ x)
+
+------------------------------------------------------------------------
+
+### Ejemplo
+
+Masa corporal especies pingüinos y cómo esta es influenciada por la longitud de la aleta de los pingüinos
+
+*H~0~* (hipótesis nula): no existe relación entre la masa corporal de los pingüinos y la longitud de sus aletas
+
+::: r-stack
+*H~0~ : β~1~ = 0*
+:::
+
+*H~1~* (hipótesis alternativa): pendienta de la recta que relaciona masa corporal con longitud aleta es distinta de cero
+
+::: r-stack
+*H~0~ : β~1~ ≠ 0*
+:::
+
+------------------------------------------------------------------------
+
+#### Leer los datos en R y explorar gráficamente la relación entre las variables
+
+```{r}
+#| echo: true
+library(palmerpenguins)
+data(penguins)
+head(penguins)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: true
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 5    # alto en pulgadas
+#| fig-align: "center"
+library(ggplot2)
+ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +  
+  geom_point(color = "blue", size = 3) +      
+  labs(x = "Longitud aleta (mm)",         
+       y = "Masa corporal (g)",                   
+      title = "Relación entre masa corporal y longitud aleta "   
+  ) +
+  theme_minimal()        
+```
