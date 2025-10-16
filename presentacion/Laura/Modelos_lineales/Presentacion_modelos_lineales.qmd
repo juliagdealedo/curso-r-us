@@ -101,7 +101,9 @@ Función lm(y \~ x)
 
 ### Ejemplo
 
-Masa corporal especies pingüinos y cómo esta es influenciada por la longitud de la aleta de los pingüinos
+Pregunta: Masa corporal especies pingüinos y cómo esta es influenciada por la longitud de la aleta de los pingüinos
+
+Hipótesis
 
 *H~0~* (hipótesis nula): no existe relación entre la masa corporal de los pingüinos y la longitud de sus aletas
 
@@ -117,7 +119,7 @@ Masa corporal especies pingüinos y cómo esta es influenciada por la longitud d
 
 ------------------------------------------------------------------------
 
-#### Leer los datos en R y explorar gráficamente la relación entre las variables
+#### 1. Leer los datos en R y explorar gráficamente la relación entre las variables
 
 ```{r}
 #| echo: true
@@ -130,6 +132,8 @@ head(penguins)
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.8em'"
+#| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 7     # ancho en pulgadas
 #| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
@@ -142,3 +146,72 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   ) +
   theme_minimal()        
 ```
+
+***
+
+#### 2. Ajuste modelo de regresión
+
+```{r}
+#| echo: true
+lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
+```
+
+
+#### 3. Variación explicada por el modelo y resolución hipótesis
+
+###### Tabla del análisis de la varianza
+
+```{r}
+#| echo: true
+anova(lm_reg1)
+```
+
+[Suma de cuadrados: variabilidad de la variable *y*]{style="font-size:30px"}
+
+[Coeficiente de determinación (R^2^): bondad de ajuste del modelo (0-1)]{style="font-size:30px"}
+
+***
+
+#### 4. Interpretación del modelo
+
+```{r}
+#| echo: true
+summary(lm_reg1)
+```
+
+[*y = 49.686x - 5780.831*]{style="font-size:32px"}
+
+
+[Fiabilidad estimadores para predecir]{style="font-size:30px"}
+
+[R^2^ y R^2^ ajustado]{style="font-size:30px"}
+
+***
+
+#### 5. Predicciones con el modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 5    # alto en pulgadas
+#| fig-align: "center"
+library(broom)
+library(tidyverse)
+library(dplyr)
+preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
+preds <- preds %>%
+  mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
+  
+ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +  
+  geom_point(color = "blue", size = 3) +     
+  geom_line(aes(y = .fitted)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
+  labs(x = "Longitud aleta (mm)",         
+       y = "Masa corporal (g)",                   
+      title = "Predicciones modelo de regresión"   
+  ) +
+  theme_minimal()        
+```
+
