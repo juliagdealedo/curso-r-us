@@ -147,7 +147,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   theme_minimal()        
 ```
 
-***
+------------------------------------------------------------------------
 
 #### 2. Ajuste modelo de regresión
 
@@ -155,7 +155,6 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 #| echo: true
 lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
 ```
-
 
 #### 3. Variación explicada por el modelo y resolución hipótesis
 
@@ -170,7 +169,7 @@ anova(lm_reg1)
 
 [Coeficiente de determinación (R^2^): bondad de ajuste del modelo (0-1)]{style="font-size:30px"}
 
-***
+------------------------------------------------------------------------
 
 #### 4. Interpretación del modelo
 
@@ -181,12 +180,11 @@ summary(lm_reg1)
 
 [*y = 49.686x - 5780.831*]{style="font-size:32px"}
 
-
 [Fiabilidad estimadores para predecir]{style="font-size:30px"}
 
 [R^2^ y R^2^ ajustado]{style="font-size:30px"}
 
-***
+------------------------------------------------------------------------
 
 #### 5. Predicciones con el modelo
 
@@ -205,7 +203,7 @@ preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
   
 ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +  
-  geom_point(color = "blue", size = 3) +     
+  geom_point(color = "blue", size = 2) +     
   geom_line(aes(y = .fitted)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
   labs(x = "Longitud aleta (mm)",         
@@ -215,3 +213,57 @@ ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +
   theme_minimal()        
 ```
 
+***
+ 
+#### 6. Revisión supuestos del modelo
+
+Supuestos de linealidad, normalidad y homocedasticidad
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 6     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "left"
+par(mfrow=c(2,2))
+plot(lm_reg1)      
+```
+
+***
+[Normalidad:]{style="font-size:23px"}
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
+shapiro.test(residuals(lm_reg1))
+```
+[Linealidad:]{style="font-size:23px"}
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(lmtest)
+resettest(lm_reg1)
+```
+[Homocedasticidad:]{style="font-size:23px"}
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(car)
+ncvTest(lm_reg1)
+```
+[No se cumplen supuestos del modelo: transformación variables (logarítmica, raíz cuadrada, Box-Cox, log-log, etc.)]{style="font-size:22px"}
+
+***
+
+### Regresión múltiple
+
+*y~i~ = β~0~ + β~1~x~1~ + ... + β~1~x~n~ + Ɛ~i~*
+
+*Ɛ~i~ ~N(0,σ^2^)*
+
+Suma de cuadrados tipo I o III
+
+![Suma de cuadrados: tipos (Cayuela y de la Cruz, 2022](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/sumacuadrados.png){width="1000px" height="300px" fig-align="left"}
