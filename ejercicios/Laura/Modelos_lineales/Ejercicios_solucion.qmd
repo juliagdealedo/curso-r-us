@@ -298,3 +298,6 @@ ggplot(data = preds, aes(x = log_area, y = log_Sp)) +
   ) +
   theme_minimal()        
 ```
+***
+
+## Ejercicio 2: Modelo ANCOVA

@@ -270,6 +270,9 @@ Suma de cuadrados tipo I o III
 
 ![Suma de cuadrados: tipos (Cayuela y de la Cruz, 2022](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/sumacuadrados.png){width="1000px" height="300px" fig-align="left"}
 
+Suma de cuadrados tipo I: anova()
+Suma de cuadrados tipo III: Anova(lm,type="III")(library(car))
+
 ::: {.center .middle}
 ## Modelos factoriales: ANOVA y ANCOVA
 :::
