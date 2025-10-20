@@ -300,4 +300,127 @@ ggplot(data = preds, aes(x = log_area, y = log_Sp)) +
 ```
 ***
 
-## Ejercicio 2: Modelo ANCOVA
+## Ejercicio 2: Modelo factorial
+
+Tenemos un dataset con biomasa leñosa en un área mediterránea. Nos preguntamos si hay un efecto de la variable cobertura arbórea considerando dos niveles de sequía estival.
+
+Variables:
+
+- biomasa: biomasa leñosa
+- cobertura: cobertura arbórea
+- sequia: sequía o lluvia estival
+
+***
+
+Pasos que seguir
+
+1. Cargar los datos (cobertura.csv)
+
+2. Representar gráficamente relación variable respuesta con las variables explicativas 
+
+3. Ajustar modelo lineal
+
+4. Interpretación resultados modelo
+
+5. Comprobación supuestos del modelo
+
+***
+### Instalar paquete y cargar los datos
+
+```{r}
+#| echo: true
+cobertura <- read.csv("cobertura.csv")
+head(cobertura)
+```
+
+***
+
+### [1. Análisis exploratorios]{style="font-size:25px"}
+
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+library(ggplot2)
+library(patchwork)
+ggplot(cobertura, aes(x = biomasa, y = cobertura)) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  facet_wrap(~ sequia) +
+  labs(
+    title = "Relación biomasa leñosa y cobertura arbórea",
+    x = "Cobertura arbórea",
+    y = "Biomasa leñosa"
+  ) +
+  theme_minimal()
+```
+
+***
+
+#### Ajuste modelo de regresión
+
+```{r}
+#| echo: true
+lm_bio1 <- lm(biomasa ~ cobertura*sequia, data = cobertura)
+```
+
+#### Comprobación de hipótesis
+
+```{r}
+#| echo: true
+anova(lm_bio1)
+```
+
+***
+
+#### Supuestos del modelo
+```{r}
+#| echo: true
+#| #| fig-width: 9    # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+par(mfrow=c(2,2))
+plot(lm_bio1)
+```
+
+***
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+summary(lm_bio1)
+```
+
+***
+
+#### [Gráfica de predicciones]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.7em'"
+#| fig-width: 9    # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+library(broom)
+newdata <- expand.grid(
+  cobertura = seq(min(cobertura$cobertura), max(cobertura$cobertura), length.out = 100),
+  sequia = levels(cobertura$sequia)
+)
+predicciones_grid <- augment(lm_bio1, newdata = newdata)
+
+ggplot(cobertura, aes(x = cobertura, y = biomasa, color = sequia)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predicciones_grid, aes(x= cobertura, y = .fitted, group = sequia, color = sequia), size = 1.2) +
+  scale_color_manual(values = c("#B3E5FC", "#F8BBD0")) +
+  labs(
+    title = "ANCOVA: predicciones por nivel de sequía",
+    x = "Cobertura",
+    y = "Biomasa",
+    color = "Sequía"
+  ) +
+  theme_minimal()
+```
