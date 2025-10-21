@@ -1,0 +1,65 @@
+---
+title: "Modelos lineales generalizados (GLMs)"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+## Introducción
+
+1.   Definición
+
+2.   Estructura
+
+     2.1. Función de vínculo
+
+     2.2. Familia de distribución de errores
+
+***
+
+## 1. Definición
+
+Supuestos modelos lineales:
+
+1. Los errores se distribuyen nromalmente
+
+2. La varianza (residual) es constante
+
+3. La variable respuesta se relaciona linealmente con la(s) variable(s) independiente(s), si alguna de estas variables es continua
+
+Uno o varios supuestos no se cumplen.
+
+¿Qué hacer?
+
+***
+
+[GLMs: extensión modelos lineales especificando estructuras no normales de errores y varianzas no constantes.]{style="font-size:20px"}
+
+[Modelos lineales caso particular de GLMs con distribución de errores normal y varianza constante.]{style="font-size:20px"}
+
+![Relación varianza y media (Cayuela y de la Cruz, 2022)](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/GLM/media_varianza.png){width="500px" height="500px" fig-align="left"}
+
+***
+
+Tipos de variables que por definición violan supuestos modelos lineales:
+
+- conteo de casos (p.ej. abundancia de especies)
+
+- conteo de casos como proporciones (p.ej. porcentaje plántulas muertas en un experimento)
+
+- respuesta binaria (p.ej. usado o no usado, presente o ausente)
+
+***
+
+## 2. Estructura
