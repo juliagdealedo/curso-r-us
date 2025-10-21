@@ -365,6 +365,7 @@ ggplot(cobertura, aes(x = biomasa, y = cobertura)) +
 
 ```{r}
 #| echo: true
+cobertura$sequia <- as.factor(cobertura$sequia)
 lm_bio1 <- lm(biomasa ~ cobertura*sequia, data = cobertura)
 ```
 
