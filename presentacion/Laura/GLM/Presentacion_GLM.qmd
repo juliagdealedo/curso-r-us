@@ -63,3 +63,50 @@ Tipos de variables que por definición violan supuestos modelos lineales:
 ***
 
 ## 2. Estructura
+
+[3 componentes principales:]{style="font-size:30px"}
+
+[1. El predictor lineal]{style="font-size:25px"}
+
+[2. La función de vínculo]{style="font-size:25px"}
+
+[3. La estructura de los errores]{style="font-size:25px"}
+
+[Estructura modelos lineales:]{style="font-size:30px"}
+
+[*y~i~ = β~0~ + β~1~x~1~ + ... + β~1~x~n~ + Ɛ~i~*]{style="font-size:25px"}
+
+[*Ɛ~i~ ~N(0,σ^2^)*]{style="font-size:25px"}
+
+[Estructura GLMs:]{style="font-size:30px"}
+
+[*f(y~i~) = β~0~ + β~1~x~1~ + ... + β~1~x~n~ + Ɛ~i~*]{style="font-size:25px"}
+
+[*Var(y) ~ f(µ)*]{style="font-size:25px"}
+
+***
+
+##### 2.1. La función de vínculo *f(y)*
+
+[Transformación de la variable *y* buscando linealizar relación *y* con *x* y/o transformando en continuas variables que no lo son.]{style="font-size:25px"}
+
+[Por tanto, cambia la naturaleza de la variable respuesta.]{style="font-size:25px"}
+
+[Determinadas funciones de vínculo deben implementarse con determinados tipos de variables respuesta]{style="font-size:25px"}
+
+![Función de vínculo (Cayuela y de la Cruz, 2022)](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/GLM/funcion_vinculo.png){width="800px" height="300px" fig-align="left"}
+
+
+***
+
+##### 2.2. La familia de distribución de errores
+
+a) Poisson: varianza aumenta linealmente con la media. Para respuestas tipo conteo.
+
+b) Binomial negativa: extensión de Poisson. Para variables conteo con sobredispersión.
+
+c) Binomial: para proporsiones y datos presencia/ausencia.
+
+d) Gamma: para datos continuos con coeficiente de variación constante.
+
+
