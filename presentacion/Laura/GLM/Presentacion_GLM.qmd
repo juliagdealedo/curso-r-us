@@ -352,3 +352,92 @@ facet_wrap(~Sp) +
 ```
 
 ***
+
+#### Ajuste del modelo
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
+anova(glm_algas1)
+```
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
+anova(glm_algas2)
+print(D2 <- 1 - (341.6/476.38))
+```
+
+***
+
+#### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 6     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "left"
+par(mfrow=c(2,2))
+plot(glm_algas2)      
+```
+
+***
+
+### Estructura del modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+summary(glm_algas2)
+```
+
+***
+
+#### Gráfico de predicciones
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+#| fig-width: 10     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+newdat <- expand.grid(
+  Long = seq(min(algas$Long), max(algas$Long), length = 100),
+  Sp = levels(algas$Sp)
+)
+
+# Predicciones de probabilidad
+pred <- predict(glm_algas2, newdat, type = "link", se.fit = TRUE)
+
+# Convertir de escala logit a probabilidad
+newdat$fit <- plogis(pred$fit)
+newdat$lwr <- plogis(pred$fit - 1.96 * pred$se.fit)
+newdat$upr <- plogis(pred$fit + 1.96 * pred$se.fit)
+
+ggplot(newdat, aes(x = Long, y = fit, color = Sp, fill = Sp)) +
+  geom_line(size = 1.2) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.15, color = NA) +
+  labs(
+    x = "Talla individuo (cm)",
+    y = "Predicción probabilidad estructuras reproductoras",
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+***
+
+Comparaciones entre especies
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+library(multcomp)
+summary(glht(glm_algas2, linfct = mcp(Sp = "Tukey")))
+```
