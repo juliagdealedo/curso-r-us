@@ -109,4 +109,64 @@ c) Binomial: para proporsiones y datos presencia/ausencia.
 
 d) Gamma: para datos continuos con coeficiente de variación constante.
 
+*** 
+#### Ajuste GLM en R
 
+Función glm()
+
+Argumento family:
+
+- binominal(link = "logit")
+- gaussian(link = "identity)
+- Gamma(link = "inverse")
+- inverse.gaussian(link = "1/mu^2)
+- poisson(link = "log")
+- quasi(link = "identity", variance = "constant")
+
+***
+
+## Ejemplo con datos tipo conteo
+
+***
+
+Efecto ganadería en regeneración de araucaria. Muestreo de número de plantas de araucaria en dos tipos de ganadería: pequeños propietarios, con uso más intensivo de la tierra, y grandes empresas forestales, que mantienen algunos remanente bosque nativo. Actividad ganado medida por número de bostas.
+
+***
+
+```{r}
+#| echo: true
+library(ADER)
+data(ara)
+str(ara)
+```
+
+Hipótesis:
+
+*H0: β = 0* (pendiente entre plántulas y número de bostas es 0)
+
+*H0: µ~1~ = µ~2~* (número plántulas en pequeños propietarios y empresas sin diferencias)
+
+*H0: β~1~ = β~2~* (relación entre plántulas y bostas es igual en pequeños propietarios y empresas)
+
+***
+
+### Exploración gráfica de los datos
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 9    # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+library(ggplot2)
+ggplot(ara, aes(x = dungs, y = seedlings)) +
+  geom_point(color = "steelblue", size = 2) +
+  facet_wrap(~ property) +
+  labs(
+    title = "Relación nº plántulas y nº bostas",
+    x = "Nº bostas",
+    y = "Nº plántulas"
+  ) +
+  theme_minimal()
+```
