@@ -125,7 +125,9 @@ Argumento family:
 
 ***
 
+::: {.center .middle}
 ## Ejemplo con datos tipo conteo
+:::
 
 ***
 
@@ -170,3 +172,134 @@ ggplot(ara, aes(x = dungs, y = seedlings)) +
   ) +
   theme_minimal()
 ```
+
+***
+
+#### Construcción modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+glm_arau1 <- glm(seedlings ~ dungs*property, ara, family = "poisson")
+anova(glm_arau1)
+```
+
+[Devianza explicada por el modelo]{style="font-size:25px"}
+
+[Medida de cantidad de variabilidad que explica el modelo (similar R^2^ en modelos lineales)]{style="font-size:25px"}
+
+[*D^2^ = 1 - D~modelo~/D~nulo~*]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+print(D2 <- 1 - (198.02/347.56))
+```
+
+***
+ 
+```{r}
+#| echo: true
+summary(glm_arau1)
+```
+[Fórmula: *log(y) = 2.497 + 0.576 Empresa + (-0.010 + 0.009 Empresa) Bostas*]{style="font-size:30px"}
+
+***
+
+#### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 6     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "left"
+par(mfrow=c(2,2))
+plot(glm_arau1)      
+```
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(aods3)
+gof(glm_arau1)      
+```
+
+***
+
+### Modelo binomial negativo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(MASS)
+glm_arau2 <- glm.nb(seedlings ~ dungs*property, ara)
+summary(glm_arau2)
+```
+
+***
+
+### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 6     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "left"
+par(mfrow=c(2,2))
+plot(glm_arau2)      
+```
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+gof(glm_arau2)      
+```
+
+***
+#### Predicciones modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(car)
+Anova(glm_arau2, type = "III")      
+```
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.3em'"
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "left"
+library(visreg)
+visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab = "Nº plántulas", xlab = "Nº bostas")
+```
+
+***
+
+::: {.center .middle}
+## Ejemplo con distribución de errores binomial
+:::
+
+***
+
+2 variantes de estos modelos:
+
+- Variable con valores binarios (1/0)
+
+- variables con valores porcentuales (nº éxitos / nº de ensayos)
+
+***
+
+Variables de respuesta binaria: modelos de regresión logística
