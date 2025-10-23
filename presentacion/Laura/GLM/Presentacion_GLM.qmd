@@ -123,8 +123,6 @@ Argumento family:
 - poisson(link = "log")
 - quasi(link = "identity", variance = "constant")
 
-***
-
 ::: {.center .middle}
 ## Ejemplo con datos tipo conteo
 :::
@@ -286,8 +284,6 @@ library(visreg)
 visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab = "Nº plántulas", xlab = "Nº bostas")
 ```
 
-***
-
 ::: {.center .middle}
 ## Ejemplo con distribución de errores binomial
 :::
@@ -296,10 +292,63 @@ visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab
 
 2 variantes de estos modelos:
 
-- Variable con valores binarios (1/0)
+- Variable con valores binarios (1/0): modelos de regresión logística
 
 - variables con valores porcentuales (nº éxitos / nº de ensayos)
 
+Función de vínculo: logit *log(p/(1-p))*
+
+*logit(y) = ln(p/(1-p)) = β~0~ + β~1~x~1~ + ... + β~1~x~n~*
+
+Curva sigmoidea entre 0-1
+
+::: {.center .middle}
+## Ejemplo: Estrategia reproductora especie de alga invasora
+:::
+
 ***
 
-Variables de respuesta binaria: modelos de regresión logística
+[Estrategia reproductora de un alga invasora con dos especies nativas.]{style="font-size:25px"}
+
+[¿Probabilidad de encontrar estructuras reproductoras es diferente entre la especie invasora y las nativas?]{style="font-size:25px"}
+
+[Hipótesis: la especie invasora tendrá mayor probabilidad de reproducrise que las nativas]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| #| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(ADER)
+data(algas)
+str(algas)
+```
+
+[Variable respuesta (Estado):]{style="font-size:25px"} 
+     
+     - 0: sin estructuras reproductoras
+     - 1: con estructuras reproductoras
+
+[Variables predictoras:]{style="font-size:25px"} 
+     
+     - talla del individuo (cm)
+     - especie (Sp)
+     
+***
+
+#### Exploración de los datos
+
+```{r}
+#| echo: true
+#| #| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.4em'"
+ggplot(algas, aes(x = Long, y = Estado, color = Sp)) +
+  geom_point(alpha = 0.4, position = position_jitter(height = 0.05)) +
+facet_wrap(~Sp) +
+  labs(
+    x = "Talla individuo (cm)",
+    y = "Estructura reproductora",
+  ) +
+  theme_minimal()
+```
+
+***
