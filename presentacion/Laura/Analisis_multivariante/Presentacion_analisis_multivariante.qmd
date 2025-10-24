@@ -1,0 +1,185 @@
+---
+title: "Análisis multivariante"
+subtitle: "PCA y NMDS"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+- Introducción
+
+- Análisis de componentes principales (PCA)
+
+- Escalamiento multidimensional no métrico (NMDS)
+
+***
+
+## Introducción
+
+Método estadístico que analice simultáneamente múltiples características en cada muestra objeto de estudio.
+
+Algunos ejemplos:
+
+- Análisis de componentes principales
+
+- Análisis de correspondencias
+
+- Escalamiento multidimensional
+
+- Análisis de correspondencias canónico
+
+- Etc.
+
+::: {.center .middle}
+## Análisis de componentes principales (PCA)
+:::
+
+***
+
+El objetivo es reducir un gran número de variables perdiendo la menor cantidad de información posible.
+
+Los nuevos componentes principales o factores serán una combinación lineal de las variables originales e independientes entre sí.
+
+La interpretación de los factores se deducirá observando su relación con las variables iniciales.
+
+***
+
+Fases:
+
+1. Anállisis de la matriz de correlaciones. Deben existir altas correlaciones entre las variables.
+
+2. Selección de los factores. El primer factor recoje la mayor proporción de variabilidad original, el segundo, la máxima no recogida pro el rpimero, etc.
+
+3. Análisis de la matriz factorial. SE representan los factores seleccionados en forma de matriz. 
+
+4. Interpretación de los factores
+
+5. Cálculo de las puntuaciones factoriales.
+
+***
+
+::: {.center .middle}
+### Ejemplo modelación riqueza plantas exóticas a partir del clima
+:::
+
+***
+
+Modelar tiqueza de especies exóticas utilizando variables climáticas.
+
+
+```{r}
+#| echo: true
+clima <- read.table("exoticas.txt", header = T, sep = "\t")
+str(clima)
+```
+
+Alien : variable respuesta
+
+***
+
+```{r}
+#| echo: true
+#| fig-width: 10     # ancho en pulgadas
+#| fig-height: 8    # alto en pulgadas
+#| fig-align: "center"
+library(corrgram)
+corrgram(clima[,-1], lower.panel=panel.pts, upper.panel=panel.conf, diag.panel=panel.density)
+```
+
+***
+
+PCA para reducir la dimensionalidad y utilizar factores principales para modelar la riqueza de especies exóticas
+
+```{r}
+#| echo: true
+pca_1 <- prcomp(clima[,-1], scale = T)
+summary(pca_1)
+pca_1$rotation[,1:2]
+```
+
+***
+
+```{r}
+#| echo: true
+#| fig-width: 10     # ancho en pulgadas
+#| fig-height: 8    # alto en pulgadas
+#| fig-align: "center"
+library(factoextra)
+fviz_pca_var(pca_1, col.var = "black")
+```
+
+***
+
+##### Ajustar modelo estadístico riqueza especies exóticas frente a los dos ejes principales
+
+```{r}
+#| echo: true
+clima$pca1 <- pca_1$x[,1]
+clima$pca2 <- pca_1$x[, 2]
+glm_exoticas1 <- glm(Alien ~ pca1 + pca2, clima, family = "poisson")
+anova(glm_exoticas1)
+```
+
+***
+
+#### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| fig-width: 9.5     # ancho en pulgadas
+#| fig-height: 9  # alto en pulgadas
+#| fig-align: "left"
+par(mfcol=c(2,2))
+plot(glm_exoticas1)
+library(aods3)
+gof(glm_exoticas1)
+```
+
+***
+
+#### Modelo binomial negativo
+
+```{r}
+#| echo: true
+#| fig-width: 9.5     # ancho en pulgadas
+#| fig-height: 9  # alto en pulgadas
+#| fig-align: "left"
+library(MASS)
+glm_exoticas2 <- glm.nb(Alien ~ pca1 + pca2, clima)
+par(mfcol=c(2,2))
+plot(glm_exoticas2)
+gof(glm_exoticas2)
+```
+
+***
+
+```{r}
+#| echo: true
+anova(glm_exoticas2)
+```
+
+***
+```{r}
+#| echo: true
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 9  # alto en pulgadas
+#| fig-align: "left"
+library(visreg)
+par(mfcol=c(1,2))
+visreg(glm_exoticas2, scale="response", ylab="Riqueza de especies")
+```
+
+::: {.center .middle}
+## Escalamiento multidimensional no métrico (NMDS)
+:::
