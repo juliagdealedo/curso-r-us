@@ -75,8 +75,7 @@ Fases:
 
 ***
 
-Modelar tiqueza de especies exóticas utilizando variables climáticas.
-
+Modelar riqueza de especies exóticas utilizando variables climáticas.
 
 ```{r}
 #| echo: true
@@ -183,3 +182,93 @@ visreg(glm_exoticas2, scale="response", ylab="Riqueza de especies")
 ::: {.center .middle}
 ## Escalamiento multidimensional no métrico (NMDS)
 :::
+
+***
+
+[Representación en un espacio geométrico de pocas dimensiones las distancias existentes entre un conjunto de datos.]{style="font-size:30px"}
+
+[1. Cálculo matriz de disimilaridad *X* a partir de la matriz de datos.]{style="font-size:25px"}
+
+[2. Asignación de unidades muestrales a una configuración inicial aletaoria.]{style="font-size:25px"}
+
+[3. Cálculo distancias otra vez en este nuevo espacio geométrico y se calcula una matriz de distancia *Y*]{style="font-size:25px"}
+
+[4. Se comparan las matrices de distancia *X* e *Y* y se miden cómo son de parecidas entre ellas (stress)]{style="font-size:25px"}
+
+[5. A partir de la configuración inicial, se reasignan las unidades muestrales para reducir las distancia con la matriz *X*]{style="font-size:25px"}
+
+[6. Repetición iterativa del proceso hasta que se consigue una solución óptima (se minimiza el stress)]{style="font-size:25px"}
+
+::: {.center .middle}
+## Gradiente de composición florística en bosques tropicales montanos
+:::
+
+***
+
+Investigar qué variables ambientales afectan a la composición florística de árboles en distintos tipos de bosques tropicales. Abundancia de cada especie en cada parcela.
+
+1. Explora visualmente cómo son de similares las parcelas muestreadas en función de la composición de especies
+
+2. Investigar relación de esta ordenación y las variables ambientales.
+
+
+```{r}
+#| echo: true
+bio <- read.table("MANOVA-bio.txt", header=T, sep="\t")
+env <- read.table("MANOVA-env.txt", header=T, sep="\t")
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(vegan)
+set.seed(0)
+nmds_1 <- metaMDS(bio, distance = "bray", try = 200, trymax = 200)
+```
+
+***
+
+```{r}
+#| echo: true
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+plot(nmds_1)
+```
+
+***
+
+#### Gráfico mostrando las diferencias por tipo de bosque y mostrando relación lineal con variables
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+coordenadas <- as.data.frame(scores(nmds_1)$sites)
+coordenadas$Forest = env$Forest
+envfit_res <- envfit(nmds_1, env, permutations = 999)
+env_vectors <- as.data.frame(scores(envfit_res, display = "vectors"))
+env_vectors$Variable <- rownames(env_vectors)
+
+ggplot(coordenadas, aes(x = NMDS1, y = NMDS2))+ 
+  geom_point(size = 4, aes( shape = Forest, colour = Forest)) +
+# Vectores ambientales (flechas)
+  geom_segment(data = env_vectors,
+               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               arrow = arrow(length = unit(0.3, "cm")),
+               color = "black") +
+  # Nombres de las variables
+  geom_text(data = env_vectors,
+            aes(x = NMDS1 * 1.1, y = NMDS2 * 1.1, label = Variable),
+            color = "black",
+            size = 4) 
+```
+
+
+
