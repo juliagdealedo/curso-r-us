@@ -1,0 +1,164 @@
+---
+title: "Ejercicios GLMs y Multivariante"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+## Ejercicio: GLM y multivariante
+
+Estudio sobre el efecto del uso de suelo sobre los polinizadores. En 38 puntos utlizando círculos
+concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron
+8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en fores (Prop_fow),
+infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines
+(Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas
+(Prop_open) y carreteras (Prop_road). 
+
+Se quiere construir un modelo que nos permita investgar la relación entre el número de
+polinizadores (peak_colony) y las diferentes coberturas del suelo medidas en un radio de 750
+m.
+
+***
+
+#### Objetvos:
+
+1. Reducir la dimensionalidad de las variables de cobertura del suelo y sintetzar toda esta
+variabilidad en unas pocas variables (máximo 2).
+
+2. Generar un modelo estadístco que permita explicar el número de polinizadores en
+función de las característcas del paisaje en términos de tpo de coberturas y usos del
+suelo.
+
+***
+
+### Cargar los datos
+
+```{r}
+#| echo: true
+poli <- read.table("polinizacion.txt",header=T)
+head(poli)
+```
+
+***
+
+### Análisis exploratorios
+
+```{r}
+#| echo: true
+#| fig-width: 18     # ancho en pulgadas
+#| fig-height: 13    # alto en pulgadas
+library(corrgram)
+corrgram(poli[,27:34], lower.panel = panel.pts,upper.panel = panel.conf, diag.panel = panel.density)
+```
+
+***
+
+### Hacer PCA
+
+```{r}
+#| echo: true
+pca_poli <- prcomp(poli[,-c(1:26)], scale = T)
+summary(pca_poli)
+pca_poli$rotation[,1:2]
+```
+
+***
+
+#### Interpretar matriz factorial y correlacionar variables originales con PCA
+
+```{r}
+#| echo: true
+library(factoextra)
+fviz_pca_var(pca_poli)
+```
+
+***
+
+#### Añadir los dos primeros ejes a los datos
+
+```{r}
+#| echo: true
+poli$pca1<-pca_poli$x[,1]
+poli$pca2<-pca_poli$x[,2]
+```
+
+#### Hacer modelo
+
+```{r}
+#| echo: true
+glm_poli1<-glm(peak_colony~pca1+pca2,poli,family = "poisson")
+library(car)
+Anova(glm_poli1, type = "III")
+```
+
+***
+
+#### Analizar supuestos del modelo
+
+```{r}
+#| echo: true
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+par(mfcol=c(2,2))
+plot(glm_poli1)
+library(aods3)
+gof(glm_poli1)
+```
+
+***
+
+#### Modelo binomial negativo
+
+```{r}
+#| echo: true
+library(MASS)
+glm_poli2 <- glm.nb(peak_colony ~ pca1 + pca2, poli)
+Anova(glm_poli2, type="III")
+```
+
+***
+
+#### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+par(mfcol=c(2,2))
+plot(glm_poli2)
+gof(glm_poli2)
+```
+
+***
+
+#### Interpretación del modelo
+
+```{r}
+#| echo: true
+summary(glm_poli2)
+```
+
+***
+
+```{r}
+#| echo: true
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+library(visreg)
+par(mfcol=c(2,2))
+visreg(glm_poli2, scale="response")
+```
