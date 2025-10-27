@@ -16,18 +16,143 @@ format:
     theme: flatly
 ---
 
+## Ejercicio: GLM binomial
+
+Tenemos datos de la presencia de una especie en varios puntos de muestreo en los que también contamos con información de la temperatura media anual (bio_1) y la precipitación anual (bio_12). Queremos saber si exista una relación entre la presencia de la especie en los lugares de muestreo y dichas variables climáticas.
+
+***
+
+### Cargar los datos
+
+```{r}
+#| echo: true
+library(enmpa)
+data(enm_data)
+head(enm_data)
+```
+
+***
+
+[Análisis exploratorios]{style="font-size:30px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.9em'"
+#| fig-width: 25     # ancho en pulgadas
+#| fig-height: 13    # alto en pulgadas
+library(ggplot2)
+library(patchwork)
+p1 <- ggplot(enm_data, aes(x = bio_1, y = Sp)) +
+  geom_point() +
+  #geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "blue") +
+  labs(title = "Presencia vs Temperatura") +
+  theme_minimal(base_size = 25)
+p2 <- ggplot(enm_data, aes(x = bio_12, y = Sp)) +
+  geom_point() +
+  #geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "blue") +
+  labs(title = "Presencia vs Precipitación") +
+  theme_minimal(base_size = 25)
+
+p1 + p2  
+
+```
+
+***
+
+#### Ajuste modelo
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.3em'"
+glm_bino1<-glm(Sp ~ bio_1 * bio_12, enm_data, family = "binomial")
+anova(glm_bino1, test = "Chisq")
+summary((glm_bino1))
+```
+
+***
+
+##### Supuestos del modelo
+
+```{r}
+#| echo: true
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+par(mfcol=c(2,2))
+plot(glm_bino1)
+```
+
+***
+
+##### Gráficos de predicciones
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.9em'"
+#| fig-width: 25     # ancho en pulgadas
+#| fig-height: 10    # alto en pulgadas
+
+# Graficando la temperatura en el eje x
+
+newdat <- with(enm_data, expand.grid(bio_1 = seq(min(bio_1), max(bio_1), length = 100),
+                 bio_12 = quantile(bio_12, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9))))
+pred <- predict(glm_bino1, newdat, type = "link", se.fit = TRUE)
+newdat$pred <- plogis(pred$fit)
+newdat$lwr <- plogis(pred$fit - 1.96 * pred$se.fit)
+newdat$upr <- plogis(pred$fit + 1.96 * pred$se.fit)
+p3 <- ggplot(newdat, aes(x = bio_1, y = pred, color = as.factor(bio_12))) +
+  geom_line(size = 1.2) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr, fill = as.factor(bio_12)), 
+              alpha = 0.2, color = NA) +
+  labs(y = "Probabilidad predicha ± IC95%",
+    x = "Temperatura",
+    color = "Precipitación (deciles)",
+    fill = "Precipitación (deciles)") +
+  theme_minimal(base_size = 25)
+
+# Graficando la precipitación en el eje x
+
+newdat2 <- with(enm_data, expand.grid(bio_12 = seq(min(bio_12), max(bio_12), length = 100),
+                 bio_1 = quantile(bio_1, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9))))
+pred <- predict(glm_bino1, newdat2, type = "link", se.fit = TRUE)
+newdat2$pred <- plogis(pred$fit)
+newdat2$lwr <- plogis(pred$fit - 1.96 * pred$se.fit)
+newdat2$upr <- plogis(pred$fit + 1.96 * pred$se.fit)
+p4 <- ggplot(newdat2, aes(x = bio_12, y = pred, color = as.factor(bio_1))) +
+  geom_line(size = 1.2) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr, fill = as.factor(bio_1)), 
+              alpha = 0.2, color = NA) +
+labs(x = "Precipitación",
+    color = "Temperatura (deciles)",
+    fill = "Temperatura (deciles)") +
+  theme_minimal(base_size = 25)
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.9em'"
+#| fig-width: 30     # ancho en pulgadas
+#| fig-height: 12    # alto en pulgadas
+
+p3 + p4
+```
+
+***
+
 ## Ejercicio: GLM y multivariante
 
-Estudio sobre el efecto del uso de suelo sobre los polinizadores. En 38 puntos utlizando círculos
-concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron
-8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en fores (Prop_fow),
-infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines
-(Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas
-(Prop_open) y carreteras (Prop_road). 
+[Estudio sobre el efecto del uso de suelo sobre los polinizadores. En 38 puntos utlizando círculos
+concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron 8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en fores (Prop_fow), infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines (Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas (Prop_open) y carreteras (Prop_road).]{style="font-size:30px"}
 
-Se quiere construir un modelo que nos permita investgar la relación entre el número de
+[Se quiere construir un modelo que nos permita investgar la relación entre el número de
 polinizadores (peak_colony) y las diferentes coberturas del suelo medidas en un radio de 750
-m.
+m.]{style="font-size:30px"}
 
 ***
 
@@ -162,3 +287,6 @@ library(visreg)
 par(mfcol=c(2,2))
 visreg(glm_poli2, scale="response")
 ```
+
+
+
