@@ -281,12 +281,13 @@ ncvTest(lm_reg1)
 
 *Ɛ~i~ ~N(0,σ^2^)*
 
-Suma de cuadrados tipo I o III
+[Suma de cuadrados tipo I o III]{style="font-size:20px"}
 
-![Suma de cuadrados: tipos (Cayuela y de la Cruz, 2022](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/sumacuadrados.png){width="1000px" height="300px" fig-align="left"}
+![Suma de cuadrados: tipos (Cayuela y de la Cruz,) 2022](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/sumacuadrados.png){width="900px" height="200px" fig-align="left"}
 
-Suma de cuadrados tipo I: anova()
-Suma de cuadrados tipo III: Anova(lm,type="III")(library(car))
+[Suma de cuadrados tipo I: anova()]{style="font-size:20px"}
+
+[Suma de cuadrados tipo III: Anova(lm,type="III")(library(car))]{style="font-size:20px"}
 
 ::: {.center .middle}
 ## Modelos factoriales: ANOVA y ANCOVA
