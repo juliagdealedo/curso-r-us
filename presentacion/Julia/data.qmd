@@ -35,7 +35,7 @@ library(rnaturalearth)
 library(sf)
 
 datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
-head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
+#head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
 df <- datos$data
 
 # Basic map
@@ -55,10 +55,6 @@ ggplot() +
 
 ```{r}
 #| echo: true
-
-datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
-head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
-df <- datos$data
 
 # Basic map
 spain <- ne_countries(country=c("spain", "portugal"))
