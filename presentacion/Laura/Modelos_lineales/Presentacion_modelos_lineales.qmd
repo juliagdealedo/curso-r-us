@@ -31,13 +31,13 @@ format:
 
 Relación lineal entre dos o más variables, dependiendo una (variable dependiente) de la(s) otra(s) (variable(s) explicativa(s))
 
-Modelo matemático lineal: y = 2x o y = 3 - 2x
+Modelo matemático lineal: *y = 2x* o *y = 3 - 2x*
 
 ### Objetivos
 
 1.  Descripción de la relación
 
-2.  Inferencia, o generalización de los resultados
+2.  Inferencia o generalización de los resultados
 
 3.  Predicciones
 
@@ -113,7 +113,7 @@ Hipótesis
 *H~0~ : β~1~ = 0*
 :::
 
-*H~1~* (hipótesis alternativa): pendienta de la recta que relaciona masa corporal con longitud aleta es distinta de cero
+*H~1~* (hipótesis alternativa): pendiente de la recta que relaciona masa corporal con longitud aleta es distinta de cero
 
 ::: r-stack
 *H~0~ : β~1~ ≠ 0*
@@ -128,6 +128,10 @@ Hipótesis
 library(palmerpenguins)
 data(penguins)
 head(penguins)
+# eliminamos NAs variables que vamos a utilizar
+library(dplyr)
+penguins_clean <- penguins %>%
+  filter(!is.na(flipper_length_mm), !is.na(body_mass_g))
 ```
 
 ------------------------------------------------------------------------
@@ -140,8 +144,8 @@ head(penguins)
 #| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
 library(ggplot2)
-ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +  
-  geom_point(color = "blue", size = 3) +      
+ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +  
+  geom_point(color = "blue", size = 2) +      
   labs(x = "Longitud aleta (mm)",         
        y = "Masa corporal (g)",                   
       title = "Relación entre masa corporal y longitud aleta "   
@@ -155,12 +159,12 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 
 ```{r}
 #| echo: true
-lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
+lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins_clean)
 ```
 
 #### 3. Variación explicada por el modelo y resolución hipótesis
 
-###### Tabla del análisis de la varianza
+[Tabla del análisis de la varianza]{style="font-size:30px"}
 
 ```{r}
 #| echo: true
@@ -231,6 +235,17 @@ Supuestos de linealidad, normalidad y homocedasticidad
 par(mfrow=c(2,2))
 plot(lm_reg1)      
 ```
+
+***
+![Supuestos 1](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos1.png){width="400px" height="200px" fig-align="left"}
+
+![Supuestos 2](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos2.png){width="400px" height="200px" fig-align="left"}
+
+***
+
+![Supuestos 3](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos3.png){width="400px" height="200px" fig-align="left"}
+
+![Supuestos 4](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos4.png){width="400px" height="200px" fig-align="left"}
 
 ***
 [Normalidad:]{style="font-size:23px"}
