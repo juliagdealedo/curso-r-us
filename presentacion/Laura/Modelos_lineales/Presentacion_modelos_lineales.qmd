@@ -354,7 +354,8 @@ ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +
 
 ```{r}
 #| echo: true
-penguins$species <- as.factor(penguins$species)
+penguins <- penguins %>%
+  mutate(species = as.factor(species))
 lm_reg2 <- lm(bill_length_mm ~ species, data = penguins)
 ```
 
@@ -620,7 +621,7 @@ summary(lm_5)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.7em'"
 #| fig-width: 9    # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
