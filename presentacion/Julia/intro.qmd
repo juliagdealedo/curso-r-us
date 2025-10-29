@@ -1,0 +1,181 @@
+---
+title: "Introducción a R"
+subtitle: "Crear código en R, uso colaborativo y reproducible"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+- Introducción
+- Escribir en R 
+- Buenas prácticas 
+- Uso colaborativo
+
+***
+
+## Introducción
+
+R es un lenguaje. 
+De programación.
+
+R es un lenguaje y entorno de programación especializado en análisis estadístico, visualización de datos y ciencia de datos. 
+Utilizado por investigadores, analistas y científicos para explorar, modelar y comunicar información basada en datos de forma eficiente y reproducible.
+
+ The goal of “R for Data Science” is to help you learn the most important tools in R that will allow you to do data science. 
+ 
+ 
+***
+## Objetivos:
+
+Mejorar la comprensión y la práctica estadística.
+
+Desarrollar habilidades en programación en R.
+
+Aprender flujos de trabajo eficientes, limpios y reproducibles.
+
+***
+## What you won’t learn
+
+1. Anállisis de la matriz de correlaciones. Deben existir altas correlaciones entre las variables.
+
+2. Selección de los factores. El primer factor recoje la mayor proporción de variabilidad original, el segundo, la máxima no recogida pro el rpimero, etc.
+
+3. Análisis de la matriz factorial. SE representan los factores seleccionados en forma de matriz. 
+
+4. Interpretación de los factores
+
+5. Cálculo de las puntuaciones factoriales.
+
+***
+## R y Rtudio
+
+R → Es el lenguaje de programación y el motor que realiza los cálculos estadísticos y el análisis de datos.
+
+RStudio → Es un entorno de desarrollo integrado que facilita el uso de R con una interfaz amigable, paneles, autocompletado y herramientas visuales. 
+
+***
+
+### Ejemplo del uso de R
+
+calculadora
+
+```{r}
+#| echo: true
+2 + 3      # 5
+10 - 4     # 6
+3 * 5      # 15
+20 / 4     # 5
+```
+***
+
+Acumuladora de información (objetos)
+
+```{r}
+#| echo: true
+
+x <- 10      # Asignar un valor a x
+y <- 5
+suma <- x + y
+suma
+suma + 7          
+```
+
+***
+
+Uso de objetos
+```{r}
+#| echo: true
+
+yo_uso_la_serpiente <- 10
+OtraGenteUsaElCamello <- 9
+otra.gente.usa.los.puntos <- 9
+Hayque_evitar.esto10 <- 2
+
+# objetos empiezan por una letra
+# son sensibles a mayusculas
+```
+
+```{r}
+#| echo: true
+
+numero <- 1:10
+caracter <- "del uno al diez"
+numero
+caracter
+#numero * caracter
+```
+
+## los vectores y las funciones
+
+```{r}
+#| echo: true
+
+# funcion.para.algo (arg1=col1, arg2=col2, etc)
+numeros <- c(1, 2, 3, 4, 5) # Junta valores
+promedio <- mean(numeros)   # Calcula la media
+promedio
+promedio * numeros
+```
+
+***
+
+```{r}
+#| echo: true
+
+plot(numeros)  
+hist(numeros) 
+
+```
+
+***
+## Generadores de números
+```{r}
+#| echo: true
+# Get a vector of 40 numbers
+runif(5)
+
+# Get a vector of 3 numbers from 0 to 100
+runif(3, min=0, max=100)
+#> [1] 83.702278  3.062253  5.388360
+
+# This will do the same thing
+sample(1:100, 3, replace=TRUE)
+#> [1]  8 63 64
+rnorm(4)
+#> [1] -2.3308287 -0.9073857 -0.7638332 -0.2193786
+
+# Use a different mean and standard deviation
+rnorm(4, mean=50, sd=10)
+#> [1] 59.20927 40.12440 44.58840 41.97056
+
+# To check that the distribution looks right, make a histogram of the numbers
+x <- rnorm(400, mean=50, sd=10)
+hist(x)
+
+```
+
+***
+```{r}
+#| echo: true
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 9  # alto en pulgadas
+#| fig-align: "left"
+plot(numeros)                 # Gráfico simple
+hist(numeros)  
+```
+
+***
+## Bibliografía
+
+http://www.cookbook-r.com/

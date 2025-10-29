@@ -1,0 +1,85 @@
+---
+title: "Introducción a R"
+subtitle: "Crear código en R, uso colaborativo y reproducible"
+format: 
+  revealjs:
+    theme: white    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+- Introducción
+- Escribir en R 
+- Buenas prácticas 
+- Uso colaborativo
+
+***
+
+#### Datos georeferenciados
+
+```{r}
+#| echo: true
+
+library(rgbif)
+library(ggplot2)
+library(rnaturalearth)
+library(sf)
+
+datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
+head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
+df <- datos$data
+
+# Basic map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Plot
+ggplot() +
+  geom_sf(data = world, fill = "black", color = "grey30") +
+  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
+             color = "darkred", size = 2, alpha = 0.7) +
+  coord_sf() +
+  theme_minimal()
+
+```
+
+***
+
+```{r}
+#| echo: true
+
+datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
+head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
+df <- datos$data
+
+# Basic map
+spain <- ne_countries(country=c("spain", "portugal"))
+plot(spain)
+# Plot
+
+ggplot() +
+  geom_sf(data = spain, fill = "grey99", color = "grey30") +
+  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
+             color = "darkgreen", size = 2, alpha = 0.7) +
+  coord_sf() +
+  theme_minimal()
+
+```
+#### Mapa plantas
+
+```{r}
+#| echo: true
+#| fig-width: 9.5     # ancho en pulgadas
+#| fig-height: 9  # alto en pulgadas
+#| fig-align: "left"
+library(FloraIberica)
+map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
+```
