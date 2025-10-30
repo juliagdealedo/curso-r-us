@@ -59,14 +59,10 @@ head(gala)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
-#| fig-width: 15     # ancho en pulgadas
-#| fig-height: 6    # alto en pulgadas
-#| fig-align: "center"
 library(ggplot2)
 library(patchwork)
-
 plot1 <- ggplot(data = gala, aes(x = Area , y = Species)) +  
   geom_point(color = "blue", size = 1.5) +      
   labs(x = "Área de la isla",         
@@ -88,6 +84,17 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = Species)) +
       title = "Relación entre riqueza de especies y distancia isla más próxima"   
   ) +
   theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
 plot1 + plot2 + plot3
 ```
 
@@ -97,8 +104,7 @@ plot1 + plot2 + plot3
 ```{r}
 #| echo: true
 library(GGally)
-
-ggcorr(gala[,c(1,3:6)], label = TRUE)
+ggcorr(gala[,c(1,3:5)], label = TRUE)
 ```
 [Parece relación estre riqueza especies y área y elevación. Convertir a log podría ayudar.]{style="font-size:20px"}
 
@@ -119,6 +125,8 @@ anova(lm.gal0)
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 8     # ancho en pulgadas
 #| fig-height: 7    # alto en pulgadas
 #| fig-align: "center"
@@ -140,13 +148,9 @@ Transformación variable respuesta
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
-#| fig-width: 15     # ancho en pulgadas
-#| fig-height: 6    # alto en pulgadas
-#| fig-align: "center"
 gala$log_Sp <- log(gala$Species)
-
 plot1 <- ggplot(data = gala, aes(x = Area , y = log_Sp)) +  
   geom_point(color = "blue", size = 1.5) +      
   labs(x = "Área de la isla",         
@@ -168,10 +172,22 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = log_Sp)) +
       title = "Relación entre riqueza de especies y distancia isla más próxima"   
   ) +
   theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+
 plot1 + plot2 + plot3
 ```
 
-[Sigue sin ser lineal la relación.]{style="font-size:25px"}
+[Sigue sin ser lineal la relación.]{style="font-size:20px"}
 
 ***
 
@@ -179,11 +195,8 @@ plot1 + plot2 + plot3
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
-#| fig-width: 15     # ancho en pulgadas
-#| fig-height: 6    # alto en pulgadas
-#| fig-align: "center"
 gala$log_Sp <- log(gala$Species)
 gala$log_area <- log(gala$Area)
 gala$log_elevacion <- log(gala$Elevation)
@@ -210,6 +223,18 @@ plot3 <- ggplot(data = gala, aes(x = log_near , y = log_Sp)) +
       title = "Relación entre riqueza de especies y distancia isla más próxima"   
   ) +
   theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+
 plot1 + plot2 + plot3
 ```
 
@@ -232,7 +257,6 @@ plot(lm.gal1)
 
 ```{r}
 #| echo: true
-library(car)
 Anova(lm.gal1,type="III")
 ```
 
@@ -340,7 +364,7 @@ head(cobertura)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 15     # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
@@ -365,7 +389,8 @@ ggplot(cobertura, aes(x = biomasa, y = cobertura)) +
 
 ```{r}
 #| echo: true
-cobertura$sequia <- as.factor(cobertura$sequia)
+cobertura <- cobertura %>%
+  mutate(sequia = as.factor(sequia))
 lm_bio1 <- lm(biomasa ~ cobertura*sequia, data = cobertura)
 ```
 
@@ -401,7 +426,7 @@ summary(lm_bio1)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.7em'"
 #| fig-width: 9    # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas

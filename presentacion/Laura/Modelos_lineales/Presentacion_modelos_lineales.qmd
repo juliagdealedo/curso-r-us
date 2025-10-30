@@ -504,7 +504,7 @@ ggplot(subset(penguins, !is.na(sex)), aes(x = bill_length_mm, y = body_mass_g)) 
 
 ***
 
-#### Ajuste modelo de regresión
+#### Ajuste modelo 
 
 ```{r}
 #| echo: true

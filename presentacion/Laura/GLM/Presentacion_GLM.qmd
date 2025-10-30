@@ -32,7 +32,7 @@ format:
 
 Supuestos modelos lineales:
 
-1. Los errores se distribuyen nromalmente
+1. Los errores se distribuyen normalmente
 
 2. La varianza (residual) es constante
 
