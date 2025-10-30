@@ -180,7 +180,7 @@ ggplot(ara, aes(x = dungs, y = seedlings)) +
 #| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.4em'"
 glm_arau1 <- glm(seedlings ~ dungs*property, ara, family = "poisson")
-anova(glm_arau1)
+anova(glm_arau1, test = "Chi")
 ```
 
 [Devianza explicada por el modelo]{style="font-size:25px"}
@@ -294,7 +294,7 @@ visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab
 
 - Variable con valores binarios (1/0): modelos de regresión logística
 
-- variables con valores porcentuales (nº éxitos / nº de ensayos)
+- Variables con valores porcentuales (nº éxitos / nº de ensayos)
 
 Función de vínculo: logit *log(p/(1-p))*
 
@@ -339,7 +339,7 @@ str(algas)
 
 ```{r}
 #| echo: true
-#| #| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 ggplot(algas, aes(x = Long, y = Estado, color = Sp)) +
   geom_point(alpha = 0.4, position = position_jitter(height = 0.05)) +
@@ -392,8 +392,8 @@ plot(glm_algas2)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
 summary(glm_algas2)
 ```
 
@@ -436,8 +436,8 @@ Comparaciones entre especies
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.5em'"
 library(multcomp)
 summary(glht(glm_algas2, linfct = mcp(Sp = "Tukey")))
 ```
