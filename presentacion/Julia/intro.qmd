@@ -3,7 +3,7 @@ title: "Introducción a R"
 subtitle: "Crear código en R, uso colaborativo y reproducible"
 format: 
   revealjs:
-    theme: white    
+    theme: solarized    
     slide-number: true  
     self-contained: true
   html: 
@@ -156,7 +156,15 @@ Hayque_evitar.esto10 <- 2
 
 ## Tipos de objetos
 
-Hay distintos tipos de objetos
+Hay muuchos tipos de objetos
+- numéricos
+- caracteres
+- matrices, tablas
+- listas
+- modelos
+- polígonos
+- funciones
+
 
 ```{r}
 #| echo: true
@@ -169,7 +177,7 @@ caracter
 
 ```
 
-## Vectores y funciones
+## Vectores y operaciones
 
 ```{r}
 #| echo: true
@@ -217,6 +225,16 @@ seq(0, 100, 10)
 
 ## Crear funciones
 
+Las funciones son aplicaciones que nos permiten realizar operaciones muy diversas. 
+
+- Funciones que vienen con la distribución base de R o en los paquetes
+- Crear nuestras propias funciones con function(). 
+- Asignarle un nombre 
+- indicar argumentos
+- escribir entre llaves el código
+
+## Ejemplo de funciones
+
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
@@ -242,6 +260,45 @@ vector3 <- seq(1, 300, 4)
 distribution = log_vect (vector3)
 hist(distribution)
 
+
+```
+
+## Ayuda, Pipes, shortcuts
+
+Ayuda en R o también vale buscar en google "function mean in R"
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+# Ayudas
+?mean           # abre la ayuda de una función
+help(mean)      # lo mismo que '?mean'
+??"normal"      # búsqueda más amplia en toda la documentación
+example(mean)   # muestra ejemplos prácticos
+```
+*Pipes: cómo encadenar operaciones*
+
+Los "pipes" permiten escribir código paso a paso, de forma legible:
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+library(dplyr)
+
+# El propio de dplyr
+iris %>%
+  filter(Sepal.Length > 5) %>%
+  summarise(promedio = mean(Sepal.Width))
+# (control  (command) + shift + M)
+
+# el de R desde hace dos años
+iris |>
+  filter(Sepal.Length > 5) |>
+  summarise(promedio = mean(Sepal.Width))
 
 ```
 

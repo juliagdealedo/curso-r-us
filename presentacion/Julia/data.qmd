@@ -1,5 +1,5 @@
 ---
-title: "Introducción a R"
+title: "Manejo y visualización de datos"
 subtitle: "Crear código en R, uso colaborativo y reproducible"
 format: 
   revealjs:
@@ -19,8 +19,93 @@ format:
 
 ## Manejo de datos
 
+La exploración de datos nos permite verificar su calidad, entender los datos con los que trabajamos. Visualizar nuestros datos es un buen comienzo, pero a menudo vamos a necesitar transformar los datos previamente.
+
+Formato tidy data
+
+Cada variable tiene su propia columna
+Cada observación tiene su propia fila
+Cada valor tiene su propia celda
+
+![Ejemplo organización "tidy"](images/tidy-table.png)
+
+Buenas prácticas en el manejo de datos
+
+- Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
+- Las observaciones cada una en una fila (e.g. individuos de pingüinos)
+- Evitar espacios, números, y caracteres especiales en los nombres de columnas.
+- Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
+- Usar celdas vacías o con NA para datos faltantes.
+- Las fechas incluirlas en columnas separadas como year, month, day.
+- No combinar varias informaciones en una misma celda.
+- Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
+- Exporta los datos como texto plano (txt, csv)
+
+
+## Ejemplo datos de pingüinos
+
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+ 
+# 1. Cargar librerías
+
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(palmerpenguins)
+
+# 2. Leer datos
+data(package = 'palmerpenguins')
+datos <- penguins
+
+# 3. Explorar
+
+head(datos)
+
+unique(datos$island)
+
+datos %>% filter(year == 2007)
+
+datos %>% filter(year == 2007, sex=="female")
+
+datos %>% filter(year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) # island == c("Dream", "Bicoe")) NO VALE!
+```
+
+## Limpiar los datos
+
+```{r}
+
+# 4. Limpiar: eliminar filas con NA
+datos_limpios <- datos %>% 
+  filter(!is.na(body_mass_g))
+```
+
+## Transformar variables
+
+```{r}
+
+# 5. Transformar: crear nueva variable
+datos_limpios_kg <- datos_limpios %>%
+  mutate(body_mass_kg = body_mass_g / 1000)
+
+# 6. Visualizar: gráfico simple
+datos_limpios_kg %>% 
+  ggplot(aes(x = species, y = body_mass_kg, fill = species)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Peso corporal por especie de pingüino",
+       x = "Especie", y = "Peso (kg)")
+
+```
+
+## Ejemplo datos inscripción curso
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 
 library(here)
 library(tidyverse)
@@ -28,14 +113,23 @@ library(tm)
 library(wordcloud2)
 library(readxl)
 
+# se puede importar tablas desde excel, csv, ggsheets, txt...
+
 datos_curso = read_excel(here("data/datos-curso.xlsx"))
 
-str(datos_curso)
+# Vemos un resumen
+str (datos_curso)
+#View (datos_curso) # Se nos abre en Rstudio
+
+# seleccionamos columnas de un dataframe con $
+datos_curso$`Hora de inicio`
+
 ```
+
 ------------------------------------------------------------------------
 
 ```{r}
-colnames(datos_curso)
+colnames(datos_curso) # Miramos las columnas que tiene
 ```
 
 ------------------------------------------------------------------------
@@ -66,58 +160,28 @@ stop_es <- stopwords("spanish")
 words_clean <- words[!words %in% stop_es]
 
 # Plot
-wordcloud2(data=table(words_clean), size=1,
+wordcloud2(data=table(words_clean), size=0.5,
            color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20))
 
 
 ```
 
-```{r}
-# 1. Cargar librerías
-library(dplyr)
-library(ggplot2)
-library(readr)
-library(palmerpenguins)
-
-# 2. Leer datos
-data(package = 'palmerpenguins')
-datos <- penguins
-# 3. Explorar
-head(datos)
-summary(datos)
-
-# 4. Limpiar: eliminar filas con NA
-datos_limpios <- datos %>% 
-  filter(!is.na(body_mass_g))
-
-# 5. Transformar: crear nueva variable
-datos_limpios <- datos_limpios %>%
-  mutate(body_mass_kg = body_mass_g / 1000)
-
-# 6. Visualizar: gráfico simple
-ggplot(datos_limpios, aes(x = species, y = body_mass_kg, fill = species)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(title = "Peso corporal por especie de pingüino",
-       x = "Especie", y = "Peso (kg)")
-
-```
 ## Visualizacion de datos
 
-DATA VIZZZZZZ
-------------------------------------------------------------------------
+## DATA VIZZZZZZ
 
 ## Desde gráficos muy simples
+
 ```{r}
+#| echo: true
 plot(x=rnorm(100), y=rnorm(100))
 ```
 
 ------------------------------------------------------------------------
 
 ## Hasta gráficos muy complejos
-![quién habla con quién en "The Office"](images/complex_graph.png)
-[Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
+![quién habla con quién en "The Office"](images/complex_graph.png) [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
 #### Datos georeferenciados
 
@@ -146,7 +210,7 @@ ggplot() +
 
 ```
 
-***
+------------------------------------------------------------------------
 
 ```{r}
 #| echo: true
@@ -164,6 +228,7 @@ ggplot() +
   theme_minimal()
 
 ```
+
 #### Mapa plantas
 
 ```{r}
@@ -175,9 +240,12 @@ library(FloraIberica)
 map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 ```
 
-
-
 ## Visualizaciones geniales
 
 [Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
+
+## Bibliografía
+
+
+https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199
 
