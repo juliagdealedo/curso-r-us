@@ -3,7 +3,7 @@ title: "Modelos lineales"
 subtitle: "Regresión y factoriales (ANOVA y ANCOVA)"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
+    theme: solarized    # Specify the 'night' theme here
     slide-number: true  # Optional: Show slide numbers
     self-contained: true
   html: 
