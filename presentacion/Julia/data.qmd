@@ -256,7 +256,7 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 
 # Plot
 ggplot() +
-  geom_sf(data = world, fill = "black", color = "grey30") +
+  geom_sf(data = world, fill = "grey90", color = "grey30") +
   geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
              color = "darkred", size = 2, alpha = 0.7) +
   coord_sf() +
@@ -273,7 +273,7 @@ ggplot() +
 
 # Basic map
 spain <- ne_countries(country=c("spain", "portugal"))
-plot(spain)
+# plot(spain)
 # Plot
 
 ggplot() +
@@ -304,4 +304,4 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ## Bibliografía
 
-https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199
+[Valentina de Filippo] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
