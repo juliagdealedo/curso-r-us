@@ -27,7 +27,7 @@ format:
 
 ## Introducción
 
-Método estadístico que analice simultáneamente múltiples características en cada muestra objeto de estudio.
+Método estadístico que analiza simultáneamente múltiples características en cada muestra objeto de estudio.
 
 Algunos ejemplos:
 
@@ -57,20 +57,18 @@ La interpretación de los factores se deducirá observando su relación con las 
 
 Fases:
 
-1. Anállisis de la matriz de correlaciones. Deben existir altas correlaciones entre las variables.
+1. Análisis de la matriz de correlaciones. Deben existir altas correlaciones entre las variables.
 
-2. Selección de los factores. El primer factor recoje la mayor proporción de variabilidad original, el segundo, la máxima no recogida pro el rpimero, etc.
+2. Selección de los factores. El primer factor recoje la mayor proporción de variabilidad original, el segundo, la máxima no recogida por el primero, etc.
 
-3. Análisis de la matriz factorial. SE representan los factores seleccionados en forma de matriz. 
+3. Análisis de la matriz factorial. Se representan los factores seleccionados en forma de matriz. 
 
 4. Interpretación de los factores
-
-5. Cálculo de las puntuaciones factoriales.
 
 ***
 
 ::: {.center .middle}
-### Ejemplo modelación riqueza plantas exóticas a partir del clima
+### Ejemplo modelización riqueza plantas exóticas a partir del clima
 :::
 
 ***
@@ -83,7 +81,7 @@ clima <- read.table("exoticas.txt", header = T, sep = "\t")
 str(clima)
 ```
 
-Alien : variable respuesta
+[Alien : variable respuesta]{style="font-size:25px"}
 
 ***
 
@@ -104,6 +102,12 @@ PCA para reducir la dimensionalidad y utilizar factores principales para modelar
 #| echo: true
 pca_1 <- prcomp(clima[,-1], scale = T)
 summary(pca_1)
+```
+
+***
+
+```{r}
+#| echo: true
 pca_1$rotation[,1:2]
 ```
 
@@ -185,11 +189,11 @@ visreg(glm_exoticas2, scale="response", ylab="Riqueza de especies")
 
 ***
 
-[Representación en un espacio geométrico de pocas dimensiones las distancias existentes entre un conjunto de datos.]{style="font-size:30px"}
+[Representación de las distancias existentes entre un conjunto de datos en un espacio geométrico de pocas dimensiones.]{style="font-size:30px"}
 
 [1. Cálculo matriz de disimilaridad *X* a partir de la matriz de datos.]{style="font-size:25px"}
 
-[2. Asignación de unidades muestrales a una configuración inicial aletaoria.]{style="font-size:25px"}
+[2. Asignación de unidades muestrales a una configuración inicial aleatoria]{style="font-size:25px"}
 
 [3. Cálculo distancias otra vez en este nuevo espacio geométrico y se calcula una matriz de distancia *Y*]{style="font-size:25px"}
 
@@ -207,9 +211,9 @@ visreg(glm_exoticas2, scale="response", ylab="Riqueza de especies")
 
 Investigar qué variables ambientales afectan a la composición florística de árboles en distintos tipos de bosques tropicales. Abundancia de cada especie en cada parcela.
 
-1. Explora visualmente cómo son de similares las parcelas muestreadas en función de la composición de especies
+[1. Explorar visualmente cómo son de similares las parcelas muestreadas en función de la composición de especies]{style="font-size:30px"}
 
-2. Investigar relación de esta ordenación y las variables ambientales.
+[2. Investigar relación de esta ordenación y las variables ambientales.]{style="font-size:30px"}
 
 
 ```{r}
@@ -241,11 +245,11 @@ plot(nmds_1)
 
 ***
 
-#### Gráfico mostrando las diferencias por tipo de bosque y mostrando relación lineal con variables
+[Gráfico con diferencias por tipo de bosque y relación lineal con variables]{style="font-size:30px"}
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.4em'"
+#| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.4em'"
 #| fig-width: 7     # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
