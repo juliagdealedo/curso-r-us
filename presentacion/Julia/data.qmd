@@ -52,6 +52,7 @@ library(dplyr)
 library(ggplot2)
 library(readr)
 library(palmerpenguins)
+library(scico)
 
 # 2. Leer datos
 data(package = 'palmerpenguins')
@@ -98,9 +99,8 @@ head(datos_limpios, 4)
 datos_limpios_kg <- datos_limpios %>%
   mutate(body_mass_kg = body_mass_g / 1000)
 
-# 6. Visualizar
-ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = body_mass_kg)) +
-geom_point(alpha = .6)
+ggplot(data = datos_limpios_kg, aes(x = island, y = bill_length_mm)) + geom_boxplot()
+
 ```
 
 ## Poco a poco más complejo (+)
@@ -110,8 +110,12 @@ geom_point(alpha = .6)
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
 
+
+ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
 geom_point(aes(color = body_mass_g), alpha = .6) +
+  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
 ## custom axes scaling
 scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
 scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
@@ -119,12 +123,11 @@ scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
 labs(
 title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
 subtitle = 'A scatter plot of bill depth versus bill length.',
-caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
 x = 'Bill Length (mm)',
 y = 'Bill Depth (mm)',
 color = 'Body mass (g)'
 )+
-  ## modify plot elements globally (for all following plots)
 theme_update(
 axis.ticks = element_line(color = "grey92"),
 axis.ticks.length = unit(.5, "lines"),
@@ -207,6 +210,9 @@ wordcloud2(data=table(words_clean), size=0.5,
 
 ## DATA VIZZZZZZ
 
+Colores...
+https://www.fabiocrameri.ch/colourmaps/
+
 ## Desde gráficos muy simples
 
 ```{r}
@@ -220,7 +226,16 @@ plot(x=rnorm(100), y=rnorm(100))
 
 ![quién habla con quién en "The Office"](images/complex_graph.png) [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
-#### Datos georeferenciados
+## Mapas I
+
+![Mapa del crecimiento urbano en Valencia](images/map-growth.png) [Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
+
+## Mapas II 
+
+![Apicultores en Alemania](images/bee.png) 
+[Código](https://www.cedricscherer.com/top/dataviz/)
+
+## Nuestros datos georeferenciados
 
 ```{r}
 #| echo: true
@@ -241,7 +256,7 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 
 # Plot
 ggplot() +
-  geom_sf(data = world, fill = "black", color = "grey30") +
+  geom_sf(data = world, fill = "grey90", color = "grey30") +
   geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
              color = "darkred", size = 2, alpha = 0.7) +
   coord_sf() +
@@ -258,7 +273,7 @@ ggplot() +
 
 # Basic map
 spain <- ne_countries(country=c("spain", "portugal"))
-plot(spain)
+# plot(spain)
 # Plot
 
 ggplot() +
@@ -283,10 +298,10 @@ library(FloraIberica)
 map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 ```
 
-## Visualizaciones geniales
+## Visualizaciones geniales (ya no solo con r)
 
 [Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
 
 ## Bibliografía
 
-https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199
+[Valentina de Filippo] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
