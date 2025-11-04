@@ -1,10 +1,10 @@
 ---
 title: "Manejo y visualización de datos"
-subtitle: "Crear código en R, uso colaborativo y reproducible"
+subtitle: "Importar, transformar y visualizar datos en R"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
-    slide-number: true  # Optional: Show slide numbers
+    theme: solarized   
+    slide-number: true 
     self-contained: true
   html: 
     self-contained: true
@@ -23,24 +23,21 @@ La exploración de datos nos permite verificar su calidad, entender los datos co
 
 Formato tidy data
 
-Cada variable tiene su propia columna
-Cada observación tiene su propia fila
-Cada valor tiene su propia celda
+Cada variable tiene su propia columna Cada observación tiene su propia fila Cada valor tiene su propia celda
 
 ![Ejemplo organización "tidy"](images/tidy-table.png)
 
-Buenas prácticas en el manejo de datos
+## Buenas prácticas en el manejo de datos
 
-- Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
-- Las observaciones cada una en una fila (e.g. individuos de pingüinos)
-- Evitar espacios, números, y caracteres especiales en los nombres de columnas.
-- Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
-- Usar celdas vacías o con NA para datos faltantes.
-- Las fechas incluirlas en columnas separadas como year, month, day.
-- No combinar varias informaciones en una misma celda.
-- Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
-- Exporta los datos como texto plano (txt, csv)
-
+-   Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
+-   Las observaciones cada una en una fila (e.g. individuos de pingüinos)
+-   Evitar espacios, números, y caracteres especiales en los nombres de columnas.
+-   Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
+-   Usar celdas vacías o con NA para datos faltantes.
+-   Las fechas incluirlas en columnas separadas como year, month, day.
+-   No combinar varias informaciones en una misma celda.
+-   Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
+-   Exporta los datos como texto plano (txt, csv)
 
 ## Ejemplo datos de pingüinos
 
@@ -66,38 +63,78 @@ head(datos)
 
 unique(datos$island)
 
-datos %>% filter(year == 2007)
+datos_filtrados <- datos %>% filter(year == 2007)
 
-datos %>% filter(year == 2007, sex=="female")
+datos_filtrados <-datos %>% filter(year == 2007, sex=="female")
 
-datos %>% filter(year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) # island == c("Dream", "Bicoe")) NO VALE!
+datos_filtrados <- datos %>% filter(year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) 
+# island == c("Dream", "Bicoe")) NO VALE!
+
+head (datos_filtrados, 3)
 ```
 
 ## Limpiar los datos
 
 ```{r}
-
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+ 
 # 4. Limpiar: eliminar filas con NA
 datos_limpios <- datos %>% 
   filter(!is.na(body_mass_g))
+
+head(datos_limpios, 4)
 ```
 
 ## Transformar variables
 
 ```{r}
-
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+ 
 # 5. Transformar: crear nueva variable
 datos_limpios_kg <- datos_limpios %>%
   mutate(body_mass_kg = body_mass_g / 1000)
 
-# 6. Visualizar: gráfico simple
-datos_limpios_kg %>% 
-  ggplot(aes(x = species, y = body_mass_kg, fill = species)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(title = "Peso corporal por especie de pingüino",
-       x = "Especie", y = "Peso (kg)")
+# 6. Visualizar
+ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = body_mass_kg)) +
+geom_point(alpha = .6)
+```
 
+## Poco a poco más complejo (+)
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+geom_point(aes(color = body_mass_g), alpha = .6) +
+## custom axes scaling
+scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
+scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
+## custom labels
+labs(
+title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+subtitle = 'A scatter plot of bill depth versus bill length.',
+caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+x = 'Bill Length (mm)',
+y = 'Bill Depth (mm)',
+color = 'Body mass (g)'
+)+
+  ## modify plot elements globally (for all following plots)
+theme_update(
+axis.ticks = element_line(color = "grey92"),
+axis.ticks.length = unit(.5, "lines"),
+panel.grid.minor = element_blank(),
+legend.title = element_text(size = 12),
+legend.text = element_text(color = "grey30"),
+plot.title = element_text(size = 18, face = "bold"),
+plot.subtitle = element_text(size = 12, color = "grey30"),
+plot.caption = element_text(size = 9, margin = margin(t = 15))
+)
 ```
 
 ## Ejemplo datos inscripción curso
@@ -121,14 +158,14 @@ datos_curso = read_excel(here("data/datos-curso.xlsx"))
 str (datos_curso)
 #View (datos_curso) # Se nos abre en Rstudio
 
-# seleccionamos columnas de un dataframe con $
-datos_curso$`Hora de inicio`
-
 ```
 
 ------------------------------------------------------------------------
 
 ```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 colnames(datos_curso) # Miramos las columnas que tiene
 ```
 
@@ -187,6 +224,8 @@ plot(x=rnorm(100), y=rnorm(100))
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 
 library(rgbif)
 library(ggplot2)
@@ -214,6 +253,8 @@ ggplot() +
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 
 # Basic map
 spain <- ne_countries(country=c("spain", "portugal"))
@@ -233,6 +274,8 @@ ggplot() +
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 #| fig-width: 9.5     # ancho en pulgadas
 #| fig-height: 9  # alto en pulgadas
 #| fig-align: "left"
@@ -246,6 +289,4 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ## Bibliografía
 
-
 https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199
-

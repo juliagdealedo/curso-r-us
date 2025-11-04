@@ -277,6 +277,10 @@ Ayuda en R o también vale buscar en google "function mean in R"
 help(mean)      # lo mismo que '?mean'
 ??"normal"      # búsqueda más amplia en toda la documentación
 example(mean)   # muestra ejemplos prácticos
+
+# <- es lo mismo que =
+# $ para seleccionar columnas 
+# [ ] para seleccionar partes de un vector o una tabla
 ```
 *Pipes: cómo encadenar operaciones*
 
