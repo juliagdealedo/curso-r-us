@@ -3,8 +3,8 @@ title: "Introducción a R"
 subtitle: "Crear código en R, uso colaborativo y reproducible"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
-    slide-number: true  # Optional: Show slide numbers
+    theme: white    
+    slide-number: true  
     self-contained: true
   html: 
     self-contained: true
@@ -17,83 +17,133 @@ format:
     theme: flatly
 ---
 
-- Introducción
-- Escribir en R 
-- Buenas prácticas 
-- Uso colaborativo
+-   Introducción
+-   Escribir en R
+-   Buenas prácticas
+-   Uso colaborativo
 
-***
+------------------------------------------------------------------------
 
 ## Introducción
 
-R es un lenguaje. 
-De programación.
+R es un lenguaje y entorno de programación especializado en:
 
-R es un lenguaje y entorno de programación especializado en análisis estadístico, visualización de datos y ciencia de datos. 
+Análisis estadístico, visualización de datos y ciencia de datos.
+
 Utilizado por investigadores, analistas y científicos para explorar, modelar y comunicar información basada en datos de forma eficiente y reproducible.
 
- The goal of “R for Data Science” is to help you learn the most important tools in R that will allow you to do data science. 
- 
- 
-***
-## Objetivos:
+------------------------------------------------------------------------
 
-Mejorar la comprensión y la práctica estadística.
+## Lo que vas a aprender:
 
-Desarrollar habilidades en programación en R.
+-   Mejorar la comprensión y la práctica estadística.
 
-Aprender flujos de trabajo eficientes, limpios y reproducibles.
+-   Desarrollar habilidades en programación en R.
 
-***
-## What you won’t learn
+-   Aprender flujos de trabajo eficientes, limpios y reproducibles.
 
-1. Anállisis de la matriz de correlaciones. Deben existir altas correlaciones entre las variables.
+-   Saber buscar información
 
-2. Selección de los factores. El primer factor recoje la mayor proporción de variabilidad original, el segundo, la máxima no recogida pro el rpimero, etc.
+-   No enredarse en errores
 
-3. Análisis de la matriz factorial. SE representan los factores seleccionados en forma de matriz. 
+## Lo que **no** vas a aprender
 
-4. Interpretación de los factores
+1.  A programar en plan pro sin mirar internet o chatgpt
 
-5. Cálculo de las puntuaciones factoriales.
+2.  A hacer páginas web
 
-***
+3.  A dejar de pelearte con la estadística
+
+## Objetivos de la clase
+
+```{r}
+#| echo: false
+library(here)
+library(tidyverse)
+library(tm)
+library(wordcloud2)
+library(readxl)
+
+datos_curso = read_excel(here("data/datos-curso.xlsx"))
+datos_curso_filtrado <- datos_curso |>
+  rename (curso = "Curso de la primera matrícula en el programa de doctorado",
+         experiencia = "Cuéntanos tu experiencia con R",
+         comentarios = "Observaciones",
+         email = "Correo electrónico") |>
+  select (curso, experiencia, comentarios, email) |>
+  mutate (email = str_replace(email, "anonymous", "anónimo"))
+
+words <- tolower(
+                unlist(
+                  strsplit(datos_curso_filtrado$experiencia, " ") ) ) 
+
+words <- gsub("[[:punct:][:digit:]]", "",words)
+stop_es <- stopwords("spanish")
+words_clean <- words[!words %in% stop_es]
+
+# Plot
+wordcloud2(data=table(words_clean), size=1,
+           color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20))
+
+
+```
+
 ## R y Rtudio
 
 R → Es el lenguaje de programación y el motor que realiza los cálculos estadísticos y el análisis de datos.
 
-RStudio → Es un entorno de desarrollo integrado que facilita el uso de R con una interfaz amigable, paneles, autocompletado y herramientas visuales. 
+RStudio → Es un entorno de desarrollo integrado (un programa) que facilita el uso de R con una interfaz amigable, paneles, autocompletado y herramientas visuales.
 
-***
+## ¿Qué puede hacer R?
 
-### Ejemplo del uso de R
+R es una calculadora
 
-calculadora
+Puede leer tablas, generarlas, guardarlas
+
+Hacer estadística compleja (y sobre todo basada en biología)
+
+Crear páginas webs, gráficos interactivos, presentaciones,
+
+Crear nuevos paquetes de R
+
+Hacer funciones
+
+## Workflow: lo básico básico
+
+Es una calculadora
 
 ```{r}
 #| echo: true
-2 + 3      # 5
-10 - 4     # 6
-3 * 5      # 15
-20 / 4     # 5
+2 + 3     
+10 - 4    
+3 * 5     
+20 / 4    
 ```
-***
 
-Acumuladora de información (objetos)
+## Acumular información
+
+La magia de los objetos
 
 ```{r}
 #| echo: true
 
-x <- 10      # Asignar un valor a x
+x <- 10    
 y <- 5
 suma <- x + y
 suma
-suma + 7          
+suma + 7
 ```
 
-***
+------------------------------------------------------------------------
 
-Uso de objetos
+## Espera, pero ¿qué son los objetos?
+
+Los objetos empiezan por una letra
+
+Son sensibles a mayusculas
+
+Tienen que llevar nombres coherentes y un orden
+
 ```{r}
 #| echo: true
 
@@ -102,80 +152,154 @@ OtraGenteUsaElCamello <- 9
 otra.gente.usa.los.puntos <- 9
 Hayque_evitar.esto10 <- 2
 
-# objetos empiezan por una letra
-# son sensibles a mayusculas
 ```
+
+## Tipos de objetos
+
+Hay distintos tipos de objetos
 
 ```{r}
 #| echo: true
 
 numero <- 1:10
-caracter <- "del uno al diez"
 numero
+caracter <- "del uno al diez"
 caracter
 #numero * caracter
+
 ```
 
-## los vectores y las funciones
+## Vectores y funciones
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 
-# funcion.para.algo (arg1=col1, arg2=col2, etc)
-numeros <- c(1, 2, 3, 4, 5) # Junta valores
-promedio <- mean(numeros)   # Calcula la media
+numeros <- c(1, 2, 3, 4, 5) 
+otros_numeros <- 1:40
+otros_numeros
+otros_numeros + 10
+promedio <- mean(numeros)
 promedio
 promedio * numeros
+numeros / otros_numeros
 ```
 
-***
+## Generadores de distribuciones
 
 ```{r}
 #| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+# Consecutivos del 1:10
+1:10
 
-plot(numeros)  
-hist(numeros) 
-
-```
-
-***
-## Generadores de números
-```{r}
-#| echo: true
-# Get a vector of 40 numbers
+# Un vector de 5 números aleatorios con distribución uniforme
 runif(5)
 
-# Get a vector of 3 numbers from 0 to 100
+# Ahora que 3 números vayan del 0 al 100
 runif(3, min=0, max=100)
-#> [1] 83.702278  3.062253  5.388360
 
-# This will do the same thing
-sample(1:100, 3, replace=TRUE)
-#> [1]  8 63 64
+# 4 números con una distribución normal
 rnorm(4)
-#> [1] -2.3308287 -0.9073857 -0.7638332 -0.2193786
 
-# Use a different mean and standard deviation
-rnorm(4, mean=50, sd=10)
-#> [1] 59.20927 40.12440 44.58840 41.97056
-
-# To check that the distribution looks right, make a histogram of the numbers
+# Especificando la media y la desviación
 x <- rnorm(400, mean=50, sd=10)
-hist(x)
+
+# Sample = elegir 3 bolas de un bingo en el que hay 100
+sample(0:100, 3, replace=TRUE) 
+
+# Generador de secuencias: del 0 al 100 cada 10
+seq(0, 100, 10)
 
 ```
 
-***
+## Crear funciones
+
 ```{r}
 #| echo: true
-#| fig-width: 15     # ancho en pulgadas
-#| fig-height: 9  # alto en pulgadas
-#| fig-align: "left"
-plot(numeros)                 # Gráfico simple
-hist(numeros)  
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+# Queremos la media de nuestros números transformados a logaritmo
+
+vector <- seq(1, 100, 10)
+mean (log (vector))
+sd (log (vector))
+
+vector2 <- seq(1, 300, 50)
+mean (log (vector2))
+sd (log (vector2))
+
+log_vect <- function (y) {
+  mean_y <- mean (log (y+1))
+  sd_y <- sd (log (y+1))
+  print(paste("La media es", mean_y, ", la desviación estándar es:", round(sd_y,2)))
+  return(log(y))
+}
+
+vector3 <- seq(1, 300, 4)
+distribution = log_vect (vector3)
+hist(distribution)
+
+
 ```
 
-***
+## Ejercicios
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+# 1. Calcula el minimo valor de 100 valores aleatorios según una distribución normal
+min (rnorm (100))
+
+# 2. Dada una secuencia de 20 números seguidos (del 0 al 20), genera los pares y guárdalo en un objeto.
+pares <- seq (0, 20, 2)
+
+# 3. Ejercicio:
+
+  # Crea un vector con 20 números aleatorios entre 0 y 50.
+  # Calcula el promedio y la desviación estándar.
+  # Multiplica todos los valores por 2.
+  # Dibuja un histograma.
+  #¿Cómo cambia el promedio después de multiplicar por 2?
+
+mi_vector <- runif(20,0,50)
+mean (mi_vector)
+sd (mi_vector)
+mi_vector_2 <- mi_vector*2
+hist(mi_vector_2)
+```
+
+## Ejercicios opcionales
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+# 4. Haz una función que me diga si un número cualquiera es par o no (opcional)
+que_tipo_de_numero_soy <- function (x) {
+ifelse(x %% 2 == 0, "par", "impar")
+}
+
+
+```
+
+## Compartir código
+
+-   git. Es una herramienta de control de versiones que además permite trabajar en equipo
+-   GitHub (portfolio de programador) ![Perfil](images/github.png)
+
+------------------------------------------------------------------------
+
+## Escribir textos, informes, artículos
+
+-   Quarto
+-   Rmarkdown
+-   Ciencia reproducible y limpia
+
 ## Bibliografía
 
-http://www.cookbook-r.com/
+[cookbook](http://www.cookbook-r.com/)

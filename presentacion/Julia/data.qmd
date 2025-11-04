@@ -17,12 +17,107 @@ format:
     theme: flatly
 ---
 
-- Introducción
-- Escribir en R 
-- Buenas prácticas 
-- Uso colaborativo
+## Manejo de datos
 
-***
+```{r}
+#| echo: true
+
+library(here)
+library(tidyverse)
+library(tm)
+library(wordcloud2)
+library(readxl)
+
+datos_curso = read_excel(here("data/datos-curso.xlsx"))
+
+str(datos_curso)
+```
+------------------------------------------------------------------------
+
+```{r}
+colnames(datos_curso)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 3     # ancho en pulgadas
+#| fig-height: 3    # alto en pulgadas
+#| fig-align: "center"
+
+datos_curso_filtrado <- datos_curso |>
+  rename (curso = "Curso de la primera matrícula en el programa de doctorado",
+         experiencia = "Cuéntanos tu experiencia con R",
+         comentarios = "Observaciones",
+         email = "Correo electrónico") |>
+  select (curso, experiencia, comentarios, email) |>
+  mutate (email = str_replace(email, "anonymous", "anónimo")) |>
+  filter (curso == "2022-23")
+  
+words <- tolower(
+                unlist(
+                  strsplit(datos_curso_filtrado$experiencia, " ") ) ) 
+
+words <- gsub("[[:punct:][:digit:]]", "",words)
+stop_es <- stopwords("spanish")
+words_clean <- words[!words %in% stop_es]
+
+# Plot
+wordcloud2(data=table(words_clean), size=1,
+           color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20))
+
+
+```
+
+```{r}
+# 1. Cargar librerías
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(palmerpenguins)
+
+# 2. Leer datos
+data(package = 'palmerpenguins')
+datos <- penguins
+# 3. Explorar
+head(datos)
+summary(datos)
+
+# 4. Limpiar: eliminar filas con NA
+datos_limpios <- datos %>% 
+  filter(!is.na(body_mass_g))
+
+# 5. Transformar: crear nueva variable
+datos_limpios <- datos_limpios %>%
+  mutate(body_mass_kg = body_mass_g / 1000)
+
+# 6. Visualizar: gráfico simple
+ggplot(datos_limpios, aes(x = species, y = body_mass_kg, fill = species)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Peso corporal por especie de pingüino",
+       x = "Especie", y = "Peso (kg)")
+
+```
+## Visualizacion de datos
+
+DATA VIZZZZZZ
+------------------------------------------------------------------------
+
+## Desde gráficos muy simples
+```{r}
+plot(x=rnorm(100), y=rnorm(100))
+```
+
+------------------------------------------------------------------------
+
+## Hasta gráficos muy complejos
+![quién habla con quién en "The Office"](images/complex_graph.png)
+[Código](https://r-graph-gallery.com/character-interaction-analysis.html)
+
 
 #### Datos georeferenciados
 
@@ -79,3 +174,10 @@ ggplot() +
 library(FloraIberica)
 map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 ```
+
+
+
+## Visualizaciones geniales
+
+[Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
+
