@@ -4,6 +4,7 @@ subtitle: "Crear código en R, uso colaborativo y reproducible"
 format: 
   revealjs:
     theme: solarized    
+    smaller: true
     slide-number: true  
     self-contained: true
   html: 
@@ -17,20 +18,41 @@ format:
     theme: flatly
 ---
 
--   Introducción
--   Escribir en R
--   Buenas prácticas
--   Uso colaborativo
+## Bienvenidxs!!
 
-------------------------------------------------------------------------
+¿Quiénes somos?
 
-## Introducción
+## Organización del curso
 
-R es un lenguaje y entorno de programación especializado en:
+### Por día
 
-Análisis estadístico, visualización de datos y ciencia de datos.
+Lunes = introducción a R, crear código, buenas prácticas\
+Martes = manejo y visualizacion de datos\
+Miércoles = modelos lineales y factoriales\
+Jueves = modelos generalizados y multivariantes\
+Viernes = uso colaborativo, dudas, ejemplos\
 
-Utilizado por investigadores, analistas y científicos para explorar, modelar y comunicar información basada en datos de forma eficiente y reproducible.
+::::: columns
+::: {.column width="50%"}
+### Por hora
+
+-   9 a 10 teoría
+-   10 a 10:45 ejercicios
+-   10:45 a 11 break
+-   11 a 12 teoría
+-   12 a 13 ejercicios y dudas
+:::
+
+::: {.column width="50%"}
+### Hoy
+
+-   Introducción, código básico
+-   Ejercicios I
+-   
+-   Funciones, bucles, dataframes
+-   Ejercicios II y III
+:::
+:::::
 
 ------------------------------------------------------------------------
 
@@ -46,47 +68,29 @@ Utilizado por investigadores, analistas y científicos para explorar, modelar y 
 
 -   No enredarse en errores
 
-## Lo que **no** vas a aprender
+## Lo que no vas a aprender
 
-1.  A programar en plan pro sin mirar internet o chatgpt
+-   A programar en plan pro sin mirar internet o chatgpt
 
-2.  A hacer páginas web
+-   A hacer páginas web
 
-3.  A dejar de pelearte con la estadística
+-   A dejar de pelearte con la estadística
 
 ## Objetivos de la clase
 
-```{r}
-#| echo: false
-library(here)
-library(tidyverse)
-library(tm)
-library(wordcloud2)
-library(readxl)
+![WordCloud](images/wordcloud.png)
 
-datos_curso = read_excel(here("data/datos-curso.xlsx"))
-datos_curso_filtrado <- datos_curso |>
-  rename (curso = "Curso de la primera matrícula en el programa de doctorado",
-         experiencia = "Cuéntanos tu experiencia con R",
-         comentarios = "Observaciones",
-         email = "Correo electrónico") |>
-  select (curso, experiencia, comentarios, email) |>
-  mutate (email = str_replace(email, "anonymous", "anónimo"))
+## Introducción
 
-words <- tolower(
-                unlist(
-                  strsplit(datos_curso_filtrado$experiencia, " ") ) ) 
+R es un lenguaje y entorno de programación especializado en:
 
-words <- gsub("[[:punct:][:digit:]]", "",words)
-stop_es <- stopwords("spanish")
-words_clean <- words[!words %in% stop_es]
+Análisis estadístico, visualización de datos y ciencia de datos.
 
-# Plot
-wordcloud2(data=table(words_clean), size=1,
-           color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20))
+Utilizado por investigadores, analistas y científicos para explorar, modelar y comunicar información basada en datos de forma eficiente y reproducible.
 
+Muy utilizado en biología
 
-```
+![Biólogxs en general](images/gato.png)
 
 ## R y Rtudio
 
@@ -94,23 +98,19 @@ R → Es el lenguaje de programación y el motor que realiza los cálculos estad
 
 RStudio → Es un entorno de desarrollo integrado (un programa) que facilita el uso de R con una interfaz amigable, paneles, autocompletado y herramientas visuales.
 
+![Ejemplo mesa de trabajo](images/studio.png)
+ 
 ## ¿Qué puede hacer R?
 
-R es una calculadora
-
-Puede leer tablas, generarlas, guardarlas
-
-Hacer estadística compleja (y sobre todo basada en biología)
-
-Crear páginas webs, gráficos interactivos, presentaciones,
-
-Crear nuevos paquetes de R
-
-Hacer funciones
-
+-   Calcular y analizar (operaciones matemáticas, modelos, simulaciones, tests...)
+-   Trabajar con datos (leer y escribir tablas, limpiar datos, transformar datos)
+-   Visualizar (graficos estadísticos, interactivos, mapas, animaciones, etc)
+-   Automatizar y extender (crear funciones propias, desarrollar paquetes, reproducir analisis facilmente)
+-   Comunicar (crear informes Quarto o RMarkdown, crear webs o apps Shiny)
+![Ejemplo quarto](images/quarto.png)
 ## Workflow: lo básico básico
 
-Es una calculadora
+Es una calculadora: se pueden hacer operaciones básicas multiplicar, dividir, sumar, restar...
 
 ```{r}
 #| echo: true
@@ -119,6 +119,28 @@ Es una calculadora
 3 * 5     
 20 / 4    
 ```
+
+## Operaciones básicas de lógica
+
+Las operaciones lógicas comparan valores y devuelven un resultado lógico.\
+
+TRUE se comporta como 1 y FALSE como 0. Se pueden sumar o usar en cálculos.
+
+```{r}
+#| echo: true
+
+20 / 4 >= 10    # ¿5 es mayor o igual que 10? → FALSE
+20 / 4 == 10    # ¿5 es igual a 10? → FALSE
+20 / 4 < 10     # ¿5 es menor que 10? → TRUE
+
+
+valores <- c(TRUE, FALSE, TRUE, TRUE)
+sum(valores)       # cuenta cuántos TRUE hay
+mean(valores)      # proporción de TRUE
+
+```
+
+Cuidado que en R "=" y "<-" son sinónimos!
 
 ## Acumular información
 
@@ -134,9 +156,7 @@ suma
 suma + 7
 ```
 
-------------------------------------------------------------------------
-
-## Espera, pero ¿qué son los objetos?
+### Espera, pero ¿qué son los objetos?
 
 Los objetos empiezan por una letra
 
@@ -157,27 +177,43 @@ Hayque_evitar.esto10 <- 2
 ## Tipos de objetos
 
 Hay muuchos tipos de objetos
-- numéricos
-- caracteres
-- matrices, tablas
-- listas
-- modelos
-- polígonos
-- funciones
 
+-   numéricos, caracteres, matrices, tablas, listas
+-   modelos, polígonos, funciones
 
 ```{r}
 #| echo: true
-
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.5em'"
 numero <- 1:10
 numero
 caracter <- "del uno al diez"
 caracter
-#numero * caracter
-
+una_lista <- list(1:10, 11:20, 21:30)
+una_lista
 ```
 
-## Vectores y operaciones
+Podemos transformar objetos de un tipo en otro con as.xxxx()
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+numeros_como_caracteres <- as.character(numero)
+numeros_como_caracteres
+numeros <- as.numeric(numeros_como_caracteres)
+numeros
+```
+
+## Vectores y operaciones con vectores
+
+Creamos vectores, que son elementos del mismo tipo juntos (numérico, carácter). Es un poco como una fila de una tabla... se pueden crear con 1:10 (numeros del 1 al 10)
+
+Consecutivos del 1:10
+
+Combinando c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+Generador de secuencias: del 0 al 100 cada 10 seq(0, 100, 10)
 
 ```{r}
 #| echo: true
@@ -185,6 +221,7 @@ caracter
 #| attr-output: "style='font-size: 0.3em'"
 
 numeros <- c(1, 2, 3, 4, 5) 
+numeros
 otros_numeros <- 1:40
 otros_numeros
 otros_numeros + 10
@@ -192,121 +229,156 @@ promedio <- mean(numeros)
 promedio
 promedio * numeros
 numeros / otros_numeros
+# [ ] para seleccionar partes de un vector o una tabla
+(numeros / otros_numeros)[8]
+
 ```
 
 ## Generadores de distribuciones
 
+R es muy potente generando distribuciones.\
+Una distribución describe cómo se reparten los valores de una variable.\
+
+Números al azar → todos con la misma probabilidad UNIFORME 
+### Ejemplo Distribución uniforme
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
-# Consecutivos del 1:10
-1:10
+
 
 # Un vector de 5 números aleatorios con distribución uniforme
 runif(5)
-
 # Ahora que 3 números vayan del 0 al 100
 runif(3, min=0, max=100)
+# Cómo se ve
+x <- runif(1000, min = 0, max = 100)
+hist(x, col = "orange", main = "Distribución uniforme", xlab = "Número de eventos", ylab = "Frecuencia")
+
+```
+
+## Distribución normal
+Alturas de personas → muchas alrededor del promedio (forma de campana) NORMAL 
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
 
 # 4 números con una distribución normal
 rnorm(4)
 
 # Especificando la media y la desviación
-x <- rnorm(400, mean=50, sd=10)
-
-# Sample = elegir 3 bolas de un bingo en el que hay 100
-sample(0:100, 3, replace=TRUE) 
-
-# Generador de secuencias: del 0 al 100 cada 10
-seq(0, 100, 10)
-
+x <- rnorm(1000, mean = 50, sd = 10)
+hist(x, col = "skyblue", main = "Distribución normal", xlab = "Número de eventos", ylab = "Frecuencia")
 ```
 
-## Crear funciones
-
-Las funciones son aplicaciones que nos permiten realizar operaciones muy diversas. 
-
-- Funciones que vienen con la distribución base de R o en los paquetes
-- Crear nuestras propias funciones con function(). 
-- Asignarle un nombre 
-- indicar argumentos
-- escribir entre llaves el código
-
-## Ejemplo de funciones
-
+## Distribución poisson
+Conteo POISSON 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
-# Queremos la media de nuestros números transformados a logaritmo
+#| 
+# Generar 1000 observaciones con media (λ) = 3
+x <- rpois(1000, lambda = 3)
 
-vector <- seq(1, 100, 10)
-mean (log (vector))
-sd (log (vector))
+# Ver las primeras observaciones
+head(x)
 
-vector2 <- seq(1, 300, 50)
-mean (log (vector2))
-sd (log (vector2))
-
-log_vect <- function (y) {
-  mean_y <- mean (log (y+1))
-  sd_y <- sd (log (y+1))
-  print(paste("La media es", mean_y, ", la desviación estándar es:", round(sd_y,2)))
-  return(log(y))
-}
-
-vector3 <- seq(1, 300, 4)
-distribution = log_vect (vector3)
-hist(distribution)
-
+# Histograma
+hist(x, col = "lightgreen", main = "Distribución de Poisson (λ = 3)", xlab = "Número de eventos", ylab = "Frecuencia")
 
 ```
 
-## Ayuda, Pipes, shortcuts
-
-Ayuda en R o también vale buscar en google "function mean in R"
-
+## Distribución binomial negativa
+Resultados de “éxito o fracaso” (como lanzar una moneda) BINOMIAL
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
+# Binomial
+# 20 experimentos, en cada uno lanzamos una monedas, con una probabilidad de que salga cara del 50%
+caras <- rbinom(200, size = 1, prob = 0.5)
+table(caras)
+barplot(table(caras), col = "steelblue")
+
+```
+
+## Funciones básicas y útiles
+Las funciones son aplicaciones que nos permiten realizar operaciones muy diversas.
+
+-   Funciones que vienen con la distribución base de R o en los paquetesya creados por los usuarios
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.5em'"
+
+
+# c () concatenar
+x <- c(4, 6, 8, 3, 9, 12, 12)
+
+# Estadísticos básicos
+mean(x)       # media
+median(x)     # mediana
+sd(x)         # desviación estándar
+min(x)        # valor mínimo
+max(x)        # valor máximo
+range(x)      # rango (min, max)
+summary(x)    # resumen general
+
+```
+
+## Ayuda
+Ayuda para funciones en R (o también vale buscar en google "function mean in R")
+
+```{r}
+#| echo: true
 
 # Ayudas
 ?mean           # abre la ayuda de una función
 help(mean)      # lo mismo que '?mean'
 ??"normal"      # búsqueda más amplia en toda la documentación
-example(mean)   # muestra ejemplos prácticos
-
-# <- es lo mismo que =
-# $ para seleccionar columnas 
-# [ ] para seleccionar partes de un vector o una tabla
 ```
-*Pipes: cómo encadenar operaciones*
 
-Los "pipes" permiten escribir código paso a paso, de forma legible:
+## Mas funciones básicas y útiles
+Aleatoriedad
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.5em'"
+x <- rpois(8, 8)
+x
+sample(x, 3)          # elegir 3 elementos al azar
+rev(x)                # invertir el orden
+sort(x)               # ordenar valores
+```
+
+Conteos y valores únicos
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.5em'"
+length(x)             # longitud del vector
+table(x)              # tabla de frecuencias
+unique(x)             # valores únicos
+length(unique(x))     # cuántos valores distintos
+sample(x, 3, replace=TRUE) 
+round(mean(x), 2)     # redondear a 2 decimales
+```
+***
+Nombres y texto
+```{r}
+#| echo: true
 
-library(dplyr)
-
-# El propio de dplyr
-iris %>%
-  filter(Sepal.Length > 5) %>%
-  summarise(promedio = mean(Sepal.Width))
-# (control  (command) + shift + M)
-
-# el de R desde hace dos años
-iris |>
-  filter(Sepal.Length > 5) |>
-  summarise(promedio = mean(Sepal.Width))
-
+nombres <- c("Laura", "Rocio", "Violeta", "Rocio", "Rocio")
+unique (nombres)
+table (nombres)
+rep (nombres, 5)    # repetir algo varias veces
+sample(nombres, 3, replace=TRUE) 
 ```
 
-## Ejercicios
+## Ejercicios I
 
 ```{r}
 #| echo: true
@@ -331,21 +403,290 @@ mean (mi_vector)
 sd (mi_vector)
 mi_vector_2 <- mi_vector*2
 hist(mi_vector_2)
+
+# Crea un vector con edades y usa una comparación para saber cuáles son mayores de edad y cualcula cuantos no lo son
+edades <- c(12, 18, 3, 44, 25, 15, 30)
+sum (edades > 18)
+
 ```
 
-## Ejercicios opcionales
+## Crear funciones
+
+-   Crear nuestras propias funciones con function().
+-   Asignarle un nombre
+-   Indicar argumentos
+-   Escribir entre llaves el código
+
+## Ejemplo de funciones
 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
 
-# 4. Haz una función que me diga si un número cualquiera es par o no (opcional)
+# Queremos la media de nuestros números transformados a logaritmo
+
+vector <- seq(1, 100, 10)
+mean (log (vector))
+sd (log (vector))
+
+# Queremos hacerlo otra vez con otros valores
+
+vector2 <- seq(1, 300, 50)
+mean (log (vector2))
+sd (log (vector2))
+
+log_vect <- function (y) {
+  mean_y <- mean (log (y+1))
+  sd_y <- sd (log (y+1))
+  print(paste("La media es", mean_y, ", la desviación estándar es:", round(sd_y,2)))
+  return(log(y))
+}
+
+vector3 <- seq(1, 300, 4)
+distribution = log_vect (vector3)
+hist(distribution)
+
+```
+
+## Bucles - for ()
+
+R repite algo automáticamente sin que lo escribas varias veces. 
+
+[paste("Aquí está el número", 1)]{style="font-size: 0.2em !important;"}
+[paste("Aquí está el número", 2)]{style="font-size: 0.2em !important;"}
+[paste("Aquí está el número", 3)]{style="font-size: 0.2em !important;"}
+[paste("Aquí está el número", 4)]{style="font-size: 0.2em !important;"}
+[paste("Aquí está el número", 5)]{style="font-size: 0.2em !important;"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+# i puede ser un número
+length(1:5) # número de iteraciones 
+for (i in 1:5) {
+  print(paste("Aquí está el número", i))
+}
+
+# i puede ser un caracter 
+nombres <- c ("Laura", "Rocio", "Violeta")
+length(nombres) #número de iteraciones 
+for (i in nombres) {
+  print(paste("Aquí está la alumna", i))
+}
+
+```
+
+## Bucles II
+Con un dado ahora
+
+```{r}
+#| echo: true
+
+# un dado
+sample(1:6, 1)
+# i puede ser solo el numero de veces que repetimos algo
+resultados <- c()
+for (i in 1:100) {
+  tiro <- sample(1:6, 1)
+  resultados <- c(resultados, tiro)
+}
+
+resultados
+mean(resultados)
+
+# 1. Ejercicio: como podemos saber cuantas veces ha salido el numero 2?
+sum(resultados==2)
+
+```
+
+## Volvemos a nuestro ejemplo
+
+```{r}
+#| echo: true
+
+# Queremos repetir el cálculo de media y desviación logarítmica
+
+# para varios vectores distintos
+
+vectores <- list (seq(1, 100, 10), seq(1, 300, 50), seq(1, 500, 100))
+
+# Creamos un bucle FOR
+
+for (i in vectores) {
+media <- mean(log(i + 1))
+desv  <- sd(log(i + 1))
+print(paste("Media:", round(media, 2), " | Desviación:", round(desv, 2)))
+}
+
+# Ahora queremos guardar los resultados
+
+# Crear un vector vacío
+
+resultados <- c()
+
+for (i in vectores) {
+media <- mean(log(i + 1))
+desv  <- sd(log(i + 1))
+filas <- data.frame(media=media, desv=desv)
+resultados <- rbind(resultados, filas)
+}
+
+resultados
+
+
+```
+
+## Apply, sapply, lapply
+
+Otra forma de hacer bucles, pero en la misma linea
+
+```{r}
+#| echo: true
+
+sapply(vectores, function(i) mean(log(i + 1)))
+
+
+```
+
+## ifelse
+
+Condicionantes
+
+if: R ejecuta el código dentro del bloque {} solo si la condición es verdadera.\
+if // else: si no se cumple la condición, haz esto otro\
+ifelse: lo mismo pero en una sola linea\
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.5em'"
+
+x <- 10
+
+if (x > 5) {
+  print("El número es mayor que 5")
+}
+
+x <- 3
+
+if (x > 5) {
+  print("El número es mayor que 5")
+} else {
+  print("El número es menor o igual que 5")
+}
+
+edades <- c(15, 22, 35, 12)
+
+ifelse(edades >= 18, "Adulto", "Menor")
+
+
+```
+
+## Ejercicios 2
+
+4. Haz una función que diga si un número cualquiera es par o no 
+
+5. Crea un vector con 10 temperaturas y usa ifelse() para clasificar cada valor como "Frío" o "Caluroso"
+
+```{r}
+#| echo: true
+
 que_tipo_de_numero_soy <- function (x) {
 ifelse(x %% 2 == 0, "par", "impar")
 }
 
+temperaturas <- rpois (10, 15)
+clasificacion <- ifelse(temperaturas < 15, "frio", "caliente")
+# Añade a una tabla esta clasificación ExtrA!
+data.frame (temperaturas, clasificacion)
 
+
+```
+
+## Bases de datos
+
+Una base de datos (data frame) es una tabla de datos, como una hoja de cálculo en excel, tiene filas (observaciones) y columnas (variables).
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+# Creamos vectores con información
+nombres <-  c ("Laura", "Rocio", "Violeta")
+edad <- c(23, 35, 29)
+altura <- c(1.65, 1.80, 1.70)
+profesion <- c("Bióloga", "Profesora", "Médica")
+
+# Combinamos todo en un data frame
+personas <- data.frame(
+  NAME = nombres,
+  AGE = edad,
+  HEIGHT = altura,
+  JOB = profesion)
+
+personas[1,]
+personas[,1]
+personas$NAME # Seleccionar columnas con $
+
+# head(personas)       
+# str(personas)  
+# summary(personas) 
+# colnames(personas) 
+# nrow(personas)  
+# ncol(personas)
+# View(personas) se abre en RStudio como una tabla interactiva.
+# write_csv(personas, "data/personas.csv")
+
+```
+
+![tabla vista en R (View)](images/view.png)
+
+## Leer bases de datos
+
+En la práctica, los datos vienen archivos externos:CSV, Excel, TXT, o bases de datos online. 
+El formato .csv (comma separated values) es el más común. Cada columna está separada por una coma o punto y coma.
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+library(here)
+# CSV
+datos_csv <- read.csv(here("data/personas.csv"))
+head(datos_csv)
+# EXCEL
+library(readxl)
+datos_excel <- read_excel(here("data/herbarium_df.xlsx")) #, sheet = 1 podríamos especificar el numero de hoja
+head(datos_excel)
+# GOOGLE SHEETS
+library(googlesheets4)
+datos_gs <- read_sheet("https://docs.google.com/spreadsheets/d/1qC4lsXPpEcX1NmLdwiMJMC8X_WKX-EFQm4ahPdrNCZc/edit?usp=sharing")
+head(datos_gs)
+#write_csv(datos_gs, "data/datos_gs.csv")
+
+```
+
+## Ejercicios 3
+
+Base de datos de flores: Por cada sitio y pantrap, tenemos el numero de flores que tienen las especies de plantas en Doñana. 
+Ejercicio: Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas. Luego, crea una base de datos con el número de individuos por especie (no de flores). Guardala como csv.
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+flores <- read.csv(here("data/flores.csv"))
+str(flores)
+mean(flores$abundance)
+length(unique(flores$species))
+unique(flores$species)
+data.frame(table(flores$species))
+#write_csv (flores, "data/flores.csv")
 ```
 
 ## Compartir código
@@ -363,4 +704,4 @@ ifelse(x %% 2 == 0, "par", "impar")
 
 ## Bibliografía
 
-[cookbook](http://www.cookbook-r.com/)
+[cookbook](http://www.cookbook-r.com/) :::::

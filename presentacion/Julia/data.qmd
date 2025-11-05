@@ -30,14 +30,45 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 ## Buenas prácticas en el manejo de datos
 
 -   Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
+-   [Tabla del análisis de la varianza]{style="font-size:30px"}
 -   Las observaciones cada una en una fila (e.g. individuos de pingüinos)
 -   Evitar espacios, números, y caracteres especiales en los nombres de columnas.
 -   Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
 -   Usar celdas vacías o con NA para datos faltantes.
 -   Las fechas incluirlas en columnas separadas como year, month, day.
--   No combinar varias informaciones en una misma celda.
+-   No combinar varias informaciones en una misma celda. EJEMPLOS
 -   Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
 -   Exporta los datos como texto plano (txt, csv)
+
+## dplyr y ggplot 
+
+ coomo funcionan, libreria tidyverse.
+ 
+ 
+*Pipes: cómo encadenar operaciones*
+
+Los "pipes" permiten escribir código paso a paso, de forma legible:
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+library(dplyr)
+
+# El propio de dplyr
+iris %>%
+  filter(Sepal.Length > 5) %>%
+  summarise(promedio = mean(Sepal.Width))
+# (control  (command) + shift + M)
+
+# el de R desde hace dos años
+iris |>
+  filter(Sepal.Length > 5) |>
+  summarise(promedio = mean(Sepal.Width))
+
+```
+
 
 ## Ejemplo datos de pingüinos
 
@@ -61,16 +92,18 @@ datos <- penguins
 # 3. Explorar
 
 head(datos)
+str(datos)
+summary(datos)
 
 unique(datos$island)
 
-datos_filtrados <- datos %>% filter(year == 2007)
+datos_filtrados <- datos %>% filter (year == 2007)
 
-datos_filtrados <-datos %>% filter(year == 2007, sex=="female")
+datos_filtrados <-datos %>% filter (year == 2007, sex=="female")
 
-datos_filtrados <- datos %>% filter(year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) 
+datos_filtrados <- datos %>% filter (year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) 
 # island == c("Dream", "Bicoe")) NO VALE!
-
+# summarize
 head (datos_filtrados, 3)
 ```
 
@@ -98,10 +131,8 @@ head(datos_limpios, 4)
 # 5. Transformar: crear nueva variable
 datos_limpios_kg <- datos_limpios %>%
   mutate(body_mass_kg = body_mass_g / 1000)
-
-ggplot(data = datos_limpios_kg, aes(x = island, y = bill_length_mm)) + geom_boxplot()
-
 ```
+
 
 ## Poco a poco más complejo (+)
 
@@ -156,7 +187,7 @@ library(readxl)
 # se puede importar tablas desde excel, csv, ggsheets, txt...
 
 datos_curso = read_excel(here("data/datos-curso.xlsx"))
-
+# ifselse en dplyr?
 # Vemos un resumen
 str (datos_curso)
 #View (datos_curso) # Se nos abre en Rstudio
@@ -189,7 +220,7 @@ datos_curso_filtrado <- datos_curso |>
          email = "Correo electrónico") |>
   select (curso, experiencia, comentarios, email) |>
   mutate (email = str_replace(email, "anonymous", "anónimo")) |>
-  filter (curso == "2022-23")
+  filter (curso == "2022-23") # filtrado y sin filtrar otra diapo.
   
 words <- tolower(
                 unlist(
@@ -208,10 +239,11 @@ wordcloud2(data=table(words_clean), size=0.5,
 
 ## Visualizacion de datos
 
-## DATA VIZZZZZZ
+- Bases de la visualizacion
+- Base R vs ggplot
 
-Colores...
-https://www.fabiocrameri.ch/colourmaps/
+
+
 
 ## Desde gráficos muy simples
 
@@ -226,14 +258,36 @@ plot(x=rnorm(100), y=rnorm(100))
 
 ![quién habla con quién en "The Office"](images/complex_graph.png) [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
+## Bases de ggplot
+
+## scatterplot
+
+## boxplots
+
+```{r}
+#| echo: true
+ggplot (data = datos_limpios_kg, aes(x = island, y = bill_length_mm)) + geom_boxplot()
+
+```
+
+## violin
+
+## xxxx
+
+
+## Colores
+
+Colores... https://www.fabiocrameri.ch/colourmaps/
+
+
+
 ## Mapas I
 
 ![Mapa del crecimiento urbano en Valencia](images/map-growth.png) [Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
 
-## Mapas II 
+## Mapas II
 
-![Apicultores en Alemania](images/bee.png) 
-[Código](https://www.cedricscherer.com/top/dataviz/)
+![Apicultores en Alemania](images/bee.png) [Código](https://www.cedricscherer.com/top/dataviz/)
 
 ## Nuestros datos georeferenciados
 
@@ -304,4 +358,8 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ## Bibliografía
 
-[Valentina de Filippo] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+\[Valentina de Filippo\] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+
+## Ejercicios
+
+
