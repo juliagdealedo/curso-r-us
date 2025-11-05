@@ -31,6 +31,10 @@ format:
 
 Relación lineal entre dos o más variables, dependiendo una (variable dependiente) de la(s) otra(s) (variable(s) explicativa(s))
 
+Variable dependiente: *y*
+
+Variable(s) explicativa(s): *x*
+
 Modelo matemático lineal: *y = 2x* o *y = 3 - 2x*
 
 ### Objetivos
@@ -69,16 +73,6 @@ Variables explicativas:
 
 ------------------------------------------------------------------------
 
-### Formular problema correctamente
-
-1.  Comprender problema y contexto
-
-2.  Comprender objetivo del estudio
-
-3.  Plantear problema en términos estadísticos
-
-4.  Entender bien los datos
-
 ::: {.center .middle}
 ## Regresión simple y regresión múltiple
 :::
@@ -87,7 +81,11 @@ Variables explicativas:
 
 ### Estructura
 
-![Ecuación regresión](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Ecuacion_regresion.png){width="500px" height="100px" fig-align="left"}
+Ecuación regresión: 
+
+*y~i~ = β~0~ + β~1~ x~1~ + Ɛ~i~*
+
+*Ɛ~i~ ~ N(0,σ^2^)*
 
 [*β~0~*: ordenada en el origen]{style="font-size:25px"}
 
