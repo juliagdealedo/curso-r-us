@@ -15,18 +15,19 @@ library(multcomp)
 data(penguins)
 head(penguins)
 
-# eliminamos NAs de las variables que vamos a utilizar
+# eliminamos NAs variables que vamos a utilizar y pasamos masa corporal a kg
 
 penguins_clean <- penguins %>%
   filter(!is.na(flipper_length_mm), !is.na(body_mass_g))
+penguins_clean$body_mass_g <- penguins_clean$body_mass_g/1000
 
 ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +  
   geom_point(color = "blue", size = 2) +      
   labs(x = "Longitud aleta (mm)",         
-       y = "Masa corporal (g)",                   
+       y = "Masa corporal (kg)",                   
        title = "Relación entre masa corporal y longitud aleta "   
   ) +
-  theme_minimal()        
+  theme_minimal()       
 
 #### 2. Ajuste modelo de regresión
   
@@ -51,10 +52,10 @@ ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_line(aes(y = .fitted)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
   labs(x = "Longitud aleta (mm)",         
-       y = "Masa corporal (g)",                   
+       y = "Masa corporal (kg)",                   
        title = "Predicciones modelo de regresión"   
   ) +
-  theme_minimal()        
+  theme_minimal()         
 
 #### 6. Revisión supuestos del modelo
   

@@ -2,7 +2,7 @@
 title: "Ejercicios Modelos lineales"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
+    theme: solarized    # Specify the 'night' theme here
     slide-number: true  # Optional: Show slide numbers
     self-contained: true
   html: 
@@ -19,7 +19,9 @@ format:
 
 ## Ejercicio 1: Modelo regresión
 
-Tenemos un dataset con riqueza de especies en las islas Galápagos. Nos preguntamos si hay un efecto de la variable área de la isla, elevación máxima de la isla y distancia a la isla más próxima en la riqueza de especies.
+Tenemos un dataset con riqueza de especies en las islas Galápagos. Nos preguntamos si hay un efecto de las variables: área de la isla, elevación máxima de la isla y distancia a la isla más próxima en la riqueza de especies.
+
+***
 
 Variables:
 
@@ -59,7 +61,7 @@ head(gala)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.2em'"
 library(ggplot2)
 library(patchwork)
@@ -93,7 +95,7 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = Species)) +
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 15     # ancho en pulgadas
-#| fig-height: 6    # alto en pulgadas
+#| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
 plot1 + plot2 + plot3
 ```
@@ -181,7 +183,7 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = log_Sp)) +
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 15     # ancho en pulgadas
-#| fig-height: 6    # alto en pulgadas
+#| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
 
 plot1 + plot2 + plot3
@@ -197,7 +199,6 @@ plot1 + plot2 + plot3
 #| echo: true
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
-gala$log_Sp <- log(gala$Species)
 gala$log_area <- log(gala$Area)
 gala$log_elevacion <- log(gala$Elevation)
 gala$log_near <- log(gala$Nearest)
@@ -276,6 +277,8 @@ vif(lm.gal1)
 lm.gal2 <- lm(log_Sp~log_area+log_near,gala)
 Anova(lm.gal2,type="III")
 ```
+
+***
 
 [Quitar distancia]{style="font-size:25px"}
 
