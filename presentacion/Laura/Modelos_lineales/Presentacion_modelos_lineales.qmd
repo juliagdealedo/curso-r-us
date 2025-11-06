@@ -289,32 +289,26 @@ plot(lm_reg1)
 ![Valores distancia de Cook](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos4.png){width="425px" height="200px" fig-align="left"}
 
 ***
-[Normalidad:]{style="font-size:23px"}
+[Normalidad:]{style="font-size:30px"}
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.4em'"
 shapiro.test(residuals(lm_reg1))
 ```
 
 ***
 
-[Linealidad:]{style="font-size:23px"}
+[Linealidad:]{style="font-size:30px"}
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.4em'"
 library(lmtest)
 resettest(lm_reg1)
 ```
 
 ***
 
-[Homocedasticidad:]{style="font-size:23px"}
+[Homocedasticidad:]{style="font-size:30px"}
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.4em'"
 library(car)
 ncvTest(lm_reg1)
 ```
@@ -346,7 +340,7 @@ ncvTest(lm_reg1)
 
 ### Análisis de la varianza (ANOVA)
 
-Hipótesis: comparación medias distintos grupso (niveles de factor)
+Hipótesis: comparación medias distintos grupos (niveles de factor)
 
 *H~0~*: medias de los grupos son iguales
 
@@ -361,6 +355,8 @@ Hipótesis: comparación medias distintos grupso (niveles de factor)
 ### Ejemplo
 
 Pregunta: Diferencias longitud pico tres especies de pingüino
+
+***
 
 Hipótesis
 
@@ -408,9 +404,11 @@ penguins <- penguins %>%
 lm_reg2 <- lm(bill_length_mm ~ species, data = penguins)
 ```
 
+***
+
 #### 3. Variación explicada por el modelo y resolución hipótesis
 
-###### Tabla de análisis de la varianza
+Tabla de análisis de la varianza
 
 ```{r}
 #| echo: true
@@ -419,12 +417,12 @@ anova(lm_reg2)
 
 ***
 
-#### 4. Interpretación del modelo y comparaciones *post-hoc*
+#### 4. Interpretación del modelo 
 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.3em'"
 summary(lm_reg2)
 ```
 
@@ -434,13 +432,21 @@ summary(lm_reg2)
 
 [Un nivel es la coordenada en el origen (nivel de referencia)]{style="font-size:20px"}
 
+[Ecuación: *y~i~* = 38.79 + 10.04*x~i~* + 8.71*x~2~*]{style="font-size:20px"}
+
 ***
+
+#### Ver el nivel de referencia
+
+
 ```{r}
 #| echo: true
  contrasts(penguins$species)
 ```
 
-[Ecuación: *y~i~* = 38.79 + 10.04*x~i~* + 8.71*x~2~*]{style="font-size:25px"}
+***
+
+#### Comparaciones *post-hoc* entre los distintos grupos
 
 ```{r}
 #| echo: true
@@ -514,11 +520,63 @@ Hipótesis: homogeneidad de pendientes
 
 *H~1~*: al menos una pendiente es distinta a las demás
 
+```{r}
+#| echo: false
+#| fig-width: 13    # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+set.seed(123)
+n <- 600
+d <- factor(rep(c("A", "B", "C"), each = n / 3))
+b <- rnorm(n, mean = 10, sd = 3)
+c <- rnorm(n, mean = 50, sd = 10)
+beta_b <- c(A = 1.0, B = 2.0, C = 4.0)
+beta_c <- 0.5
+intercept <- c(A = 5, B = 10, C = 15)
+error <- rnorm(n, mean = 0, sd = 3)
+a <- intercept[d] + beta_b[d] * b + beta_c * c + error
+df <- data.frame(a, b, c, d)
+
+library(broom)
+lm_54 <- lm(a ~ b*d, data = df)
+newdata <- expand.grid(
+  b = seq(min(df$b), max(df$b), length.out = 100),
+  d = levels(df$d)
+)
+predicciones <- augment(lm_54, newdata = newdata)
+
+ej1 <- ggplot(df, aes(x = b, y = a, color = d)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predicciones, aes(x= b, y = .fitted, group = d, color = d), size = 1.2) +
+  scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
+  theme_minimal()
+
+
+lm_55 <- lm(a ~ c+d, data = df)
+newdata <- expand.grid(
+  c = seq(min(df$c), max(df$c), length.out = 100),
+  d = levels(df$d)
+)
+predicciones <- augment(lm_55, newdata = newdata)
+
+ej2 <- ggplot(df, aes(x = c, y = a, color = d)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predicciones, aes(x= c, y = .fitted, group = d, color = d), size = 1.2) +
+  scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
+  theme_minimal()
+
+library(patchwork)
+
+ej2 + ej1
+```
+
 ***
 
 ### Ejemplo
 
 Pregunta: La masa corporal de los pingüinos se ve influenciada por la longitud de su pico, teniendo en cuenta el sexo del individuo
+
+***
 
 Hipótesis
 
@@ -526,8 +584,7 @@ Hipótesis
 
 *H~0~*: descontando el efecto de la longitud del pico (si existe), no hay relación entre la masa corporal y el sexo del pingüino
 
-***
-#### Homogeneidad de pendientes
+Homogeneidad de pendientes
 
 Asunción adicional a las de ANOVA y regresión: relación entre la variable respuesta y la covariable (pendiente de la regresión) es la misma en todos los grupos (homogeneidad de pendientes)
 
@@ -640,7 +697,7 @@ ggplot(subset(penguins, !is.na(species)), aes(x = flipper_length_mm, y = body_ma
   labs(
     title = "Relación longitud aleta y masa corporal",
     x = "Longitud aleta (mm)",
-    y = "Masa corporal (g)"
+    y = "Masa corporal (kg)"
   ) +
   theme_minimal()
 ```
