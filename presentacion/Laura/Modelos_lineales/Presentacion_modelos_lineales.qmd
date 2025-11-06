@@ -160,7 +160,7 @@ head(penguins)
 library(dplyr)
 penguins_clean <- penguins %>%
   filter(!is.na(flipper_length_mm), !is.na(body_mass_g))
-penguins_clean$body_mass_g <- penguins_clean$body_mass_g/1000
+penguins_clean$body_mass_kg <- penguins_clean$body_mass_g/1000
 ```
 
 ------------------------------------------------------------------------
@@ -173,7 +173,7 @@ penguins_clean$body_mass_g <- penguins_clean$body_mass_g/1000
 #| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
 library(ggplot2)
-ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +  
+ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +      
   labs(x = "Longitud aleta (mm)",         
        y = "Masa corporal (kg)",                   
@@ -188,7 +188,7 @@ ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +
 
 ```{r}
 #| echo: true
-lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins_clean)
+lm_reg1 <- lm(body_mass_kg ~ flipper_length_mm, data = penguins_clean)
 ```
 
 ***
@@ -239,7 +239,7 @@ preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
 preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
   
-ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +  
+ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +     
   geom_line(aes(y = .fitted)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
@@ -360,7 +360,7 @@ Pregunta: Diferencias longitud pico tres especies de pingüino
 
 Hipótesis
 
-*H~0~* (hipótesis nula): no existe diferencias en las medias de la longitud de los picos para las tres especies
+*H~0~* (hipótesis nula): no existe diferencias en las medias de la longitud de la aleta para las tres especies
 
 ::: r-stack
 *H~0~ : µ~adelie~ = µ~gentoo~ = µ~chinstrap~ = µ*
@@ -383,12 +383,12 @@ Hipótesis
 #| fig-width: 7     # ancho en pulgadas
 #| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
-ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +  
+ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species)) +  
   geom_boxplot(alpha = 0.8, color = "gray30") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud pico (mm)",                   
-      title = "Diferencias longitud pico entre especies"   
+       y = "Longitud aleta (mm)",                   
+      title = "Diferencias longitud aleta entre especies"   
   ) +
   theme_minimal()        
 ```
@@ -401,7 +401,7 @@ ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +
 #| echo: true
 penguins <- penguins %>%
   mutate(species = as.factor(species))
-lm_reg2 <- lm(bill_length_mm ~ species, data = penguins)
+lm_reg2 <- lm(flipper_length_mm ~ species, data = penguins)
 ```
 
 ***
@@ -432,7 +432,7 @@ summary(lm_reg2)
 
 [Un nivel es la coordenada en el origen (nivel de referencia)]{style="font-size:20px"}
 
-[Ecuación: *y~i~* = 38.79 + 10.04*x~i~* + 8.71*x~2~*]{style="font-size:20px"}
+[Ecuación: *y~i~* = 186.95 + 5.86*Chinstrap* + 27.23*Gentoo*]{style="font-size:20px"}
 
 ***
 
@@ -466,21 +466,21 @@ summary(posthoc_species)
 #| fig-width: 9    # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
 #| fig-align: "center"
-ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species, color = species)) +  
+ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species, color = species)) +  
   geom_boxplot(alpha = 0.8, color = "black") +
   geom_jitter(width = 0.15, alpha = 0.6, size = 2, shape=21, color="black") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
  labs(x = "Species",         
-       y = "Longitud pico (mm)",                   
-      title = "Diferencias longitud pico entre especies"   
+       y = "Longitud aleta (mm)",                   
+      title = "Diferencias longitud aleta entre especies"   
   ) +
   theme_minimal() +
-  geom_text(data = penguins[2,], aes(y = 65, label = "a"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "a"), color="black", 
             size=5, nudge_x = 0) +
-  geom_text(data = penguins[2,], aes(y = 65, label = "b"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "b"), color="black", 
             size=5, nudge_x = 1) +
-  geom_text(data = penguins[2,], aes(y = 65, label = "c"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "c"), color="black", 
             size=5, nudge_x = 2) 
 ```
 
