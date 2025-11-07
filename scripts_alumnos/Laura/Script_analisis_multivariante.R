@@ -1,5 +1,4 @@
 # ANÁLISIS MULTIVARIANTES: PCA Y NMDS
-
 library(corrgram)
 library(factoextra)
 library(aods3)
@@ -80,4 +79,5 @@ ggplot(coordenadas, aes(x = NMDS1, y = NMDS2))+
   geom_text(data = env_vectors,
             aes(x = NMDS1 * 1.1, y = NMDS2 * 1.1, label = Variable),
             color = "black",
-            size = 4) 
+            size = 4) +
+  theme_minimal()
