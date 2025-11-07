@@ -30,7 +30,7 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 ## Buenas prácticas en el manejo de datos
 
 -   Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
--   [Tabla del análisis de la varianza]{style="font-size:30px"}
+-   Tabla del análisis de la varianza
 -   Las observaciones cada una en una fila (e.g. individuos de pingüinos)
 -   Evitar espacios, números, y caracteres especiales en los nombres de columnas.
 -   Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
@@ -41,7 +41,7 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 -   Exporta los datos como texto plano (txt, csv)
 
 ## Organizacion tabla 
-![Ejemplo organización "tidy"](images/tidy-table.png)
+![Hertz & McNeill 2024](images/example-table.png){style="font-size:30px"}
 ## dplyr y ggplot 
 
  coomo funcionan, libreria tidyverse.
@@ -366,8 +366,8 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ## Bibliografía
 
-\[Valentina de Filippo\] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
-
+[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+[Eleven quick tips for properly handling tabular data](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
 ## Ejercicios
 
 
