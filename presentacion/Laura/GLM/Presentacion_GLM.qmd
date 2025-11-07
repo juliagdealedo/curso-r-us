@@ -2,7 +2,7 @@
 title: "Modelos lineales generalizados (GLMs)"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
+    theme: solarized    # Specify the 'night' theme here
     slide-number: true  # Optional: Show slide numbers
     self-contained: true
   html: 
@@ -72,6 +72,8 @@ Tipos de variables que por definición violan supuestos modelos lineales:
 
 [3. La estructura de los errores]{style="font-size:25px"}
 
+***
+
 [Estructura modelos lineales:]{style="font-size:30px"}
 
 [*y~i~ = β~0~ + β~1~x~1~ + ... + β~1~x~n~ + Ɛ~i~*]{style="font-size:25px"}
@@ -105,7 +107,7 @@ a) Poisson: varianza aumenta linealmente con la media. Para respuestas tipo cont
 
 b) Binomial negativa: extensión de Poisson. Para variables conteo con sobredispersión.
 
-c) Binomial: para proporsiones y datos presencia/ausencia.
+c) Binomial: para proporciones y datos presencia/ausencia.
 
 d) Gamma: para datos continuos con coeficiente de variación constante.
 
@@ -119,9 +121,7 @@ Argumento family:
 - binominal(link = "logit")
 - gaussian(link = "identity)
 - Gamma(link = "inverse")
-- inverse.gaussian(link = "1/mu^2)
 - poisson(link = "log")
-- quasi(link = "identity", variance = "constant")
 
 ::: {.center .middle}
 ## Ejemplo con datos tipo conteo
@@ -129,9 +129,18 @@ Argumento family:
 
 ***
 
-Efecto ganadería en regeneración de araucaria. Muestreo de número de plantas de araucaria en dos tipos de ganadería: pequeños propietarios, con uso más intensivo de la tierra, y grandes empresas forestales, que mantienen algunos remanente bosque nativo. Actividad ganado medida por número de bostas.
+Estudio del efecto de la ganadería en la regeneración de araucaria. Muestreo de número de plantas de araucaria en dos tipos de ganadería: pequeños propietarios, con uso más intensivo de la tierra, y grandes empresas forestales, que mantienen algunos remanente de bosque nativo. Actividad ganado medida por número de bostas.
 
 ***
+
+Variables:
+
+- Número de plántulas de araucaria
+
+- Número de bostas (proxy actividad del ganado)
+
+- Dos tipos de ganadería: pequeños propietarios y grandes empresas
+
 
 ```{r}
 #| echo: true
@@ -139,6 +148,8 @@ library(ADER)
 data(ara)
 str(ara)
 ```
+
+***
 
 Hipótesis:
 
@@ -237,7 +248,7 @@ gof(glm_arau1)
 #| attr-output: "style='font-size: 0.4em'"
 library(MASS)
 glm_arau2 <- glm.nb(seedlings ~ dungs*property, ara)
-summary(glm_arau2)
+summary(glm_arau2)      
 ```
 
 ***
@@ -263,15 +274,19 @@ gof(glm_arau2)
 ```
 
 ***
-#### Predicciones modelo
+#### Interpretación del modelo
 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.4em'"
 library(car)
-Anova(glm_arau2, type = "III")      
+Anova(glm_arau2, type = "III")  
 ```
+
+***
+
+#### Predicciones del modelo
 
 ```{r}
 #| echo: true
@@ -296,7 +311,9 @@ visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab
 
 - Variables con valores porcentuales (nº éxitos / nº de ensayos)
 
-Función de vínculo: logit *log(p/(1-p))*
+Función de vínculo: logit 
+
+*log(p/(1-p))*
 
 *logit(y) = ln(p/(1-p)) = β~0~ + β~1~x~1~ + ... + β~1~x~n~*
 
@@ -312,16 +329,9 @@ Curva sigmoidea entre 0-1
 
 [¿Probabilidad de encontrar estructuras reproductoras es diferente entre la especie invasora y las nativas?]{style="font-size:25px"}
 
-[Hipótesis: la especie invasora tendrá mayor probabilidad de reproducrise que las nativas]{style="font-size:25px"}
+[Hipótesis: la especie invasora tendrá mayor probabilidad de reproducirse que las nativas]{style="font-size:25px"}
 
-```{r}
-#| echo: true
-#| #| attr-source: "style='font-size: 0.4em'"
-#| attr-output: "style='font-size: 0.4em'"
-library(ADER)
-data(algas)
-str(algas)
-```
+***
 
 [Variable respuesta (Estado):]{style="font-size:25px"} 
      
@@ -333,6 +343,16 @@ str(algas)
      - talla del individuo (cm)
      - especie (Sp)
      
+
+```{r}
+#| echo: true
+#| #| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.4em'"
+library(ADER)
+data(algas)
+str(algas)
+```
+
 ***
 
 #### Exploración de los datos
@@ -356,16 +376,20 @@ facet_wrap(~Sp) +
 #### Ajuste del modelo
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
 glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
 anova(glm_algas1)
 ```
 
+Interacción no significativa
+
+***
+
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.4em'"
 glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
 anova(glm_algas2)
 print(D2 <- 1 - (341.6/476.38))
@@ -377,9 +401,9 @@ print(D2 <- 1 - (341.6/476.38))
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.7em'"
+#| attr-source: "style='font-size: 0.8em'"
 #| attr-output: "style='font-size: 0.4em'"
-#| fig-width: 6     # ancho en pulgadas
+#| fig-width: 5.5     # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
 #| fig-align: "left"
 par(mfrow=c(2,2))
@@ -392,7 +416,7 @@ plot(glm_algas2)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.4em'"
 summary(glm_algas2)
 ```
@@ -400,6 +424,42 @@ summary(glm_algas2)
 ***
 
 #### Gráfico de predicciones
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.4em'"
+#| attr-output: "style='font-size: 0.3em'"
+#| fig-width: 10     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+x_seq <- seq(min(algas$Long), max(algas$Long), length.out = 100)
+newdata <- expand.grid(Long = x_seq, Sp = levels(algas$Sp))
+# Obtener predicciones en escala de respuesta (probabilidades)
+pred <- predict(glm_algas2, newdata, type = "link", se.fit = TRUE)
+# Calcular intervalos de confianza
+crit <- qnorm(0.975)  # 95%
+newdata$fit_link <- pred$fit
+newdata$lwr_link <- pred$fit - crit * pred$se.fit
+newdata$upr_link <- pred$fit + crit * pred$se.fit
+# Convertir a escala de probabilidad (logística)
+inv_logit <- function(x) exp(x) / (1 + exp(x))
+newdata$fit <- inv_logit(newdata$fit_link)
+newdata$lwr <- inv_logit(newdata$lwr_link)
+newdata$upr <- inv_logit(newdata$upr_link)
+# Promediar sobre el factor 
+pred_marginal <- aggregate(cbind(fit, lwr, upr) ~ Long, data = newdata, mean)
+# Graficar relación promedio con IC
+library(ggplot2)
+ggplot(pred_marginal, aes(x = Long, y = fit)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "#0072B2", alpha = 0.2) +
+  geom_line(color = "#0072B2", linewidth = 1.3) +
+  labs(
+    x = "Talla individuo (cm)",
+    y = "Predicción probabilidad estructuras reproductoras",
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+***
 
 ```{r}
 #| echo: true
@@ -421,7 +481,7 @@ newdat$lwr <- plogis(pred$fit - 1.96 * pred$se.fit)
 newdat$upr <- plogis(pred$fit + 1.96 * pred$se.fit)
 
 ggplot(newdat, aes(x = Long, y = fit, color = Sp, fill = Sp)) +
-  geom_line(size = 1.2) +
+  geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.15, color = NA) +
   labs(
     x = "Talla individuo (cm)",

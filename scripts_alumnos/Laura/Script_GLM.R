@@ -26,7 +26,7 @@ ggplot(ara, aes(x = dungs, y = seedlings)) +
  
 #### Construcción modelo
   
-glm_arau1 <- glm(seedlings ~ dungs*property, ara, family = "poisson")
+glm_arau1 <- glm(seedlings ~ dungs * property, ara, family = "poisson")
 anova(glm_arau1, test = "Chi")
 
 print(D2 <- 1 - (198.02/347.56))
@@ -52,7 +52,7 @@ plot(glm_arau2)
 
 gof(glm_arau2)      
 
-#### Predicciones modelo
+#### Interpretación del resultado y predicciones modelo
   
 Anova(glm_arau2, type = "III")      
 
@@ -93,7 +93,43 @@ plot(glm_algas2)
 summary(glm_algas2)
 
 #### Gráfico de predicciones
-  
+
+# a. sin dividir por niveles del factor
+
+# sacar nuevos datos
+x_seq <- seq(min(algas$Long), max(algas$Long), length.out = 100)
+newdata <- expand.grid(Long = x_seq, Sp = levels(algas$Sp))
+
+# Obtener predicciones en escala de respuesta (probabilidades)
+pred <- predict(glm_algas2, newdata, type = "link", se.fit = TRUE)
+
+# Calcular intervalos de confianza
+crit <- qnorm(0.975)  # 95%
+newdata$fit_link <- pred$fit
+newdata$lwr_link <- pred$fit - crit * pred$se.fit
+newdata$upr_link <- pred$fit + crit * pred$se.fit
+
+# Convertir a escala de probabilidad (logística)
+inv_logit <- function(x) exp(x) / (1 + exp(x))
+newdata$fit <- inv_logit(newdata$fit_link)
+newdata$lwr <- inv_logit(newdata$lwr_link)
+newdata$upr <- inv_logit(newdata$upr_link)
+
+# Promediar sobre el factor 
+pred_marginal <- aggregate(cbind(fit, lwr, upr) ~ Long, data = newdata, mean)
+
+# Graficar relación promedio con intervalos de confianza
+ggplot(pred_marginal, aes(x = Long, y = fit)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "#0072B2", alpha = 0.2) +
+  geom_line(color = "#0072B2", linewidth = 1.3) +
+  labs(
+    x = "Talla individuo (cm)",
+    y = "Predicción probabilidad estructuras reproductoras",
+  ) +
+  theme_minimal(base_size = 14)
+
+# b. Separando por niveles del factor
+
 newdat <- expand.grid(
   Long = seq(min(algas$Long), max(algas$Long), length = 100),
   Sp = levels(algas$Sp)
@@ -116,4 +152,5 @@ ggplot(newdat, aes(x = Long, y = fit, color = Sp, fill = Sp)) +
   ) +
   theme_minimal(base_size = 13)
 
+# Diferencias significativas entre grupos
 summary(glht(glm_algas2, linfct = mcp(Sp = "Tukey")))
