@@ -25,8 +25,12 @@ ggplot(ara, aes(x = dungs, y = seedlings)) +
   theme_minimal()
  
 #### Construcción modelo
-  
-glm_arau1 <- glm(seedlings ~ dungs * property, ara, family = "poisson")
+
+# esta linea de codigo aborta la sesión de R  
+# glm_arau1 <- glm(seedlings ~ dungs * property, ara, family = "poisson")
+# solución
+saveRDS(glm(seedlings ~ dungs * property, ara, family = "poisson"),"name.RDS")
+glm_arau1 <- readRDS("name.RDS")
 anova(glm_arau1, test = "Chi")
 
 print(D2 <- 1 - (198.02/347.56))
@@ -42,7 +46,10 @@ gof(glm_arau1)
 
 ### Modelo binomial negativo
   
-glm_arau2 <- glm.nb(seedlings ~ dungs*property, ara)
+# esta linea de codigo aborta la sesión de R  
+# glm_arau2 <- glm.nb(seedlings ~ dungs*property, ara)
+saveRDS(glm.nb(seedlings ~ dungs*property, ara),"name.RDS")
+glm_arau2 <- readRDS("name.RDS")
 summary(glm_arau2)
 
 ### Supuestos del modelo
