@@ -36,11 +36,11 @@ Viernes = uso colaborativo, dudas, ejemplos\
 ::: {.column width="50%"}
 ### Por hora
 
--   9 a 10 teoría
--   10 a 10:45 ejercicios
--   10:45 a 11 break
--   11 a 12 teoría
--   12 a 13 ejercicios y dudas
+-   9:30 a 10:30 teoría
+-   10:30 a 11:15 ejercicios
+-   11:15 a 11:30 break
+-   11 a 12:30 teoría
+-   12 a 13:30 ejercicios y dudas
 :::
 
 ::: {.column width="50%"}
@@ -107,13 +107,14 @@ RStudio → Es un entorno de desarrollo integrado (un programa) que facilita el 
 -   Visualizar (graficos estadísticos, interactivos, mapas, animaciones, etc)
 -   Automatizar y extender (crear funciones propias, desarrollar paquetes, reproducir analisis facilmente)
 -   Comunicar (crear informes Quarto o RMarkdown, crear webs o apps Shiny)
-![Ejemplo quarto](images/quarto.png)
+![Ejemplo quarto](images/quarto.png){width="600px" height="550px" fig-align="left"}
 ## Workflow: lo básico básico
 
 Es una calculadora: se pueden hacer operaciones básicas multiplicar, dividir, sumar, restar...
 
 ```{r}
 #| echo: true
+
 2 + 3     
 10 - 4    
 3 * 5     
@@ -193,7 +194,7 @@ una_lista <- list(1:10, 11:20, 21:30)
 una_lista
 ```
 
-Podemos transformar objetos de un tipo en otro con as.xxxx()
+## Podemos transformar objetos de un tipo en otro con as.xxxx()
 
 ```{r}
 #| echo: true
@@ -258,7 +259,7 @@ hist(x, col = "orange", main = "Distribución uniforme", xlab = "Número de even
 ```
 
 ## Distribución normal
-Alturas de personas → muchas alrededor del promedio (forma de campana) NORMAL 
+Peso de personas → muchas alrededor del promedio (forma de campana) NORMAL 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
@@ -292,6 +293,7 @@ hist(x, col = "lightgreen", main = "Distribución de Poisson (λ = 3)", xlab = "
 
 ## Distribución binomial negativa
 Resultados de “éxito o fracaso” (como lanzar una moneda) BINOMIAL
+hace fala??????
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
@@ -557,7 +559,7 @@ Condicionantes
 
 if: R ejecuta el código dentro del bloque {} solo si la condición es verdadera.\
 if // else: si no se cumple la condición, haz esto otro\
-ifelse: lo mismo pero en una sola linea\
+ifelse: en una linea\
 
 ```{r}
 #| echo: true
@@ -589,7 +591,7 @@ ifelse(edades >= 18, "Adulto", "Menor")
 
 4. Haz una función que diga si un número cualquiera es par o no 
 
-5. Crea un vector con 10 temperaturas y usa ifelse() para clasificar cada valor como "Frío" o "Caluroso"
+5. Crea un vector con 10 temperaturas y usa ifelse() para clasificar cada valor como "Frío" o "Caluroso", segun lo que tu consideres
 
 ```{r}
 #| echo: true
@@ -600,7 +602,7 @@ ifelse(x %% 2 == 0, "par", "impar")
 
 temperaturas <- rpois (10, 15)
 clasificacion <- ifelse(temperaturas < 15, "frio", "caliente")
-# Añade a una tabla esta clasificación ExtrA!
+# Crea una tabla con esta clasificación 
 data.frame (temperaturas, clasificacion)
 
 

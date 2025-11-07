@@ -30,7 +30,7 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 ## Buenas prácticas en el manejo de datos
 
 -   Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
--   [Tabla del análisis de la varianza]{style="font-size:30px"}
+-   Tabla del análisis de la varianza
 -   Las observaciones cada una en una fila (e.g. individuos de pingüinos)
 -   Evitar espacios, números, y caracteres especiales en los nombres de columnas.
 -   Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
@@ -40,6 +40,8 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 -   Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
 -   Exporta los datos como texto plano (txt, csv)
 
+## Organizacion tabla 
+![Hertz & McNeill 2024](images/example-table.png){style="font-size:30px"}
 ## dplyr y ggplot 
 
  coomo funcionan, libreria tidyverse.
@@ -134,7 +136,7 @@ datos_limpios_kg <- datos_limpios %>%
 ```
 
 
-## Poco a poco más complejo (+)
+## De simple
 
 ```{r}
 #| echo: true
@@ -143,8 +145,17 @@ datos_limpios_kg <- datos_limpios %>%
 
 
 ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+```
 
-ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+
+## A complejo
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+library(ggplot2)
+
+p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
 geom_point(aes(color = body_mass_g), alpha = .6) +
   scico::scale_color_scico(palette = "bamako", direction = -1)+ 
 ## custom axes scaling
@@ -158,17 +169,14 @@ caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Sch
 x = 'Bill Length (mm)',
 y = 'Bill Depth (mm)',
 color = 'Body mass (g)'
-)+
-theme_update(
-axis.ticks = element_line(color = "grey92"),
-axis.ticks.length = unit(.5, "lines"),
-panel.grid.minor = element_blank(),
-legend.title = element_text(size = 12),
-legend.text = element_text(color = "grey30"),
-plot.title = element_text(size = 18, face = "bold"),
-plot.subtitle = element_text(size = 12, color = "grey30"),
-plot.caption = element_text(size = 9, margin = margin(t = 15))
-)
+) + theme_minimal () 
+```
+***
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+p
 ```
 
 ## Ejemplo datos inscripción curso
@@ -358,8 +366,8 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ## Bibliografía
 
-\[Valentina de Filippo\] (https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
-
+[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+[Eleven quick tips for properly handling tabular data](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
 ## Ejercicios
 
 
