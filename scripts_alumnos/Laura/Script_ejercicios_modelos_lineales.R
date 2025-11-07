@@ -84,7 +84,6 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = log_Sp)) +
 
 plot1 + plot2 + plot3
 
-gala$log_Sp <- log(gala$Species)
 gala$log_area <- log(gala$Area)
 gala$log_elevacion <- log(gala$Elevation)
 gala$log_near <- log(gala$Nearest)
@@ -96,6 +95,7 @@ plot1 <- ggplot(data = gala, aes(x = log_area , y = log_Sp)) +
        title = "Relación entre riqueza de especies y área de la isla"   
   ) +
   theme_minimal()   
+
 plot2 <- ggplot(data = gala, aes(x = log_elevacion , y = log_Sp)) +  
   geom_point(color = "red", size = 2) +      
   labs(x = "Elevación de la isla",         
@@ -103,6 +103,7 @@ plot2 <- ggplot(data = gala, aes(x = log_elevacion , y = log_Sp)) +
        title = "Relación entre riqueza de especies y elevación de la isla"   
   ) +
   theme_minimal()
+
 plot3 <- ggplot(data = gala, aes(x = log_near , y = log_Sp)) +  
   geom_point(color = "darkgreen", size = 2) +      
   labs(x = "Distancia isla más próxima",         
@@ -113,22 +114,28 @@ plot3 <- ggplot(data = gala, aes(x = log_near , y = log_Sp)) +
 
 plot1 + plot2 + plot3
 
+# hacer modelo y comprobación supuestos
+
 lm.gal1 <- lm(log_Sp~log_area+log_elevacion+log_near, gala)
 par(mfcol=c(2,2))
 plot(lm.gal1)
 
+# interpretación variables significativas
 Anova(lm.gal1,type="III")
 
 vif(lm.gal1)
 
+# eliminamos area o elevación
 lm.gal2 <- lm(log_Sp~log_area+log_near,gala)
 Anova(lm.gal2,type="III")
 
+# eliminamos distancia isla más próxima
 lm.gal3 <- lm(log_Sp~log_area,gala)
 Anova(lm.gal3,type="III")
 
 summary(lm.gal3)
 
+# predicciones del modelo
 preds <- augment(lm.gal3, type.predict = "response", se_fit = TRUE)
 preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)

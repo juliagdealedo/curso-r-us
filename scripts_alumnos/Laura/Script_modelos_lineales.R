@@ -15,22 +15,23 @@ library(multcomp)
 data(penguins)
 head(penguins)
 
-# eliminamos NAs de las variables que vamos a utilizar
+# eliminamos NAs variables que vamos a utilizar y pasamos masa corporal a kg
 
 penguins_clean <- penguins %>%
   filter(!is.na(flipper_length_mm), !is.na(body_mass_g))
+penguins_clean$body_mass_kg <- penguins_clean$body_mass_g/1000
 
-ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +  
+ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +      
   labs(x = "Longitud aleta (mm)",         
-       y = "Masa corporal (g)",                   
+       y = "Masa corporal (kg)",                   
        title = "Relación entre masa corporal y longitud aleta "   
   ) +
-  theme_minimal()        
+  theme_minimal()       
 
 #### 2. Ajuste modelo de regresión
   
-lm_reg1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins_clean)
+lm_reg1 <- lm(body_mass_kg ~ flipper_length_mm, data = penguins_clean)
 
 #### 3. Variación explicada por el modelo y resolución hipótesis
 
@@ -46,15 +47,15 @@ preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
 preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
 
-ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_g)) +  
+ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +     
   geom_line(aes(y = .fitted)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
   labs(x = "Longitud aleta (mm)",         
-       y = "Masa corporal (g)",                   
+       y = "Masa corporal (kg)",                   
        title = "Predicciones modelo de regresión"   
   ) +
-  theme_minimal()        
+  theme_minimal()         
 
 #### 6. Revisión supuestos del modelo
   
@@ -73,20 +74,20 @@ ncvTest(lm_reg1)
   
 #### 1. Explorar gráficamente la relación entre las variables
 
-ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species)) +  
+ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species)) +  
   geom_boxplot(alpha = 0.8, color = "gray30") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud pico (mm)",                   
-       title = "Diferencias longitud pico entre especies"   
+       y = "Longitud aleta (mm)",                   
+       title = "Diferencias longitud aleta entre especies"   
   ) +
-  theme_minimal()        
+  theme_minimal()         
 
 #### 2. Ajuste modelo factorial
 
 penguins <- penguins %>%
   mutate(species = as.factor(species))
-lm_reg2 <- lm(bill_length_mm ~ species, data = penguins)
+lm_reg2 <- lm(flipper_length_mm ~ species, data = penguins)
 
 #### 3. Variación explicada por el modelo y resolución hipótesis
 
@@ -103,21 +104,21 @@ summary(posthoc_species)
 
 #### 5. Representación gráfica diferencias significativas
   
-ggplot(data = penguins, aes(x = species, y = bill_length_mm, fill = species, color = species)) +  
+ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species, color = species)) +  
   geom_boxplot(alpha = 0.8, color = "black") +
   geom_jitter(width = 0.15, alpha = 0.6, size = 2, shape=21, color="black") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud pico (mm)",                   
-       title = "Diferencias longitud pico entre especies"   
+       y = "Longitud aleta (mm)",                   
+       title = "Diferencias longitud aleta entre especies"   
   ) +
   theme_minimal() +
-  geom_text(data = penguins[2,], aes(y = 65, label = "a"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "a"), color="black", 
             size=5, nudge_x = 0) +
-  geom_text(data = penguins[2,], aes(y = 65, label = "b"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "b"), color="black", 
             size=5, nudge_x = 1) +
-  geom_text(data = penguins[2,], aes(y = 65, label = "c"), color="black", 
+  geom_text(data = penguins[2,], aes(y = 240, label = "c"), color="black", 
             size=5, nudge_x = 2) 
 
 #### 6. Revisión supuestos del modelo
@@ -212,7 +213,7 @@ predicciones_grid <- augment(lm_5, newdata = newdata)
 
 ggplot(datos_limpios, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
   geom_point(alpha = 0.5) +
-  geom_line(data = predicciones_grid, aes(x= flipper_length_mm, y = .fitted, group = species, color = species), size = 1.2) +
+  geom_line(data = predicciones_grid, aes(x= flipper_length_mm, y = .fitted, group = species, color = species), linewidth = 1.2) +
   scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(
     title = "ANCOVA: predicciones por especie",
