@@ -1,0 +1,992 @@
+---
+title: "Visualización de datos"
+subtitle: "Visualizar datos en R principalmente con ggplot"
+format: 
+  revealjs:
+    theme: solarized 
+    smaller: true
+    slide-number: true 
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+## Visualización
+
+Para entender patrones y relaciones
+
+Para comunicar resultados de forma clara
+
+Para detectar errores o valores atípicos
+
+Porque una imagen resume más que una tabla
+
+![Matetja et al](images/plot.png)
+
+## Colores
+
+Colores... https://www.fabiocrameri.ch/colourmaps/
+
+
+https://github.com/jbgb13/peRReo
+https://github.com/BlakeRMills/MetBrewer
+scale_fill_manual (values=c("#72874EFF", "#FED789FF"))
+
+
+## En R, desde gráficos muy simples
+
+```{r}
+
+ 
+# 1. Cargar librerías
+
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(palmerpenguins)
+library(scico)
+
+# 2. Leer datos
+data(package = 'palmerpenguins')
+
+#| echo: true
+
+plot(x=rnorm(100), y=rnorm(100))
+
+```
+
+------------------------------------------------------------------------
+
+## hasta muy complejos
+
+![quién habla con quién en "The Office"](images/complex_graph.png){width="550px" height="550px" fig-align="center"} [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
+
+## R base versus ggplot
+
+::::: columns
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+
+plot(penguins$bill_length_mm, 
+     penguins$bill_depth_mm)
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+ggplot(penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm)) +
+  geom_point()
+
+```
+:::
+:::::
+
+
+## Sin adornos
+
+```{r}
+#| echo: true
+
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+
+```
+
+
+## Con muchos adornos 
+```{r}
+#| echo: false
+
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+geom_point(aes(color = body_mass_g), pch=21) +
+  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
+## custom axes scaling
+scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
+scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
+## custom labels
+labs(
+title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+subtitle = 'A scatter plot of bill depth versus bill length.',
+caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
+x = 'Bill Length (mm)',
+y = 'Bill Depth (mm)',
+color = 'Body mass (g)'
+) + theme_minimal () 
+
+```
+
+## Bases de ggplot
+
+ggplot = Grammar of Graphics (gg)
+Separa cada componente de un gráfico en componentes individuales, creando distintas capas. 
+Así tenemos resultados más flexibles y personalizables.
+
+::::: columns
+::: {.column width="50%"}
+
+- Data
+- Aesthetics (x, y)
+- Geometries (points, lines, boxplots)
+- Scales (eg. colores)
+- Facets (subplots)
+- Statistics (show means, counts, and other statistical summaries of data)
+- Coordinates
+- Theme (apariencia general del gráfico)
+
+:::
+
+::: {.column width="50%"}
+
+![Layers inside ggplot](images/layers.png)
+
+:::
+:::::
+## Ejemplo de capas
+
+![Hertz & McNeill 2024](images/ggplot_basics.png)
+
+## Aesthetics
+
+::::: columns
+::: {.column width="50%"}
+
+- x, y
+- colour: color de los geoms (CONTORNO)
+- fill: el color de dentro de los geoms (RELLENO)
+- group: a qué grupo pertenece un geom
+- shape: la forma de los puntos
+- linetype: tipo de linea (solid, dashed, etc)
+- size: escalar el tamaño 
+- alpha: transparencia
+
+:::
+
+::: {.column width="50%"}
+![RforEcology.com](images/aesthetics.png)
+:::
+:::::
+
+## Geometries
+
+### Categórico 
+- geom_bar(): bar charts for categorical x axis
+- geom_boxplot(): box and whiskers plot for categorical variables
+- geom_violin(): distribution kernel of data dispersion
+
+
+### Continuo
+- geom_histogram(): histogram for continuous x axis
+- geom_point(): scatterplot
+- geom_line(): lines connecting points by increasing value of x
+- geom_path(): lines connecting points in sequence of appearance
+
+## Scales
+Scales se puede modificar el tipo de variable, transformarla, tamaño, color, nombre etc.
+
+## Facets
+- facet_wrap() 
+- facet_grid() 
+
+`facet_wrap(~ variable)`     | Divide el gráfico en **varios paneles según una sola variable**. Coloca los paneles en una cuadrícula flexible (se “envuelven” automáticamente). 
+
+`facet_grid(fila ~ columna)` | Divide los gráficos según **dos variables**: una define las filas y otra las columnas.
+
+## Themes
+
+![geeksforgeeks](images/themes.png)
+
+## Empecemos a visualizar
+
+Cosas importantes!
+
+- Primero pensar qué queremos visualizar (dibujo?)
+- El orden donde ponemos los argumentos
+- Si van dentro de paréntesis o no
+- dónde va la base de datos a la que hacemos referencia
+
+
+## LA CAPA 'DATA'
+Volvemos con los pingüinos. 
+ggplot = base de datos
+
+```{r}
+#| echo: true
+
+ggplot(penguins)
+
+```
+
+## LA CAPA 'AESTHETICS'
+
+ggplot = base de datos + aesthetics
+```{r}
+#| echo: true
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm))
+
+```
+
+La base de datos puede antes con el pipe de dplyr
+ggplot = base de datos + aesthetics
+```{r}
+#| echo: true
+
+penguins %>%
+  ggplot(aes(x = flipper_length_mm))
+
+```
+
+***
+## LA CAPA 'GEOMETRIC'
+
+ggplot + base de datos + aesthetics + geoms
+```{r}
+#| echo: true
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm)) + 
+  geom_histogram() 
+
+```
+***
+ggplot + base de datos + aesthetics + geoms
+aesthetics puede ir en ggplot o en geoms
+```{r}
+#| echo: true
+
+ggplot(penguins) + 
+  geom_histogram(aes(x = flipper_length_mm)) 
+
+```
+## Gráfico de densidad 
+
+```{r}
+#| echo: true
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm)) + 
+  geom_density(bw=1)
+
+```
+
+***
+
+#### Gráfico de Barras
+
+Geom_bar por defecto nos cuenta el numero de datos
+
+```{r}
+#| echo: true
+
+penguins %>%
+  ggplot (aes(x=species)) +
+  geom_bar() 
+
+```
+
+***
+
+#### Gráfico de Barras
+
+Para que nos haga la suma, necesitamos "identity"
+
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x=species, y=bill_length_mm)) +
+    geom_bar(stat="identity")
+```
+***
+
+Para que haga la media, le decimos que la estadística (stat) es un "summary" con la función "mean"
+
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x = species, y = bill_length_mm)) +
+    geom_bar(stat="summary", fun = "mean")
+
+```
+
+***
+#### CAMBIAMOS LOS COLORES
+
+Queremos la especie en distintos colores. 
+
+Dentro de aesthetics añadimos el argumento fill para cambiar el "relleno" segun el grupo que indiquemos. Nos dará un color ya establecido por ggplot.
+
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x=species, y=bill_length_mm, fill=species)) +
+    geom_bar(stat="identity")
+
+```
+
+***
+
+¿Qué pasa si modificamos "color"? ... mal
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x=species, y=bill_length_mm, color=species)) +
+    geom_bar(stat="identity")
+```
+
+***
+
+tip: sin leyenda 
+guides (fill=FALSE)
+
+
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x=species, y=bill_length_mm, fill=species)) +
+    geom_bar(stat="identity")+
+    guides(fill=FALSE)
+
+```
+
+***
+Añadimos el labs y theme 
+
+```{r}
+#| echo: true
+
+
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm, fill = species)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  labs(
+    title = "Longitud del pico en mm",
+    subtitle = "Suma por especie",
+    x = "Especie de pingüino",
+    y = "Longitud del pico"
+  ) + theme_minimal()
+
+```
+
+***
+
+####  Incluímos una variable más
+
+Añadiendo en "fill" el sexo del pingüino.
+
+```{r}
+#| echo: true
+
+
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm, fill = sex)) +
+  geom_bar(stat = "identity")
+
+
+```
+***
+
+Quitamos NAs y añadimos position_dodge() para visualizarlos uno al lado del otro
+```{r}
+#| echo: true
+
+penguins %>%
+  filter(!is.na(sex)) %>%
+  ggplot(aes(x = species, y = bill_length_mm, fill = sex)) +
+  geom_bar(stat = "identity", position = position_dodge()) 
+```
+***
+
+## Colores personalizados
+
+```{r}
+#| echo: true
+
+penguins %>%
+  filter (!is.na(sex)) %>%
+  ggplot (aes(x = species, y = bill_length_mm, fill = sex)) +
+  geom_bar (stat = "identity", position = position_dodge()) +
+  scale_fill_manual (values = c("#72874EFF", "#FED789FF")) +
+  theme_minimal () 
+
+```
+
+***
+
+#### Boxplot
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = island, y = bill_length_mm)) + 
+  geom_boxplot ()
+
+```
+
+***
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = island, y = bill_length_mm, fill=island)) + 
+  geom_boxplot ()
+
+```
+
+***
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = island, y = bill_length_mm, color=island)) + 
+  geom_boxplot ()
+
+```
+## Cuidado con los boxplots!
+
+![Seven distributions of data, shown as raw data points (of strip-plots), as box plots, and as violin plots](images/violin.gif) 
+
+[Fuente](https://www.research.autodesk.com/publications/same-stats-different-graphs/)
+
+
+
+## Violin plot
+
+```{r}
+#| echo: true
+
+violin_plot <- penguins %>%
+  ggplot (aes(x = island, y = bill_length_mm, fill = island)) +
+  geom_jitter (size = 3,
+               alpha = 0.1,
+               fill = "grey") +
+  geom_violin (alpha = 0.8) +  guides (fill = FALSE) +
+  scale_fill_manual (values = c("#72874EFF", "#FED789FF", "#023743FF")) +
+  theme_light() 
+
+violin_plot
+
+#ggsave("images/violin_plot.png", violin_plot, width = 20, height = 20, units = "cm", scale = .5)
+
+```
+## Guardar plots con ggsave
+
+::::: columns
+::: {.column width="50%"}
+
+- ggsave("images/violin_plot.png", violin_plot, width = 20, height = 20, units = "cm", scale = .5)
+
+- ggsave nos permite guardar en "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf"
+
+:::
+
+::: {.column width="50%"}
+![Violines](images/violin_plot.png){width="400px" height="400px" fig-align="left"}
+
+:::
+:::::
+
+
+
+
+## Datos continuos
+Miramos las correlaciones entre nuestras variables de manera gráfica
+```{r}
+#| echo: true
+
+library(GGally)
+
+penguins %>% 
+  ggpairs(columns = 3:5, ggplot2::aes(colour=species)) 
+  
+```
+## Scatterplots 
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() 
+
+```
+
+***
+
+#### Cuidado con el argumento color y fill
+Hay que estar atentos dónde están colocados
+Si van dentro de aes() tiene que ser una variable y no un color per se.
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot () + 
+  geom_point(aes(x = flipper_length_mm, y = bill_length_mm, color="blue")) 
+
+```
+
+***
+
+#### Aquí bien
+Fuera de aesthetics sí puede ser un color
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot () + 
+  geom_point(aes(x = flipper_length_mm, y = bill_length_mm), color="blue") 
+
+```
+
+***
+
+#### Color
+Dentro de aesthetics tiene que ser una variable de nuestra bbdd
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  geom_point() + theme_light() 
+
+```
+
+## LA CAPA 'SCALES'
+
+#### Color categórico
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  geom_point() + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  theme_light() 
+
+```
+
+***
+
+#### Color continuo
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() + theme_light() 
+
+```
+
+***
+
+#### Gradientes de color
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_gradient(low="#00AFBB", high="#E7B800")+
+  theme_light() 
+
+```
+
+***
+
+#### Colores continuos de paletas (viridis)
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_viridis_c(option = "plasma") + 
+  theme_light() 
+
+```
+
+***
+
+#### Colores continuos de paletas (RColorBrewer)
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_distiller(palette = "Spectral") +  # otras: "RdYlBu", "YlGnBu", "PuOr", etc.
+  theme_light() 
+
+```
+
+***
+
+#### Cambiar el tamaño del punto
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, size = body_mass_g, color=body_mass_g)) +
+  scale_color_gradient(low="orange",high="black")+
+  geom_point(alpha=0.8) + theme_light() 
+
+```
+
+## Otras visualizaciones de los mismos datos
+
+Densidades en dos dimensiones 
+
+```{r}
+#| echo: true
+
+# Show the contour only
+penguins %>% 
+ggplot (aes(x = flipper_length_mm, y = bill_length_mm))+
+  geom_density_2d(color="black") + theme_minimal ()
+```
+
+
+
+## LA CAPA STATISTICS
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() + geom_smooth()
+# Method = "loess"
+```
+ 
+***
+ 
+#### Modelos lineales
+
+Podemos visualizar cómo quedaría un modelo lineal
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() + theme_light() + geom_smooth(method = "lm")
+
+```
+
+***
+ 
+#### Modelos lineales con interacción
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) +
+  geom_point () +
+  scale_colour_manual (values=c("lightblue", "purple", "pink")) +
+  theme_light() + geom_smooth(method = "lm")
+
+```
+
+## LA CAPA FACETS
+
+Dividir por especie
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual (values=c("lightblue", "purple", "pink")) +
+  geom_point() + theme_light() +  facet_wrap(~species, scales = "free")
+
+
+
+```
+
+***
+
+#### Dividir por especie y por isla
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual (values=c("lightblue", "purple", "pink")) +
+  geom_point() + theme_light() +  facet_wrap(species~island, scales = "free")
+
+```
+
+***
+
+#### facet grid por pares
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual (values=c("lightblue", "purple", "pink")) +
+  geom_point() + theme_light() +  facet_grid(species~island, scales = "free")
+
+```
+
+## Plotear texto
+geom_text()
+
+```{r}
+#| echo: true
+
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_text(aes(label = 'pingus')) +
+  theme_minimal()
+```
+
+***
+
+```{r}
+#| echo: true
+#| 
+ggplot (penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_text (aes(label = species, color = species)) +
+  theme_minimal() 
+
+```
+## Patchwork
+
+Guardamos los ggplots como objetos y los "sumamos"
+
+```{r}
+#| echo: true
+
+library(patchwork)
+p1 <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_text(aes(label = 'pingus')) +
+  theme_minimal()
+p2 <- ggplot (penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_text (aes(label = species, color = species)) +
+  theme_minimal() 
+
+p1 + p2
+```
+***
+o "dividimos"
+```{r}
+#| echo: true
+
+p1 / p2
+```
+
+## Mapas I
+
+![Mapa del crecimiento urbano en Valencia](images/map-growth.png){width="600px" height="550px" fig-align="left"}
+[Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
+
+## Mapas II
+
+![Apicultores en Alemania](images/bee.png){width="300px" height="600px" fig-align="left"} 
+[Código](https://www.cedricscherer.com/top/dataviz/)
+
+## Nuestros datos georeferenciados
+
+```{r}
+#| echo: true
+
+library(rgbif)
+library(ggplot2)
+library(rnaturalearth)
+library(sf)
+
+datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
+df <- datos$data
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Plot
+ggplot() +
+  geom_sf(data = world, fill = "grey90", color = "grey30") +
+  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
+             color = "darkred", size = 2, alpha = 0.7) +
+  coord_sf() +
+  theme_minimal()
+
+```
+
+***
+
+```{r}
+#| echo: true
+
+# Basic map
+iberian_peninsula <- ne_countries(country=c("spain", "portugal"))
+ggplot() +
+  geom_sf(data = iberian_peninsula, fill = "grey99", color = "grey30") +
+  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
+             color = "darkgreen", size = 2, alpha = 0.7) +
+  coord_sf() +
+  theme_minimal()
+
+```
+
+## Mapa plantas
+
+```{r}
+#| echo: true
+
+library(FloraIberica)
+map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
+
+```
+
+## Visualizaciones geniales (ya no solo con r)
+
+[Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
+
+## gg cosas
+
+![example ggimaga R logo](images/ggimage.png){width="600px" height="600px" fig-align="left"}
+
+***
+
+![example ggimage R logo](images/emogg.png){width="600px" height="600px" fig-align="left"}
+
+***
+
+![gganimate](images/gganimate.gif){width="600px" height="600px" fig-align="left"}
+
+***
+
+ggDNAvis is an R package that uses ggplot2 to visualise genetic data.
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.3em'"
+
+library(ggDNAvis)
+sequence <- paste(c(rep("GGC", 72), rep("GGAGGAGGCGGC", 15)), collapse = "")
+
+visualise_single_sequence(
+    sequence = sequence,
+    sequence_colours = sequence_colour_palettes$bright_pale,
+    background_colour = "white",
+    line_wrapping = 60,
+    spacing = 1,
+    margin = 0.5,
+    sequence_text_colour = "black",
+    sequence_text_size = 1,
+    index_annotation_colour = "darkred",
+    index_annotation_size = 1,
+    index_annotation_interval = 1,
+    index_annotation_vertical_position = 1/3,
+    outline_colour = "black",
+    outline_linewidth = .4,
+    outline_join = "mitre",
+    return = TRUE,
+    render_device = ragg::agg_png,
+    pixels_per_base = 100
+)
+
+
+```
+[code ggDNAvis](https://ejade42.github.io/ggDNAvis/)
+
+## Bibliografía
+
+[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
+
+
+[ggbasics](http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html)
+
+[book](https://link.springer.com/book/10.1007/0-387-28695-0)
+
+[grphs](https://r-graphics.org/RECIPE-QUICK-SCATTER.html)
+
+[geels](https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/)
+
+## Ejercicios
+
+1. Haz el violin_plot de antes pero los jitter son del color de la isla.
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = island, y = bill_length_mm, fill = island)) + 
+  geom_jitter (size=3, alpha=0.1, fill="grey") +
+  geom_violin(alpha=0.8) +  guides (fill= FALSE)+
+  scale_fill_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  theme_light() + theme(rect = element_rect(fill = "transparent"))
+```
+
+***
+
+2. Lee la base de datos de "flores.csv" 
+
+Haz un scatterplot comparando biomasa y cobertura, señalando las diferencias entre sequia o lluvia. 
+
+Haz un boxplot por los dos tipos de sequía y la cobertura de árboles
+
+
+## Resolvemos los ejercicios
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  ggplot (aes(x = island, y = bill_length_mm, fill = island)) + 
+  geom_jitter (aes(color=island), size=2, alpha=0.9) +
+  scale_color_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_violin (alpha=0.8) +  guides (fill= FALSE)+
+  scale_fill_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  theme_light() + theme(rect = element_rect(fill = "transparent"))
+
+
+```
+
+***
+
+```{r}
+#| echo: true
+
+library(here)
+cobertura <- read.csv(here("data/cobertura.csv"))
+head(cobertura)
+
+ggplot(cobertura) +
+  geom_point(aes(x=biomasa, y=cobertura, color=sequia))
+
+ggplot(cobertura) +
+  geom_boxplot(aes(x=biomasa, y =cobertura, group=sequia))
+```
+

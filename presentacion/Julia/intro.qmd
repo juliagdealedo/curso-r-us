@@ -107,10 +107,15 @@ RStudio → Es un entorno de desarrollo integrado (un programa) que facilita el 
 -   Visualizar (graficos estadísticos, interactivos, mapas, animaciones, etc)
 -   Automatizar y extender (crear funciones propias, desarrollar paquetes, reproducir analisis facilmente)
 -   Comunicar (crear informes Quarto o RMarkdown, crear webs o apps Shiny)
-![Ejemplo quarto](images/quarto.png){width="200px" height="550px" fig-align="left"}
+
+![Ejemplo quarto](images/quarto.png){width="500px" height="550px" fig-align="left"}
+
+
+***
+
 ## Workflow: lo básico básico
 
-Es una calculadora: se pueden hacer operaciones básicas multiplicar, dividir, sumar, restar...
+📠 Se hacen operaciones aritméticas (como una calculadora) se pueden hacer operaciones básicas multiplicar, dividir, sumar, restar...
 
 ```{r}
 #| echo: true
@@ -120,6 +125,8 @@ Es una calculadora: se pueden hacer operaciones básicas multiplicar, dividir, s
 3 * 5     
 20 / 4    
 ```
+
+***
 
 ## Operaciones básicas de lógica
 
@@ -141,7 +148,6 @@ mean(valores)      # proporción de TRUE
 
 ```
 
-Cuidado que en R "=" y "<-" son sinónimos!
 
 ## Acumular información
 
@@ -441,7 +447,8 @@ sd (log (vector2))
 log_vect <- function (y) {
   mean_y <- mean (log (y+1))
   sd_y <- sd (log (y+1))
-  print(paste("La media es", mean_y, ", la desviación estándar es:", round(sd_y,2)))
+  print(paste("La media es", mean_y, 
+              ", la desviación estándar es:", round(sd_y,2)))
   return(log(y))
 }
 
@@ -455,11 +462,11 @@ hist(distribution)
 
 R repite algo automáticamente sin que lo escribas varias veces. 
 
-[paste("Aquí está el número", 1)]{style="font-size: 0.2em !important;"}
-[paste("Aquí está el número", 2)]{style="font-size: 0.2em !important;"}
-[paste("Aquí está el número", 3)]{style="font-size: 0.2em !important;"}
-[paste("Aquí está el número", 4)]{style="font-size: 0.2em !important;"}
-[paste("Aquí está el número", 5)]{style="font-size: 0.2em !important;"}
+[Aquí está el número 1)]{style="font-size: 0.9em !important;"}
+[Aquí está el número 2)]{style="font-size: 0.9em !important;"}
+[Aquí está el número 3)]{style="font-size: 0.9em !important;"}
+[Aquí está el número 4)]{style="font-size: 0.9em !important;"}
+[Aquí está el número 5)]{style="font-size: 0.9em !important;"}
 
 ```{r}
 #| echo: true
@@ -668,13 +675,15 @@ head(datos_excel)
 library(googlesheets4)
 datos_gs <- read_sheet("https://docs.google.com/spreadsheets/d/1qC4lsXPpEcX1NmLdwiMJMC8X_WKX-EFQm4ahPdrNCZc/edit?usp=sharing")
 head(datos_gs)
-#write_csv(datos_gs, "data/datos_gs.csv")
-
+# write_csv(datos_gs, "data/datos_gs.csv")
+# fwrite(datos_gs, "data/datos_gs.csv")
 ```
 
 ## Ejercicios 3
 
 Base de datos de flores: Por cada sitio y pantrap, tenemos el numero de flores que tienen las especies de plantas en Doñana. 
+code = código de la planta
+
 Ejercicio: Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas. Luego, crea una base de datos con el número de individuos por especie (no de flores). Guardala como csv.
 
 ```{r}
@@ -682,10 +691,12 @@ Ejercicio: Importa la base de datos "flores.csv" de la carpeta "data", explora l
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
 
+
 flores <- read.csv(here("data/flores.csv"))
 str(flores)
 mean(flores$abundance)
 length(unique(flores$species))
+table(flores$species)
 unique(flores$species)
 data.frame(table(flores$species))
 #write_csv (flores, "data/flores.csv")
@@ -706,4 +717,4 @@ data.frame(table(flores$species))
 
 ## Bibliografía
 
-[cookbook](http://www.cookbook-r.com/) :::::
+[cookbook](http://www.cookbook-r.com/) 

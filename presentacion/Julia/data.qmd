@@ -20,46 +20,116 @@ format:
 
 ## Manejo de datos
 
-La exploración de datos nos permite verificar su calidad, entender los datos con los que trabajamos. Visualizar nuestros datos es un buen comienzo, pero a menudo vamos a necesitar transformar los datos previamente.
+### La exploración de datos es el primer paso para:
 
-Formato tidy data (long)
+-   Verificar su calidad
+-   Comprender la información con la que trabajamos
+-   Detectar errores o valores atípicos
+-   Preparar los datos para su análisis o visualización
 
-Cada variable tiene su propia columna - cada observación tiene su propia fila - cada valor tiene su propia celda
+### ¿Qué es “tidy data”?
+
+Un conjunto de datos está ordenado (tidy) cuando:
+
+-   Cada variable tiene su propia columna
+-   Cada observación tiene su propia fila
+-   Cada valor tiene su propia celda
 
 ![Ejemplo organización "tidy"](images/tidy-table.png)
 
+## Buenas prácticas de sintaxis en R
+
+::::: columns
+::: {.column width="50%"}
+### Espacios y asignaciones
+
+-   Usa espacios alrededor de los operadores
+-   Usa \<- en vez de =
+-   Cuando haya funciones con el mismo nombre, especifica el paquete (dplyr::select ())
+-   Empieza tu script con una descripción sobre lo que hace el código, autorx, fecha y sesión.
+
+### Organización de carpetas
+
+-   Carpeta con los datos brutos
+:::
+
+::: {.column width="50%"}
+!["carpetas"](images/folders.png)
+:::
+:::::
+
+
 ## Buenas prácticas en el manejo de datos
 
--   Las variables van en columnas (e.g. mediciones: altura, peso, sexo)
--   Tabla del análisis de la varianza
--   Las observaciones cada una en una fila (e.g. individuos de pingüinos)
--   Evitar espacios, números, y caracteres especiales en los nombres de columnas.
--   Siempre anotar valores de cero, para diferenciarlos de datos faltantes.
--   Usar celdas vacías o con NA para datos faltantes.
--   Las fechas incluirlas en columnas separadas como year, month, day.
--   No combinar varias informaciones en una misma celda. EJEMPLOS
--   Realiza todas las manipulaciones de datos mediante código para dejar constancia de los cambios.
--   Exporta los datos como texto plano (txt, csv)
 
-## Organizacion tabla 
+#### 📋 Estructura y formato
+
+-   Cada variable en una columna
+-   Cada observación en una fila
+-   No combines varias informaciones en una misma celda
+
+#### 🧩 Nombres y valores
+
+-   Evita espacios, números o caracteres especiales en los nombres de columnas
+-   Anota los ceros (0) cuando existen — no los dejes vacíos!!
+-   Usa NA o celdas vacías para indicar datos faltantes
+-   Separa las fechas en columnas: year, month, day
+
+#### 💾 Registro y reproducibilidad
+
+-   Realiza todas las manipulaciones de datos mediante código, no manualmente
+-   Así dejas rastro reproducible de cada cambio
+-   Guarda o exporta tus datos en formatos de texto plano (.csv, .txt)
+-   más universales, más fáciles de versionar con Git
+
+## Organizacion tabla
+
 ![Hertz & McNeill 2024](images/example-table.png){style="font-size:30px"}
 
-## dplyr y ggplot 
+## Tidyverse
 
- coomo funcionan, libreria tidyverse.
- 
- install.packages("faraway")
-library(faraway)
+El universo ordenado.
+
+El tidyverse es una colección de paquetes de R - Para hacer más fácil y coherente el trabajo con datos. - Todos comparten una filosofía común: - Filosofía: Los datos deben ser ordenados (tidy), el código legible y los resultados reproducibles
+
+## Código limpio
+
+-   Comentarios útiles
+-   Divide en pasos lógicos
+-   Usa bien la sangría y los espacios
+-   Usa bien los nombres
+-   Guarda solo objetos útiles (R se va llenando)
+
+## Tips
+
+-   control + shift + C (des)comenta todo a la vez
+-   control + shift + A reformatea el código
+-   control + click se abre la tabla en RStudio
+
+## Importar los datos
+
+```{r}
+#| echo: true
+
+library(dplyr)
+library(here)
+
+glimpse(iris) # datos incluidos en dplyr
+
+cobertura <- read.csv(here("data/cobertura.csv"))
+glimpse(cobertura)
 
 
-*Pipes: cómo encadenar operaciones*
+```
+
+------------------------------------------------------------------------
+
+### Pipes: cómo encadenar operaciones
 
 Los "pipes" permiten escribir código paso a paso, de forma legible:
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
 
 library(dplyr)
 
@@ -69,13 +139,21 @@ iris %>%
   summarise(promedio = mean(Sepal.Width))
 # (control  (command) + shift + M)
 
-# el de R desde hace dos años
+# el de R desde hace unos años
 iris |>
   filter(Sepal.Length > 5) |>
   summarise(promedio = mean(Sepal.Width))
 
 ```
 
+## Empecemos a manejar datos
+
+Cosas importantes!
+
+-   Primero pensar qué queremos hacer con los datos
+-   El orden donde ponemos los argumentos
+-   Si van dentro de paréntesis o no
+-   dónde va la base de datos a la que hacemos referencia
 
 ## Ejemplo datos de pingüinos
 
@@ -94,24 +172,25 @@ library(scico)
 
 # 2. Leer datos
 data(package = 'palmerpenguins')
-datos <- penguins
 
 # 3. Explorar
+glimpse (penguins)
 
-head(datos)
-str(datos)
-summary(datos)
+unique(penguins$island)
 
-unique(datos$island)
+datos_filtrados <- penguins %>% filter (year == 2007)
 
-datos_filtrados <- datos %>% filter (year == 2007)
+datos_filtrados <- penguins %>% filter (year == 2007, sex == "female")
 
-datos_filtrados <-datos %>% filter (year == 2007, sex=="female")
-
-datos_filtrados <- datos %>% filter (year == 2007, sex=="female", island %in% c("Dream", "Bicoe")) 
+datos_filtrados <- penguins %>% filter (year == 2007, sex == "female", island %in% c("Dream", "Bicoe"))
 # island == c("Dream", "Bicoe")) NO VALE!
 # summarize
 head (datos_filtrados, 3)
+
+penguins %>%
+  filter(species == "Adelie") %>%
+  summarise(promedio_pico = mean(bill_length_mm, na.rm = TRUE))
+
 ```
 
 ## Limpiar los datos
@@ -122,7 +201,7 @@ head (datos_filtrados, 3)
 #| attr-output: "style='font-size: 0.3em'"
  
 # 4. Limpiar: eliminar filas con NA
-datos_limpios <- datos %>% 
+datos_limpios <- penguins %>%
   filter(!is.na(body_mass_g))
 
 head(datos_limpios, 4)
@@ -140,7 +219,6 @@ datos_limpios_kg <- datos_limpios %>%
   mutate(body_mass_kg = body_mass_g / 1000)
 ```
 
-
 ## Ejemplo datos inscripción curso
 
 ```{r}
@@ -157,10 +235,7 @@ library(readxl)
 # se puede importar tablas desde excel, csv, ggsheets, txt...
 
 datos_curso = read_excel(here("data/datos-curso.xlsx"))
-# ifselse en dplyr?
-# Vemos un resumen
-str (datos_curso)
-#View (datos_curso) # Se nos abre en Rstudio
+
 
 ```
 
@@ -184,679 +259,67 @@ colnames(datos_curso) # Miramos las columnas que tiene
 #| fig-align: "center"
 
 datos_curso_filtrado <- datos_curso |>
-  rename (curso = "Curso de la primera matrícula en el programa de doctorado",
-         experiencia = "Cuéntanos tu experiencia con R",
-         comentarios = "Observaciones",
-         email = "Correo electrónico") |>
+  rename (
+    curso = "Curso de la primera matrícula en el programa de doctorado",
+    experiencia = "Cuéntanos tu experiencia con R",
+    comentarios = "Observaciones",
+    email = "Correo electrónico"
+  ) |>
   select (curso, experiencia, comentarios, email) |>
   mutate (email = str_replace(email, "anonymous", "anónimo")) |>
   filter (curso == "2022-23") # filtrado y sin filtrar otra diapo.
   
-words <- tolower(
-                unlist(
-                  strsplit(datos_curso_filtrado$experiencia, " ") ) ) 
+words <- tolower(unlist(strsplit(datos_curso_filtrado$experiencia, " ")))
 
-words <- gsub("[[:punct:][:digit:]]", "",words)
+words <- gsub("[[:punct:][:digit:]]", "", words)
 stop_es <- stopwords("spanish")
 words_clean <- words[!words %in% stop_es]
 
 # Plot
-wordcloud2(data=table(words_clean), size=0.5,
-           color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20))
+wordcloud2(
+  data = table(words_clean),
+  size = 0.5,
+  color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20)
+)
 
 
 ```
-
-
 
 ## Ejercicios manejo de datos
 
+Mismo ejercicio que ayer pero con dplyr.
 
+Base de datos de flores: Por cada sitio y pantrap, tenemos el numero de flores que tienen las especies de plantas en Doñana. code = código de la planta
 
-
-## Visualización
-
-Para entender patrones y relaciones
-
-Para comunicar resultados de forma clara
-
-Para detectar errores o valores atípicos
-
-Porque una imagen resume más que una tabla
-
-![Matetja et al](images/plot.png)
-
-## Colores
-
-Colores... https://www.fabiocrameri.ch/colourmaps/
-
-
-
-
-## Desde gráficos muy simples
-
-```{r}
-#| echo: true
-
-plot(x=rnorm(100), y=rnorm(100))
-
-```
-
-------------------------------------------------------------------------
-
-## Hasta gráficos muy complejos
-
-![quién habla con quién en "The Office"](images/complex_graph.png){width="600px" height="550px" fig-align="left"}
-
-[Código](https://r-graph-gallery.com/character-interaction-analysis.html)
-
-## Base R vs ggplot
-
-::::: columns
-::: {.column width="50%"}
-
-```{r}
-#| echo: true
-
-plot(datos_limpios_kg$bill_length_mm, datos_limpios_kg$bill_depth_mm)
-
-```
-:::
-
-::: {.column width="50%"}
-```{r}
-#| echo: true
-#| 
-ggplot(datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) +
-  geom_point()
-
-```
-:::
-:::::
-
-
-## De simple
+Ejercicio: Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas. Luego, crea una base de datos con el número de individuos por especie (no de flores). Guardala como csv.
 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
 
+flores <- read.csv(here("data/flores.csv"))
 
-ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
-```
+# Estructura de los datos
+glimpse(flores)
 
+# Promedio de abundancia
+flores %>% 
+  summarise (media_abundancia = mean(abundance, na.rm = TRUE))
 
-## A complejo
-```{r}
-#| echo: true
-library(ggplot2)
+# Número de especies únicas
+flores %>% 
+  summarise (n_especies = n_distinct(species))
 
-p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
-geom_point(aes(color = body_mass_g), alpha = .6) +
-  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
-## custom axes scaling
-scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
-scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
-## custom labels
-labs(
-title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
-subtitle = 'A scatter plot of bill depth versus bill length.',
-caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
-x = 'Bill Length (mm)',
-y = 'Bill Depth (mm)',
-color = 'Body mass (g)'
-) + theme_minimal () 
-p
-```
+# Listado de especies únicas
+flores %>% 
+  distinct(species)
 
-## Bases de ggplot
+# Conteo de registros por especie
+flores %>% 
+  count(species, sort = TRUE)
 
-ggplot = Grammar of Graphics (GG)
-Separa cada componente de un gráfico en componentes individuales, creando distintas capas. Así tenemos resultados más flexibles y personalizables.
-
-::::: columns
-::: {.column width="50%"}
-
-- Data
-- Aesthetics (x, y)
-- Geometries (points, lines, boxplots)
-- Scales (eg. colores)
-- Facets (subplots)
-- Statistics (show means, counts, and other statistical summaries of data)
-- Coordinates
-- Theme (apariencia general del gráfico)
-
-:::
-
-::: {.column width="50%"}
-
-![layers](images/layers.png)
-
-:::
-:::::
-## Ejemplo de capas
-
-![Hertz & McNeill 2024](images/ggplot_basics.png)
-
-## Aesthetics
-
-- x, y
-- colour: color de los geoms 
-- fill: el color de dentro de los geoms
-- group: a qué grupo pertenece un geom
-- shape: la forma de los puntos
-- linetype: tipo de linea (solid, dashed, etc)
-- size: escalar el tamaño 
-- alpha: transparencia
-
-## Geometries
-
-### Categórico 
-- geom_bar(): bar charts for categorical x axis
-- geom_boxplot(): box and whiskers plot for categorical variables
-- geom_violin(): distribution kernel of data dispersion
-
-
-### Continuo
-- geom_histogram(): histogram for continuous x axis
-- geom_point(): scatterplot
-- geom_line(): lines connecting points by increasing value of x
-- geom_path(): lines connecting points in sequence of appearance
-
-## Scales
-Scales tambien pueden modificar el tipo de variable, transformarla etc. pero nos quedaremos con la espeficicacion del color.
-
-scale_fill_manual ( values = c("color1", "color2"))
-
-scale
-The name of the primary aesthetic (e.g., colour, shape or x)
-The name of the scale (e.g., continuous, discrete, brewer).
-
-
-## Facets
-- facet_wrap() 
-- facet_grid() 
-
-`facet_wrap(~ variable)`     | Divide el gráfico en **varios paneles según una sola variable**. Coloca los paneles en una cuadrícula flexible (se “envuelven” automáticamente). 
-
-`facet_grid(fila ~ columna)` | Divide los gráficos según **dos variables**: una define las filas y otra las columnas.
-
-## Themes
-
-![geeksforgeeks](images/themes.png)
-
-## Empecemos a visualizar
-
-Creamos una base de datos simple sobre tipos de comida y cuanto cuestan
-
-```{r}
-#| echo: true
-
-dat <- data.frame(
-  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
-  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
-)
-
-head(dat)
-
-```
-
-## GRÁFICOS CATEGÓRICOS 
-
-### Gráfico de Barras
-
-Geom_bar por defecto nos cuenta el numero de datos
-
-```{r}
-#| echo: true
-
-dat <- data.frame(
-  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
-  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
-)
-
-dat %>%
-  ggplot(aes(x=meal)) +
-  geom_bar() + theme_minimal()
-
-```
-
-
-## Gráfico de Barras
-
-Para que nos haga la suma, necesitamos "identity"
-
-```{r}
-#| echo: true
-
-library(ggplot2)
-library(dplyr)
-
-dat <- data.frame(
-  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
-  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
-)
-
-# Very basic bar graph
-dat %>%
-ggplot(aes(x=meal, y=total_bill)) +
-    geom_bar(stat="identity")
-```
-***
-
-Ahora la media
-
-```{r}
-#| echo: true
-
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill)) +
-    geom_bar(stat="summary", fun = "mean")
-
-```
-
-
-
-
-## CAMBIAMOS LOS COLORES
-Queremos el tipo de comida en distintos colores
-Para un barplot en aestetics, argumento fill vamos a cambiar el "relleno" segun el grupo que indiquemos 
-```{r}
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, fill=meal)) +
-    geom_bar(stat="identity")
-
-```
-
-***
-
-¿Qué pasa si modificamos "color"?
-```{r}
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, color=meal)) +
-    geom_bar(stat="identity")
-
-```
-
-***
-Sin leyenda -> guides (fill=FALSE)
-
-
-```{r}
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, fill=meal)) +
-    geom_bar(stat="identity") +
-    guides(fill=FALSE)
-
-```
-
-***
-Añadimos el labs y theme 
-
-```{r}
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, fill=meal)) +
-    geom_bar(stat="identity") +
-    guides(fill=FALSE) +
-    labs(title = "Precio medio por comida", 
-       subtitle = "Ajustado para dos personas",
-       x = "Tipo de comida",
-       y = "Precio") + theme_minimal()
-
-```
-
-##  Incluismos una variable más
-
-```{r}
-#| echo: true
-
-dat <- data.frame(
-  diet = factor(c("Vegan", "Carnivore", "Carnivore","Carnivore","Vegan", "Vegan", "Vegan")),
-  meal = factor(c("Breakfast", "Dinner", "Breakfast","Lunch", "Dinner", "Dinner", "Lunch")),
-  total_bill = c(5.32, 19.22, 4.89, 7.23, 15.34, 21.23, 11.32))
-
-# Stacked bar graph -- queremos esto?
-dat %>% 
-  ggplot(aes(x=meal, y=total_bill, fill=diet)) +
-  geom_bar(stat="identity")
-
-```
-***
-
-position_dodge()
-```{r}
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, fill=diet)) +
-    geom_bar(stat="identity", position=position_dodge()) 
-```
-***
-
-## SCALES
-
-
-```{r}
-
-#| echo: true
-
-dat %>%
-ggplot(aes(x=meal, y=total_bill, fill=diet)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  scale_fill_manual(values=c("#72874EFF", "#FED789FF")) + 
-  theme_minimal() 
-
-
-```
-
-
-## Más gráficos para datos categóricos
-### Boxplot
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-ggplot (aes(x = island, y = bill_length_mm)) + geom_boxplot()
-
-```
-
-## Take care with boxplot
-
-![Seven distributions of data, shown as raw data points (of strip-plots), as box plots, and as violin plots](images/violin.gif) 
-
-[Fuente](https://www.research.autodesk.com/publications/same-stats-different-graphs/)
-
-
-
-## Violin plot
-
-```{r}
-#| echo: true
-
-violin_plot <- datos_limpios_kg %>% 
-  ggplot (aes(x = island, y = bill_length_mm, fill = island)) + 
-  geom_jitter (size=3, alpha=0.1, fill="grey") +
-  #geom_jitter (aes(fill=island), size=5, alpha=0.2, fill="grey") +
-  geom_violin(alpha=0.8) +  guides (fill= FALSE)+
-  scale_fill_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  theme_light() + theme(rect = element_rect(fill = "transparent"))
-
-violin_plot
-
-ggsave("images/violin_plot.png", violin_plot, width = 20, height = 20, units = "cm", scale = .5)
-
-```
-## PNG guardado
-
-![Violines](images/violin_plot.png){width="200px" height="200px" fig-align="left"}
-ggsave nos permite guardar en "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf"
-
-
-## DATOS CONTINUOS
-
-### Histogramas 
-
-Volvemos con los pingüinos
-```{r}
-#| echo: true
-
-ggplot(datos_limpios_kg, 
-       aes(x = flipper_length_mm)) + 
-  geom_histogram() # bins=5
-
-```
-### Histogramas 
-
-Volvemos con los pingüinos
-```{r}
-#| echo: true
-
-ggplot(datos_limpios_kg, 
-       aes(x = flipper_length_mm)) + geom_density(bw=1)
-
-```
-
-### Scatterplots 
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
-  geom_point() 
-
-```
-
-## Scales
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
-  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  geom_point() + theme_light() 
-
-```
-## Continous colors
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
-  geom_point() + theme_light() 
-
-```
-## Continous colors
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
-  geom_point() +
-  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07"))+
-  theme_light() 
-
-```
-## Colores continuos de paletas (viridis)
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
-  geom_point() +
-  scale_color_viridis_c(option = "plasma") + 
-  theme_light() 
-
-```
-
-## Colores continuos de paletas (RColorBrewer)
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
-  geom_point() +
-  scale_color_distiller(palette = "Spectral") +  # otras: "RdYlBu", "YlGnBu", "PuOr", etc.
-  theme_light() 
-
-```
-
-## STATISTICS
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
-  geom_point() + geom_smooth()
-# Method = "loess"
-```
-
-## LINEAR MODELS 
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
-  geom_point() + theme_light() + geom_smooth(method = "lm")
-
-```
-
-## LINEAR MODELS WITH INTERACTION
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
-  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  geom_point() + theme_light() + geom_smooth(method = "lm")
-
-```
-
-## facets
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
-  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  geom_point() + theme_light() +  facet_wrap(~species, scales = "free")
 
 
 
 ```
-
-## facets
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
-  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  geom_point() + theme_light() +  facet_wrap(species~island, scales = "free")
-
-```
-
-## facet grid
-
-```{r}
-#| echo: true
-
-datos_limpios_kg %>% 
-  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
-  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
-  geom_point() + theme_light() +  facet_grid(species~island, scales = "free")
-
-```
-
-
-
-## Mapas I
-
-![Mapa del crecimiento urbano en Valencia](images/map-growth.png){width="600px" height="550px" fig-align="left"}
-
-[Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
-
-## Mapas II
-
-![Apicultores en Alemania](images/bee.png){width="600px" height="550px" fig-align="left"} 
-[Código](https://www.cedricscherer.com/top/dataviz/)
-
-## Nuestros datos georeferenciados
-
-```{r}
-#| echo: true
-
-
-library(rgbif)
-library(ggplot2)
-library(rnaturalearth)
-library(sf)
-
-datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
-df <- datos$data
-
-# Basic map
-world <- ne_countries(scale = "medium", returnclass = "sf")
-
-# Plot
-ggplot() +
-  geom_sf(data = world, fill = "grey90", color = "grey30") +
-  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
-             color = "darkred", size = 2, alpha = 0.7) +
-  coord_sf() +
-  theme_minimal()
-
-```
-
-***
-
-```{r}
-#| echo: true
-
-# Basic map
-spain <- ne_countries(country=c("spain", "portugal"))
-ggplot() +
-  geom_sf(data = spain, fill = "grey99", color = "grey30") +
-  geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
-             color = "darkgreen", size = 2, alpha = 0.7) +
-  coord_sf() +
-  theme_minimal()
-
-```
-
-## Mapa plantas
-
-```{r}
-#| echo: true
-
-library(FloraIberica)
-
-map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
-
-```
-
-## Visualizaciones geniales (ya no solo con r)
-
-[Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
-
-## Bibliografía
-
-[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
-[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
-
-
-http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html
-
-https://link.springer.com/book/10.1007/0-387-28695-0
-
-https://r-graphics.org/RECIPE-QUICK-SCATTER.html
-
-https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/
-
-## Ejercicios
-
-
-....
-
-
