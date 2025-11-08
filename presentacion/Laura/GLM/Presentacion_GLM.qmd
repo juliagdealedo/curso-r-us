@@ -16,7 +16,40 @@ format:
     theme: flatly
 ---
 
-## Introducción
+## Organización del día
+
+::::: columns
+::: {.column width="50%"}
+Hora
+
+- 9:30 a 11:00 teoría
+
+- 11:00 a 11:30 ejercicios
+
+- 11:30 a 11:45 break
+
+- 11:45 a 12:45 teoría
+
+- 12:45 a 13:30 ejercicios y dudas
+:::
+
+::: {.column width="50%"}
+Temario
+
+- GLM
+
+- Ejercicio GLM
+
+-
+
+- Análisis multivariantes
+
+- Ejercicio PCA + GLM
+:::
+:::::
+
+
+## Introducción GLM
 
 1.   Definición
 

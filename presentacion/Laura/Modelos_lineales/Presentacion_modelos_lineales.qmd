@@ -17,7 +17,39 @@ format:
     theme: flatly
 ---
 
-## Introducción
+## Organización del día
+
+::::: columns
+::: {.column width="50%"}
+Hora
+
+- 9:30 a 10:30 teoría
+
+- 10:30 a 11:15 ejercicios
+
+- 11:15 a 11:30 break
+
+- 11 a 12:30 teoría
+
+- 12 a 13:30 ejercicios y dudas
+:::
+
+::: {.column width="50%"}
+Temario
+
+- Modelos lineales regresión
+
+- Ejercicio regresión
+
+-
+
+- Modelos lineales factoriales
+
+- Ejercicio ANCOVA
+:::
+:::::
+
+## Introducción modelos lineales
 
 -   Definición
 

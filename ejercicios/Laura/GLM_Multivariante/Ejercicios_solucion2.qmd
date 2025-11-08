@@ -2,7 +2,7 @@
 title: "Ejercicios GLMs y Multivariante"
 format: 
   revealjs:
-    theme: white    # Specify the 'night' theme here
+    theme: solarized    # Specify the 'night' theme here
     slide-number: true  # Optional: Show slide numbers
     self-contained: true
   html: 
@@ -65,7 +65,7 @@ p1 + p2
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.3em'"
 glm_bino1<-glm(Sp ~ bio_1 * bio_12, enm_data, family = "binomial")
-anova(glm_bino1, test = "Chisq")
+anova(glm_bino1, test = "Chi")
 ```
 
 ***
@@ -101,7 +101,7 @@ plot(glm_bino1)
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.9em'"
 #| fig-width: 25     # ancho en pulgadas
-#| fig-height: 10    # alto en pulgadas
+#| fig-height: 8    # alto en pulgadas
 
 # Graficando la temperatura en el eje x
 
@@ -115,7 +115,7 @@ p3 <- ggplot(newdat, aes(x = bio_1, y = pred, color = as.factor(bio_12))) +
   geom_line(size = 1.2) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, fill = as.factor(bio_12)), 
               alpha = 0.2, color = NA) +
-  labs(y = "Probabilidad predicha ± IC95%",
+  labs(y = "Probabilidad presencia especie",
     x = "Temperatura",
     color = "Precipitación (deciles)",
     fill = "Precipitación (deciles)") +
@@ -134,6 +134,7 @@ p4 <- ggplot(newdat2, aes(x = bio_12, y = pred, color = as.factor(bio_1))) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, fill = as.factor(bio_1)), 
               alpha = 0.2, color = NA) +
 labs(x = "Precipitación",
+     y = "",
     color = "Temperatura (deciles)",
     fill = "Temperatura (deciles)") +
   theme_minimal(base_size = 25)
@@ -156,7 +157,7 @@ p3 + p4
 ## Ejercicio: GLM y multivariante
 
 [Estudio sobre el efecto del uso de suelo sobre los polinizadores. En 38 puntos utlizando círculos
-concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron 8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en fores (Prop_fow), infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines (Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas (Prop_open) y carreteras (Prop_road).]{style="font-size:30px"}
+concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron 8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en flores (Prop_fow), infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines (Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas (Prop_open) y carreteras (Prop_road).]{style="font-size:30px"}
 
 [Se quiere construir un modelo que nos permita investgar la relación entre el número de
 polinizadores (peak_colony) y las diferentes coberturas del suelo medidas en un radio de 750
@@ -170,7 +171,7 @@ m.]{style="font-size:30px"}
 variabilidad en unas pocas variables (máximo 2).
 
 2. Generar un modelo estadístco que permita explicar el número de polinizadores en
-función de las característcas del paisaje en términos de tpo de coberturas y usos del
+función de las característcas del paisaje en términos de tipo de coberturas y usos del
 suelo.
 
 ***
