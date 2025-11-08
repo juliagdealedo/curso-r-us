@@ -107,7 +107,7 @@ RStudio → Es un entorno de desarrollo integrado (un programa) que facilita el 
 -   Visualizar (graficos estadísticos, interactivos, mapas, animaciones, etc)
 -   Automatizar y extender (crear funciones propias, desarrollar paquetes, reproducir analisis facilmente)
 -   Comunicar (crear informes Quarto o RMarkdown, crear webs o apps Shiny)
-![Ejemplo quarto](images/quarto.png){width="600px" height="550px" fig-align="left"}
+![Ejemplo quarto](images/quarto.png){width="200px" height="550px" fig-align="left"}
 ## Workflow: lo básico básico
 
 Es una calculadora: se pueden hacer operaciones básicas multiplicar, dividir, sumar, restar...

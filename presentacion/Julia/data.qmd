@@ -3,7 +3,8 @@ title: "Manejo y visualización de datos"
 subtitle: "Importar, transformar y visualizar datos en R"
 format: 
   revealjs:
-    theme: solarized   
+    theme: solarized 
+    smaller: true
     slide-number: true 
     self-contained: true
   html: 
@@ -21,9 +22,9 @@ format:
 
 La exploración de datos nos permite verificar su calidad, entender los datos con los que trabajamos. Visualizar nuestros datos es un buen comienzo, pero a menudo vamos a necesitar transformar los datos previamente.
 
-Formato tidy data
+Formato tidy data (long)
 
-Cada variable tiene su propia columna Cada observación tiene su propia fila Cada valor tiene su propia celda
+Cada variable tiene su propia columna - cada observación tiene su propia fila - cada valor tiene su propia celda
 
 ![Ejemplo organización "tidy"](images/tidy-table.png)
 
@@ -42,6 +43,7 @@ Cada variable tiene su propia columna Cada observación tiene su propia fila Cad
 
 ## Organizacion tabla 
 ![Hertz & McNeill 2024](images/example-table.png){style="font-size:30px"}
+
 ## dplyr y ggplot 
 
  coomo funcionan, libreria tidyverse.
@@ -136,49 +138,6 @@ datos_limpios_kg <- datos_limpios %>%
 ```
 
 
-## De simple
-
-```{r}
-#| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
-
-
-ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
-```
-
-
-## A complejo
-```{r}
-#| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
-library(ggplot2)
-
-p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
-geom_point(aes(color = body_mass_g), alpha = .6) +
-  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
-## custom axes scaling
-scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
-scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
-## custom labels
-labs(
-title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
-subtitle = 'A scatter plot of bill depth versus bill length.',
-caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
-x = 'Bill Length (mm)',
-y = 'Bill Depth (mm)',
-color = 'Body mass (g)'
-) + theme_minimal () 
-```
-***
-```{r}
-#| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
-p
-```
-
 ## Ejemplo datos inscripción curso
 
 ```{r}
@@ -245,10 +204,28 @@ wordcloud2(data=table(words_clean), size=0.5,
 
 ```
 
-## Visualizacion de datos
 
-- Bases de la visualizacion
-- Base R vs ggplot
+
+## Ejercicios manejo de datos
+
+
+
+
+## Visualización
+
+Para entender patrones y relaciones
+
+Para comunicar resultados de forma clara
+
+Para detectar errores o valores atípicos
+
+Porque una imagen resume más que una tabla
+
+![Matetja et al](images/plot.png)
+
+## Colores
+
+Colores... https://www.fabiocrameri.ch/colourmaps/
 
 
 
@@ -257,52 +234,556 @@ wordcloud2(data=table(words_clean), size=0.5,
 
 ```{r}
 #| echo: true
+
 plot(x=rnorm(100), y=rnorm(100))
+
 ```
 
 ------------------------------------------------------------------------
 
 ## Hasta gráficos muy complejos
 
-![quién habla con quién en "The Office"](images/complex_graph.png) [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
+![quién habla con quién en "The Office"](images/complex_graph.png){width="600px" height="550px" fig-align="left"}
 
-## Bases de ggplot
+[Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
-## scatterplot
+## Base R vs ggplot
 
-## boxplots
+::::: columns
+::: {.column width="50%"}
 
 ```{r}
 #| echo: true
-ggplot (data = datos_limpios_kg, aes(x = island, y = bill_length_mm)) + geom_boxplot()
+
+plot(datos_limpios_kg$bill_length_mm, datos_limpios_kg$bill_depth_mm)
 
 ```
+:::
 
-## violin
+::: {.column width="50%"}
+```{r}
+#| echo: true
+#| 
+ggplot(datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point()
 
-## xxxx
+```
+:::
+:::::
 
 
-## Colores
-
-Colores... https://www.fabiocrameri.ch/colourmaps/
-
-
-
-## Mapas I
-
-![Mapa del crecimiento urbano en Valencia](images/map-growth.png) [Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
-
-## Mapas II
-
-![Apicultores en Alemania](images/bee.png) [Código](https://www.cedricscherer.com/top/dataviz/)
-
-## Nuestros datos georeferenciados
+## De simple
 
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.5em'"
 #| attr-output: "style='font-size: 0.3em'"
+
+
+ggplot(data = datos_limpios_kg, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+```
+
+
+## A complejo
+```{r}
+#| echo: true
+library(ggplot2)
+
+p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+geom_point(aes(color = body_mass_g), alpha = .6) +
+  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
+## custom axes scaling
+scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
+scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
+## custom labels
+labs(
+title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+subtitle = 'A scatter plot of bill depth versus bill length.',
+caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
+x = 'Bill Length (mm)',
+y = 'Bill Depth (mm)',
+color = 'Body mass (g)'
+) + theme_minimal () 
+p
+```
+
+## Bases de ggplot
+
+ggplot = Grammar of Graphics (GG)
+Separa cada componente de un gráfico en componentes individuales, creando distintas capas. Así tenemos resultados más flexibles y personalizables.
+
+::::: columns
+::: {.column width="50%"}
+
+- Data
+- Aesthetics (x, y)
+- Geometries (points, lines, boxplots)
+- Scales (eg. colores)
+- Facets (subplots)
+- Statistics (show means, counts, and other statistical summaries of data)
+- Coordinates
+- Theme (apariencia general del gráfico)
+
+:::
+
+::: {.column width="50%"}
+
+![layers](images/layers.png)
+
+:::
+:::::
+## Ejemplo de capas
+
+![Hertz & McNeill 2024](images/ggplot_basics.png)
+
+## Aesthetics
+
+- x, y
+- colour: color de los geoms 
+- fill: el color de dentro de los geoms
+- group: a qué grupo pertenece un geom
+- shape: la forma de los puntos
+- linetype: tipo de linea (solid, dashed, etc)
+- size: escalar el tamaño 
+- alpha: transparencia
+
+## Geometries
+
+### Categórico 
+- geom_bar(): bar charts for categorical x axis
+- geom_boxplot(): box and whiskers plot for categorical variables
+- geom_violin(): distribution kernel of data dispersion
+
+
+### Continuo
+- geom_histogram(): histogram for continuous x axis
+- geom_point(): scatterplot
+- geom_line(): lines connecting points by increasing value of x
+- geom_path(): lines connecting points in sequence of appearance
+
+## Scales
+Scales tambien pueden modificar el tipo de variable, transformarla etc. pero nos quedaremos con la espeficicacion del color.
+
+scale_fill_manual ( values = c("color1", "color2"))
+
+scale
+The name of the primary aesthetic (e.g., colour, shape or x)
+The name of the scale (e.g., continuous, discrete, brewer).
+
+
+## Facets
+- facet_wrap() 
+- facet_grid() 
+
+`facet_wrap(~ variable)`     | Divide el gráfico en **varios paneles según una sola variable**. Coloca los paneles en una cuadrícula flexible (se “envuelven” automáticamente). 
+
+`facet_grid(fila ~ columna)` | Divide los gráficos según **dos variables**: una define las filas y otra las columnas.
+
+## Themes
+
+![geeksforgeeks](images/themes.png)
+
+## Empecemos a visualizar
+
+Creamos una base de datos simple sobre tipos de comida y cuanto cuestan
+
+```{r}
+#| echo: true
+
+dat <- data.frame(
+  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
+  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
+)
+
+head(dat)
+
+```
+
+## GRÁFICOS CATEGÓRICOS 
+
+### Gráfico de Barras
+
+Geom_bar por defecto nos cuenta el numero de datos
+
+```{r}
+#| echo: true
+
+dat <- data.frame(
+  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
+  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
+)
+
+dat %>%
+  ggplot(aes(x=meal)) +
+  geom_bar() + theme_minimal()
+
+```
+
+
+## Gráfico de Barras
+
+Para que nos haga la suma, necesitamos "identity"
+
+```{r}
+#| echo: true
+
+library(ggplot2)
+library(dplyr)
+
+dat <- data.frame(
+  meal = factor(c("Breakfast", "Lunch", "Dinner", "Dinner", "Lunch")),
+  total_bill = c(4.89, 7.23, 15.34, 21.23, 11.32)
+)
+
+# Very basic bar graph
+dat %>%
+ggplot(aes(x=meal, y=total_bill)) +
+    geom_bar(stat="identity")
+```
+***
+
+Ahora la media
+
+```{r}
+#| echo: true
+
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill)) +
+    geom_bar(stat="summary", fun = "mean")
+
+```
+
+
+
+
+## CAMBIAMOS LOS COLORES
+Queremos el tipo de comida en distintos colores
+Para un barplot en aestetics, argumento fill vamos a cambiar el "relleno" segun el grupo que indiquemos 
+```{r}
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, fill=meal)) +
+    geom_bar(stat="identity")
+
+```
+
+***
+
+¿Qué pasa si modificamos "color"?
+```{r}
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, color=meal)) +
+    geom_bar(stat="identity")
+
+```
+
+***
+Sin leyenda -> guides (fill=FALSE)
+
+
+```{r}
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, fill=meal)) +
+    geom_bar(stat="identity") +
+    guides(fill=FALSE)
+
+```
+
+***
+Añadimos el labs y theme 
+
+```{r}
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, fill=meal)) +
+    geom_bar(stat="identity") +
+    guides(fill=FALSE) +
+    labs(title = "Precio medio por comida", 
+       subtitle = "Ajustado para dos personas",
+       x = "Tipo de comida",
+       y = "Precio") + theme_minimal()
+
+```
+
+##  Incluismos una variable más
+
+```{r}
+#| echo: true
+
+dat <- data.frame(
+  diet = factor(c("Vegan", "Carnivore", "Carnivore","Carnivore","Vegan", "Vegan", "Vegan")),
+  meal = factor(c("Breakfast", "Dinner", "Breakfast","Lunch", "Dinner", "Dinner", "Lunch")),
+  total_bill = c(5.32, 19.22, 4.89, 7.23, 15.34, 21.23, 11.32))
+
+# Stacked bar graph -- queremos esto?
+dat %>% 
+  ggplot(aes(x=meal, y=total_bill, fill=diet)) +
+  geom_bar(stat="identity")
+
+```
+***
+
+position_dodge()
+```{r}
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, fill=diet)) +
+    geom_bar(stat="identity", position=position_dodge()) 
+```
+***
+
+## SCALES
+
+
+```{r}
+
+#| echo: true
+
+dat %>%
+ggplot(aes(x=meal, y=total_bill, fill=diet)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_manual(values=c("#72874EFF", "#FED789FF")) + 
+  theme_minimal() 
+
+
+```
+
+
+## Más gráficos para datos categóricos
+### Boxplot
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+ggplot (aes(x = island, y = bill_length_mm)) + geom_boxplot()
+
+```
+
+## Take care with boxplot
+
+![Seven distributions of data, shown as raw data points (of strip-plots), as box plots, and as violin plots](images/violin.gif) 
+
+[Fuente](https://www.research.autodesk.com/publications/same-stats-different-graphs/)
+
+
+
+## Violin plot
+
+```{r}
+#| echo: true
+
+violin_plot <- datos_limpios_kg %>% 
+  ggplot (aes(x = island, y = bill_length_mm, fill = island)) + 
+  geom_jitter (size=3, alpha=0.1, fill="grey") +
+  #geom_jitter (aes(fill=island), size=5, alpha=0.2, fill="grey") +
+  geom_violin(alpha=0.8) +  guides (fill= FALSE)+
+  scale_fill_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  theme_light() + theme(rect = element_rect(fill = "transparent"))
+
+violin_plot
+
+ggsave("images/violin_plot.png", violin_plot, width = 20, height = 20, units = "cm", scale = .5)
+
+```
+## PNG guardado
+
+![Violines](images/violin_plot.png){width="200px" height="200px" fig-align="left"}
+ggsave nos permite guardar en "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf"
+
+
+## DATOS CONTINUOS
+
+### Histogramas 
+
+Volvemos con los pingüinos
+```{r}
+#| echo: true
+
+ggplot(datos_limpios_kg, 
+       aes(x = flipper_length_mm)) + 
+  geom_histogram() # bins=5
+
+```
+### Histogramas 
+
+Volvemos con los pingüinos
+```{r}
+#| echo: true
+
+ggplot(datos_limpios_kg, 
+       aes(x = flipper_length_mm)) + geom_density(bw=1)
+
+```
+
+### Scatterplots 
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() 
+
+```
+
+## Scales
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_point() + theme_light() 
+
+```
+## Continous colors
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() + theme_light() 
+
+```
+## Continous colors
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_gradientn(colors = c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_light() 
+
+```
+## Colores continuos de paletas (viridis)
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_viridis_c(option = "plasma") + 
+  theme_light() 
+
+```
+
+## Colores continuos de paletas (RColorBrewer)
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = bill_length_mm)) + 
+  geom_point() +
+  scale_color_distiller(palette = "Spectral") +  # otras: "RdYlBu", "YlGnBu", "PuOr", etc.
+  theme_light() 
+
+```
+
+## STATISTICS
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() + geom_smooth()
+# Method = "loess"
+```
+
+## LINEAR MODELS 
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm)) + 
+  geom_point() + theme_light() + geom_smooth(method = "lm")
+
+```
+
+## LINEAR MODELS WITH INTERACTION
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_point() + theme_light() + geom_smooth(method = "lm")
+
+```
+
+## facets
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_point() + theme_light() +  facet_wrap(~species, scales = "free")
+
+
+
+```
+
+## facets
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_point() + theme_light() +  facet_wrap(species~island, scales = "free")
+
+```
+
+## facet grid
+
+```{r}
+#| echo: true
+
+datos_limpios_kg %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, colour = island)) + 
+  scale_colour_manual(values=c("#72874EFF", "#FED789FF", "#023743FF")) +
+  geom_point() + theme_light() +  facet_grid(species~island, scales = "free")
+
+```
+
+
+
+## Mapas I
+
+![Mapa del crecimiento urbano en Valencia](images/map-growth.png){width="600px" height="550px" fig-align="left"}
+
+[Código](https://dominicroye.github.io/blog/visualize-urban-growth/index.html)
+
+## Mapas II
+
+![Apicultores en Alemania](images/bee.png){width="600px" height="550px" fig-align="left"} 
+[Código](https://www.cedricscherer.com/top/dataviz/)
+
+## Nuestros datos georeferenciados
+
+```{r}
+#| echo: true
+
 
 library(rgbif)
 library(ggplot2)
@@ -310,7 +791,6 @@ library(rnaturalearth)
 library(sf)
 
 datos <- occ_search(scientificName = "Lynx pardinus", limit = 100)
-#head(datos$data[, c("species", "decimalLatitude", "decimalLongitude")])
 df <- datos$data
 
 # Basic map
@@ -326,18 +806,13 @@ ggplot() +
 
 ```
 
-------------------------------------------------------------------------
+***
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
 
 # Basic map
 spain <- ne_countries(country=c("spain", "portugal"))
-# plot(spain)
-# Plot
-
 ggplot() +
   geom_sf(data = spain, fill = "grey99", color = "grey30") +
   geom_point(data = df, aes(x = decimalLongitude, y = decimalLatitude),
@@ -347,17 +822,15 @@ ggplot() +
 
 ```
 
-#### Mapa plantas
+## Mapa plantas
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
-#| fig-width: 9.5     # ancho en pulgadas
-#| fig-height: 9  # alto en pulgadas
-#| fig-align: "left"
+
 library(FloraIberica)
+
 map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
+
 ```
 
 ## Visualizaciones geniales (ya no solo con r)
@@ -367,7 +840,20 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 ## Bibliografía
 
 [Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
-[Eleven quick tips for properly handling tabular data](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
+[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
+
+
+http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html
+
+https://link.springer.com/book/10.1007/0-387-28695-0
+
+https://r-graphics.org/RECIPE-QUICK-SCATTER.html
+
+https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/
+
 ## Ejercicios
+
+
+....
 
 
