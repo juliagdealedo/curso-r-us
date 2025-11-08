@@ -1,0 +1,455 @@
+---
+title: "Ejercicios Modelos lineales"
+format: 
+  revealjs:
+    theme: solarized    # Specify the 'night' theme here
+    slide-number: true  # Optional: Show slide numbers
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+
+## Ejercicio 1: Modelo regresión
+
+Tenemos un dataset con riqueza de especies en las islas Galápagos. Nos preguntamos si hay un efecto de las variables: área de la isla, elevación máxima de la isla y distancia a la isla más próxima en la riqueza de especies.
+
+***
+
+Variables:
+
+- Area: área de la isla
+- Elevation: elevación máxima de la isla
+- Nearest: distancia isla más próxima
+- Species: riqueza de especies
+
+***
+
+Pasos que seguir
+
+1. Instalar y cargar el paquete faraway (data(gala))
+
+2. Representar gráficamente relación variable respuesta con las variables explicativas y correlación variables
+
+3. Ajustar modelo lineal
+
+4. Interpretación resultados modelo
+
+5. Comprobación supuestos del modelo
+
+***
+### Instalar paquete y cargar los datos
+
+```{r}
+#| echo: true
+library(faraway)
+data(gala)
+head(gala)
+```
+
+***
+
+### [1. Análisis exploratorios]{style="font-size:25px"}
+
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.2em'"
+library(ggplot2)
+library(patchwork)
+plot1 <- ggplot(data = gala, aes(x = Area , y = Species)) +  
+  geom_point(color = "blue", size = 1.5) +      
+  labs(x = "Área de la isla",         
+       y = "Riqueza de especies",                   
+      title = "Relación entre riqueza de especies y área de la isla"   
+  ) +
+  theme_minimal()   
+plot2 <- ggplot(data = gala, aes(x = Elevation , y = Species)) +  
+  geom_point(color = "red", size = 1.5) +      
+  labs(x = "Elevación de la isla",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y elevación de la isla"   
+  ) +
+  theme_minimal()
+plot3 <- ggplot(data = gala, aes(x = Nearest , y = Species)) +  
+  geom_point(color = "darkgreen", size = 1.5) +      
+  labs(x = "Distancia isla más próxima",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y distancia isla más próxima"   
+  ) +
+  theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 5    # alto en pulgadas
+#| fig-align: "center"
+plot1 + plot2 + plot3
+```
+
+***
+### [2. Correlación variables explicativas]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+library(GGally)
+ggcorr(gala[,c(1,3:5)], label = TRUE)
+```
+[Parece relación estre riqueza especies y área y elevación. Convertir a log podría ayudar.]{style="font-size:20px"}
+
+[Relación entre área y elevación. ¿Qué se podría hacer? Quitar una.]{style="font-size:20px"}
+
+***
+
+### [3. Ajuste modelo lineal e interpretación modelo]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+lm.gal0<-lm(Species~Area+Elevation+Nearest, gala)
+anova(lm.gal0)
+```
+
+*** 
+### [4. Comprobación supuestos del modelo]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+par(mfcol=c(2,2))
+plot(lm.gal0)
+```
+[Ausencia de homocedasticidad, normalidad y linealidad. Y valores atípicos.]{style="font-size:25px"}
+[No sirve modelo.]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+library(car)
+vif(lm.gal0)
+```
+
+***
+
+Transformación variable respuesta
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+gala$log_Sp <- log(gala$Species)
+plot1 <- ggplot(data = gala, aes(x = Area , y = log_Sp)) +  
+  geom_point(color = "blue", size = 1.5) +      
+  labs(x = "Área de la isla",         
+       y = "Riqueza de especies",                   
+      title = "Relación entre riqueza de especies y área de la isla"   
+  ) +
+  theme_minimal()   
+plot2 <- ggplot(data = gala, aes(x = Elevation , y = log_Sp)) +  
+  geom_point(color = "red", size = 1.5) +      
+  labs(x = "Elevación de la isla",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y elevación de la isla"   
+  ) +
+  theme_minimal()
+plot3 <- ggplot(data = gala, aes(x = Nearest , y = log_Sp)) +  
+  geom_point(color = "darkgreen", size = 1.5) +      
+  labs(x = "Distancia isla más próxima",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y distancia isla más próxima"   
+  ) +
+  theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 5    # alto en pulgadas
+#| fig-align: "center"
+
+plot1 + plot2 + plot3
+```
+
+[Sigue sin ser lineal la relación.]{style="font-size:20px"}
+
+***
+
+[Transformación variables predictoras]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+gala$log_area <- log(gala$Area)
+gala$log_elevacion <- log(gala$Elevation)
+gala$log_near <- log(gala$Nearest)
+
+plot1 <- ggplot(data = gala, aes(x = log_area , y = log_Sp)) +  
+  geom_point(color = "blue", size = 2) +      
+  labs(x = "Área de la isla",         
+       y = "Riqueza de especies",                   
+      title = "Relación entre riqueza de especies y área de la isla"   
+  ) +
+  theme_minimal()   
+plot2 <- ggplot(data = gala, aes(x = log_elevacion , y = log_Sp)) +  
+  geom_point(color = "red", size = 2) +      
+  labs(x = "Elevación de la isla",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y elevación de la isla"   
+  ) +
+  theme_minimal()
+plot3 <- ggplot(data = gala, aes(x = log_near , y = log_Sp)) +  
+  geom_point(color = "darkgreen", size = 2) +      
+  labs(x = "Distancia isla más próxima",         
+       y = "",                   
+      title = "Relación entre riqueza de especies y distancia isla más próxima"   
+  ) +
+  theme_minimal() 
+```
+
+***
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.6em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+
+plot1 + plot2 + plot3
+```
+
+***
+
+#### Ajuste modelo y comprobación supuestos
+
+```{r}
+#| echo: true
+#| fig-width: 8     # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+#| fig-align: "center"
+lm.gal1 <- lm(log_Sp~log_area+log_elevacion+log_near, gala)
+par(mfcol=c(2,2))
+plot(lm.gal1)
+```
+
+***
+[¿Jerarquización variables?]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+Anova(lm.gal1,type="III")
+```
+
+[Problemas colinealidad]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+vif(lm.gal1)
+```
+
+[Valor muy grande. Decidir qué variable eliminar]{style="font-size:25px"}
+
+***
+
+```{r}
+#| echo: true
+lm.gal2 <- lm(log_Sp~log_area+log_near,gala)
+Anova(lm.gal2,type="III")
+```
+
+***
+
+[Quitar distancia]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+lm.gal3 <- lm(log_Sp~log_area,gala)
+Anova(lm.gal3,type="III")
+```
+
+***
+
+```{r}
+#| echo: true
+summary(lm.gal3)
+```
+
+[*log(Species) = 2.9 + 0.39 log(Area)*]{style="font-size:25px"}
+
+***
+
+[Gráfico de predicciones]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.4em'"
+#| fig-width: 7     # ancho en pulgadas
+#| fig-height: 5    # alto en pulgadas
+#| fig-align: "center"
+library(broom)
+library(tidyverse)
+library(dplyr)
+preds <- augment(lm.gal3, type.predict = "response", se_fit = TRUE)
+preds <- preds %>%
+  mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
+  
+ggplot(data = preds, aes(x = log_area, y = log_Sp)) +  
+  geom_point(color = "blue", size = 2) +     
+  geom_line(aes(y = .fitted)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
+  labs(x = "Área de la isla",         
+       y = "Riqueza de especies",                   
+      title = "Predicciones modelo de regresión"   
+  ) +
+  theme_minimal()        
+```
+***
+
+## Ejercicio 2: Modelo factorial
+
+Tenemos un dataset con biomasa leñosa en un área mediterránea. Nos preguntamos si hay un efecto de la variable cobertura arbórea considerando dos niveles de sequía estival.
+
+Variables:
+
+- biomasa: biomasa leñosa
+- cobertura: cobertura arbórea
+- sequia: sequía o lluvia estival
+
+***
+
+Pasos que seguir
+
+1. Cargar los datos (cobertura.csv)
+
+2. Representar gráficamente relación variable respuesta con las variables explicativas 
+
+3. Ajustar modelo lineal
+
+4. Interpretación resultados modelo
+
+5. Comprobación supuestos del modelo
+
+***
+### Instalar paquete y cargar los datos
+
+```{r}
+#| echo: true
+cobertura <- read.csv("cobertura.csv")
+head(cobertura)
+```
+
+***
+
+### [1. Análisis exploratorios]{style="font-size:25px"}
+
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.2em'"
+#| fig-width: 15     # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+library(ggplot2)
+library(patchwork)
+ggplot(cobertura, aes(x = biomasa, y = cobertura)) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  facet_wrap(~ sequia) +
+  labs(
+    title = "Relación biomasa leñosa y cobertura arbórea",
+    x = "Cobertura arbórea",
+    y = "Biomasa leñosa"
+  ) +
+  theme_minimal()
+```
+
+***
+
+#### Ajuste modelo de regresión
+
+```{r}
+#| echo: true
+cobertura <- cobertura %>%
+  mutate(sequia = as.factor(sequia))
+lm_bio1 <- lm(biomasa ~ cobertura*sequia, data = cobertura)
+```
+
+#### Comprobación de hipótesis
+
+```{r}
+#| echo: true
+anova(lm_bio1)
+```
+
+***
+
+#### Supuestos del modelo
+```{r}
+#| echo: true
+#| #| fig-width: 9    # ancho en pulgadas
+#| fig-height: 7    # alto en pulgadas
+par(mfrow=c(2,2))
+plot(lm_bio1)
+```
+
+***
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.7em'"
+#| attr-output: "style='font-size: 0.4em'"
+summary(lm_bio1)
+```
+
+***
+
+#### [Gráfica de predicciones]{style="font-size:25px"}
+
+```{r}
+#| echo: true
+#| attr-source: "style='font-size: 0.5em'"
+#| attr-output: "style='font-size: 0.7em'"
+#| fig-width: 9    # ancho en pulgadas
+#| fig-height: 6    # alto en pulgadas
+#| fig-align: "center"
+library(broom)
+newdata <- expand.grid(
+  cobertura = seq(min(cobertura$cobertura), max(cobertura$cobertura), length.out = 100),
+  sequia = levels(cobertura$sequia)
+)
+predicciones_grid <- augment(lm_bio1, newdata = newdata)
+
+ggplot(cobertura, aes(x = cobertura, y = biomasa, color = sequia)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predicciones_grid, aes(x= cobertura, y = .fitted, group = sequia, color = sequia), size = 1.2) +
+  scale_color_manual(values = c("#B3E5FC", "#F8BBD0")) +
+  labs(
+    title = "ANCOVA: predicciones por nivel de sequía",
+    x = "Cobertura",
+    y = "Biomasa",
+    color = "Sequía"
+  ) +
+  theme_minimal()
+```
