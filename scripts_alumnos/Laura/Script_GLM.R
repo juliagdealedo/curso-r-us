@@ -84,10 +84,10 @@ ggplot(algas, aes(x = Long, y = Estado, color = Sp)) +
 #### Ajuste del modelo
 
 glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
-anova(glm_algas1)
+anova(glm_algas1, test= "Chi")
 
 glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
-anova(glm_algas2)
+anova(glm_algas2, test= "Chi")
 print(D2 <- 1 - (341.6/476.38))
 
 #### Supuestos del modelo

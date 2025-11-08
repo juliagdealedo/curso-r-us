@@ -311,9 +311,17 @@ visreg(glm_arau2, "dungs", by ="property", overlay = T, scale = "response", ylab
 
 - Variables con valores porcentuales (nº éxitos / nº de ensayos)
 
-Función de vínculo: logit 
+Ejemplos:
 
-*log(p/(1-p))*
+- mortalidad en poblaciones (vivo/muerto)
+- epidemiología: infectado/no infectado
+- ecofisiología semillas: germinan/no germinan
+
+***
+
+Función de vínculo: 
+
+logit: *log(p/(1-p))*
 
 *logit(y) = ln(p/(1-p)) = β~0~ + β~1~x~1~ + ... + β~1~x~n~*
 
@@ -327,9 +335,9 @@ Curva sigmoidea entre 0-1
 
 [Estrategia reproductora de un alga invasora con dos especies nativas.]{style="font-size:25px"}
 
-[¿Probabilidad de encontrar estructuras reproductoras es diferente entre la especie invasora y las nativas?]{style="font-size:25px"}
+[¿Probabilidad de encontrar estructuras reproductoras es diferente entre la especie invasora y las nativas teniendo en cuenta la talla del individuo?]{style="font-size:25px"}
 
-[Hipótesis: la especie invasora tendrá mayor probabilidad de reproducirse que las nativas]{style="font-size:25px"}
+[Hipótesis: a misma talla del individuo, la especie invasora tendrá mayor probabilidad de reproducirse que las nativas]{style="font-size:25px"}
 
 ***
 
@@ -379,7 +387,7 @@ facet_wrap(~Sp) +
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
-anova(glm_algas1)
+anova(glm_algas1, test= "Chi")
 ```
 
 Interacción no significativa
@@ -391,7 +399,7 @@ Interacción no significativa
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
-anova(glm_algas2)
+anova(glm_algas2, test= "Chi")
 print(D2 <- 1 - (341.6/476.38))
 ```
 
