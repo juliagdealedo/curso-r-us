@@ -48,7 +48,10 @@ Cada variable tiene su propia columna - cada observación tiene su propia fila -
 
  coomo funcionan, libreria tidyverse.
  
- 
+ install.packages("faraway")
+library(faraway)
+
+
 *Pipes: cómo encadenar operaciones*
 
 Los "pipes" permiten escribir código paso a paso, de forma legible:
