@@ -20,7 +20,9 @@ format:
 
 ## Bienvenidxs!!
 
-¿Quiénes somos?
+¿Quiénes somos?\
+¿En qué punto estamos?\
+¿Dónde queremos llegar?\
 
 ## Organización del curso
 
@@ -39,8 +41,8 @@ Viernes = uso colaborativo, dudas, ejemplos\
 -   9:30 a 10:30 teoría
 -   10:30 a 11:15 ejercicios
 -   11:15 a 11:30 break
--   11 a 12:30 teoría
--   12 a 13:30 ejercicios y dudas
+-   11:30  a 12:30 teoría
+-   12:30 a 13:30 ejercicios y dudas
 :::
 
 ::: {.column width="50%"}
@@ -76,6 +78,8 @@ Viernes = uso colaborativo, dudas, ejemplos\
 
 -   A dejar de pelearte con la estadística
 
+-   R es siempre woRk in progRess
+
 ## Llenos y vacíos de conocimiento
 
 ![WordCloud de la encuesta de este curso](images/wordcloud.png)
@@ -90,7 +94,7 @@ R es un lenguaje y entorno de programación especializado en:
 
 ![Biólogxs en general](images/gato.png)
 
-## R y Rtudio
+## R y RStudio
 
 R → Es el lenguaje de programación y el motor que realiza los cálculos estadísticos y el análisis de datos.
 
@@ -110,10 +114,10 @@ RStudio → Es un entorno de desarrollo integrado (un "programa") que facilita e
 
 # Lo básico, básico de R
 
-## Operaciones con números
+## Operaciones aritméticas
 
 📠 Se hacen operaciones aritméticas (como una calculadora): multiplicar, dividir, sumar, restar...\
-Utilizamos la almohadilla # para silenciar o para comentar
+por cierto, utilizamos la almohadilla # para silenciar o para comentar
 
 ```{r}
 #| echo: true
@@ -123,13 +127,15 @@ Utilizamos la almohadilla # para silenciar o para comentar
 3 * 5 # multiplicación
 20 / 4 # división
 4 %% 2 # módulo (resto de una división)
+2 ^ 4   # Potencias
+
 ```
 
 ***
 
 ## Operaciones básicas de lógica
 
-Las operaciones lógicas comparan valores y devuelven un resultado lógico.\
+Las operaciones lógicas comparan valores y devuelven un resultado booleano (lógico)\
 TRUE o FALSE
 
 ```{r}
@@ -158,7 +164,7 @@ mean(valores)      # proporción de TRUE
 ## Acumular información
 
 La magia de los objetos
-
+Indicamos un objeto con "<-"
 ```{r}
 #| echo: true
 
@@ -172,24 +178,13 @@ suma + 7
 ### Espera, pero ¿qué son los objetos?
 
 - Son un poco "cualquier cosa"
-- Siempre empiezan por una letra y son sensibles a mayusculas
-- Deberían llevar nombres coherentes y un orden
-
-```{r}
-#| echo: true
-
-yo_uso_la_serpiente <- 10
-OtraGenteUsaElCamello <- 9
-otra.gente.usa.los.puntos <- 9
-Hayque_evitar.esto10 <- 2
-
-```
+- Tienen que empezar por una letra
 
 ## Tipos de objetos
 
-Hay muchos tipos de objetos, se asignan con "<-"
+Hay muchos tipos de objetos
 
--   numéricos, strings, matrices, tablas, listas...
+-   vectores, strings, matrices, tablas, listas...
 -   modelos, polígonos, funciones, mapas...
 
 ```{r}
@@ -221,12 +216,9 @@ Ya iremos viendo más ejemplos...
 
 ## Vectores
 
-Vectores: elementos del mismo tipo juntos (numérico, carácter, etc.) 
-
-- Muchos números juntos
-- Muchos nombres de especies juntas
-
-(como una columna de una tabla...)
+Vectores ('array') son elementos del mismo tipo juntos:
+- Una secuencia de números
+- Una secuencia de nombres de especies
 
 ```{r}
 #| echo: true
@@ -237,6 +229,7 @@ numeros
 # un vector del 1 al 40
 otros_numeros <- 1:40
 otros_numeros
+
 ```
 
 ### Operaciones con vectores
@@ -271,21 +264,22 @@ Se pueden hacer medias, multiplicaciones de objetos, seleccionar parte de un vec
 
 ```{r}
 #| echo: true
-
+numeros
 promedio <- mean(numeros)
 promedio
 promedio * numeros
-numeros / otros_numeros
+promedio / numeros
 
 # [ ] para seleccionar partes de un vector
 (numeros / otros_numeros)[7]
+(numeros / otros_numeros)[7:9] 
 
 ```
 
 ## Funciones básicas y útiles
 Las funciones son aplicaciones que nos permiten realizar operaciones muy diversas.
 
-Hay funciones ya de base de R (baseR) o en los paquetes ya creados por los usuarios (dplyr)
+Hay funciones ya de base de R (baseR) o en los paquetes ya creados por los usuarios (e.g. paquete dplyr)
 
 ## Funciones básicas y útiles
 Las funciones son aplicaciones que nos permiten realizar operaciones muy diversas.
@@ -323,7 +317,7 @@ help(mean)      # lo mismo que '?mean'
 ??"dplyr"      # búsqueda más amplia en toda la documentación
 ```
 
-![Gato de Shrek](images/help.png)
+![Ayuda](images/help.png)
 
 
 ## Más funciones básicas y útiles
@@ -333,6 +327,7 @@ Aleatoriedad, ordenar, contar...
 #| echo: true
 
 x <- rpois(8, 8)
+x
 sample(x, 3)          # elegir 3 elementos al azar
 rev(x)                # invertir el orden
 sort(x)               # ordenar valores
@@ -357,7 +352,6 @@ Raiz cuadrada, logaritmo, etc
 log(x)       # logaritmo natural
 sqrt(x)      # raíz cuadrada
 log10(x)     # logaritmo en base 10
-x ^ 4        # Potencias
 abs(-0.23)   # Valores absolutos
 round(0.1245, 2)     # redondear a 2 decimales
 
@@ -371,6 +365,7 @@ R es muy potente generando distribuciones con funciones ya integradas.\
 - runif () - uniforme
 - rnorm () - normal
 - rpois () - poisson
+- rbinom () - binomial negativa
 
 Una distribución describe cómo se reparten los valores de una variable, cómo de frecuentes son.
 
@@ -453,6 +448,7 @@ Operaciones lógicas
 
 ```{r}
 #| echo: true
+nombres
 #¿existe Laura? ¿Hay algo que sea igual a Laura?
 nombres == "Laura" 
 # ¿Hay algo que sea desigual a Laura?
@@ -463,14 +459,15 @@ nombres %in% c("Laura", "Rocio") #yes
 
 ```
 
+El operador %in% se usa para comprobar si los elementos de un vector están contenidos en otro vector
+
 ## Ejercicios
 
  1. Calcula el minimo valor de 100 valores aleatorios según una distribución normal\
  
  2. Dada una secuencia de 20 números seguidos (del 0 al 20), genera los pares y guárdalo en un objeto.\
  
- 3. Ejercicio\
-
+ 3.
   - Crea un vector con 20 números aleatorios entre 0 y 50.
   - Calcula el promedio y la desviación estándar.
   - Multiplica todos los valores por 2.
@@ -501,7 +498,10 @@ sd (mi_vector)
 mi_vector_2 <- mi_vector*2
 hist(mi_vector_2)
 ```
-  4. Crea un vector con edades y usa una comparación para saber cuáles son mayores de edad y cualcula cuantos no lo son
+
+***
+
+4. Crea un vector con edades y usa una comparación para saber cuáles son mayores de edad y cualcula cuantos no lo son
 ```{r}
 #| echo: true
 edades <- c(12, 18, 3, 44, 25, 15, 30)
@@ -513,12 +513,12 @@ sum (edades > 18)
 
 Sirven para **ejecutar** una tarea compleja y personalizada\
 
-Ventajas:\
-
-- Se puede reutilizar
 - Toma entradas (argumentos)
 - Devuelve salidas (resultados)
 - Sirve para organizar y simplificar el código
+
+
+Ventaja ante la complejidad: se puede reutilizar!!
 
 ## Ejemplo de funciones
 
@@ -529,41 +529,42 @@ Muchas ejecuciones (i.e. tareas) distintas para un mismo vector.
 #| echo: true
 
 # Queremos la media de nuestros números  y la media de estos transformados a logaritmo
-
 vector <- seq(1, 100, 10)
 mean (log (vector))
 
 # Queremos la desviación estándar de nuestros números y de éstos transformados a log
-
 vector2 <- seq(1, 300, 50)
-mean (log (vector2))
+sd (log (vector2))
 
 # Una función que hace todo eso a la vez y más cosas
-
-log_vect <- function (y) {
+mi_funcion_increible <- function (y) {
   mean <- mean (y)
   mean_log <- mean (log (y+1))
   sd <- sd (y)
   sd_log <- sd (log (y+1))
-  return(c(mean, mean_log, sd, sd_log))
+  return (c(mean, mean_log, sd, sd_log))
 }
 
 vector3 <- sample (40)
-log_vect (vector3)
+mi_funcion_increible (vector3)
+mi_vector_increible <- mi_funcion_increible
+mi_vector_increible
+vector4 <- sample (100)
+mi_funcion_increible (vector4)
 
 ```
 
 ## Bucles 
 
-- Distintos a las funciones
+- Distintos a las funciones. Se usa la función for()
 - Un bucle (loop) sirve para **repetir** una acción varias veces.
 - A cada repetición se le llama **iteración**
-Se usa cuando quieres hacer lo mismo para muchos elementos (por ejemplo, recorrer filas, listas o vectores).\
-A mano del 1 al 5 está bien... pero del 1 al 100?
+- Se usa cuando quieres hacer lo mismo para muchos elementos (e.g. recorrer filas, listas o vectores).\
 
 ```{r}
 #| echo: true
 
+# A mano del 1 al 5 está bien... pero del 1 al 100?
 for (i in 1:5) {
   print(paste("Aquí está el número", i))
 }
@@ -791,8 +792,10 @@ personas$NAME # Seleccionar columnas directamente con $
 ![tabla vista en R (View)](images/view.png)
 
 ## Leer bases de datos
-Organiza correctamente tus carpetas
-![🙏 cómo organizar tus carpetas🙏 ](images/folders.png){width="200px" height="300px" fig-align="left"}
+
+![🙏 Organiza correctamente tus carpetas 🙏 ](images/folders.png){width="200px" height="250px" fig-align="left"}
+
+/ para indicar un nivel más dentro de la carpeta
 
 En la práctica, los datos vienen en archivos externos: CSV, Excel, TXT, u online. \
 El formato .csv (comma separated values) es el más común.
@@ -894,6 +897,22 @@ flores_sum <- data.frame(table(flores$species)) # número de individuos por espe
 -   control + shift + A reformatea el código
 -   control + click se abre la tabla en RStudio
 
+### Objetos
+
+- Siempre empiezan por una letra y son sensibles a mayusculas
+- Deberían llevar nombres coherentes y un orden
+
+```{r}
+#| echo: true
+
+yo_uso_la_serpiente <- 10
+OtraGenteUsaElCamello <- 9
+otra.gente.usa.los.puntos <- 9
+Hayque_evitar.esto10 <- 2
+
+```
+
+
 ## Compartir código
 
 -   git. Es una herramienta de control de versiones que además permite trabajar en equipo
@@ -907,6 +926,5 @@ flores_sum <- data.frame(table(flores$species)) # número de individuos por espe
 -   Rmarkdown
 -   Ciencia reproducible y limpia
 
-## Bibliografía
 
-[cookbook](http://www.cookbook-r.com/) 
+

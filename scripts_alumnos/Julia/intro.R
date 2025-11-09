@@ -5,12 +5,13 @@
 #############################################
 
 
-# Operaciones con números
+# Operaciones aritméticas
 2 + 3
 10 - 4
 3 * 5
 20 / 4
 4 %% 2
+2 ^ 4
 
 # Operaciones lógicas
 20 / 4 >= 10
@@ -55,11 +56,15 @@ otros_numeros + 10
 
 
 # Operaciones con vectores
+numeros
 promedio <- mean(numeros)
 promedio
 promedio * numeros
-numeros / otros_numeros
+promedio / numeros
+
+# [ ] para seleccionar partes de un vector
 (numeros / otros_numeros)[7]
+(numeros / otros_numeros)[7:9] 
 
 # Funciones básicas
 x <- c(4, 6, 8, 3, 9, 12, 12)
@@ -78,6 +83,7 @@ help(mean)
 
 # Más funciones
 x <- rpois(8, 8)
+x
 sample(x, 3)
 rev(x)
 sort(x)
@@ -90,7 +96,6 @@ length(unique(x))
 log(x)
 sqrt(x)
 log10(x)
-x ^ 4
 abs(-0.23)
 round(0.1245, 2)
 
@@ -128,8 +133,18 @@ nombres %in% c("Laura", "Rocio")
 # Ejercicios
 # Escribe aquí tu código
 
+# Queremos la media de nuestros números  y la media de estos transformados a logaritmo
+
+vector <- seq(1, 100, 10)
+mean (log (vector))
+
+# Queremos la desviación estándar de nuestros números y de éstos transformados a log
+
+vector2 <- seq(1, 300, 50)
+mean (log (vector2))
+
 # Función propia
-log_vect <- function(y) {
+mi_funcion_increible <- function(y) {
   mean <- mean(y)
   mean_log <- mean(log(y + 1))
   sd <- sd(y)
@@ -137,7 +152,11 @@ log_vect <- function(y) {
   return(c(mean, mean_log, sd, sd_log))
 }
 vector3 <- sample(40)
-log_vect(vector3)
+mi_funcion_increible (vector3)
+mi_vector_increible <- mi_funcion_increible
+mi_vector_increible
+vector4 <- sample (100)
+mi_funcion_increible (vector4)
 
 # Bucles
 for (i in 1:5) {
