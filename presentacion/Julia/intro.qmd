@@ -792,7 +792,7 @@ personas$NAME # Seleccionar columnas directamente con $
 
 ## Leer bases de datos
 Organiza correctamente tus carpetas
-![🙏 cómo organizar tus carpetas🙏 ](images/folders.png)
+![🙏 cómo organizar tus carpetas🙏 ](images/folders.png){width="200px" height="300px" fig-align="left"}
 
 En la práctica, los datos vienen en archivos externos: CSV, Excel, TXT, u online. \
 El formato .csv (comma separated values) es el más común.
