@@ -1,6 +1,6 @@
 ---
 title: "Visualización de datos"
-subtitle: "Visualizar datos en R principalmente con ggplot"
+subtitle: "Analizar y visualizar datos en R con ggplot"
 format: 
   revealjs:
     theme: solarized 

@@ -1,6 +1,6 @@
 ---
-title: "Manejo y visualización de datos"
-subtitle: "Importar, transformar y visualizar datos en R"
+title: "Manejo  de datos"
+subtitle: "Transformar datos en R con dplyr"
 format: 
   revealjs:
     theme: solarized 
@@ -16,6 +16,7 @@ format:
     toc-location: left
     toc-depth: 3
     theme: flatly
+    theme-font-size: 0.5
 ---
 
 ## Manejo de datos
@@ -27,60 +28,17 @@ format:
 -   Detectar errores o valores atípicos
 -   Preparar los datos para su análisis o visualización
 
-### ¿Qué es “tidy data”?
-
-Un conjunto de datos está ordenado (tidy) cuando:
-
--   Cada variable tiene su propia columna
--   Cada observación tiene su propia fila
--   Cada valor tiene su propia celda
-
-![Ejemplo organización "tidy"](images/tidy-table.png)
-
-## Buenas prácticas de sintaxis en R
-
-::::: columns
-::: {.column width="50%"}
-### Espacios y asignaciones
-
--   Usa espacios alrededor de los operadores
--   Usa \<- en vez de =
--   Cuando haya funciones con el mismo nombre, especifica el paquete (dplyr::select ())
--   Empieza tu script con una descripción sobre lo que hace el código, autorx, fecha y sesión.
-
-### Organización de carpetas
-
--   Carpeta con los datos brutos
-:::
-
-::: {.column width="50%"}
-!["carpetas"](images/folders.png)
-:::
-:::::
-
-
 ## Buenas prácticas en el manejo de datos
 
 
-#### 📋 Estructura y formato
 
--   Cada variable en una columna
--   Cada observación en una fila
--   No combines varias informaciones en una misma celda
-
-#### 🧩 Nombres y valores
+### Nombres y valores 🧩 
 
 -   Evita espacios, números o caracteres especiales en los nombres de columnas
+-   No combines varias informaciones en una misma celda
 -   Anota los ceros (0) cuando existen — no los dejes vacíos!!
 -   Usa NA o celdas vacías para indicar datos faltantes
 -   Separa las fechas en columnas: year, month, day
-
-#### 💾 Registro y reproducibilidad
-
--   Realiza todas las manipulaciones de datos mediante código, no manualmente
--   Así dejas rastro reproducible de cada cambio
--   Guarda o exporta tus datos en formatos de texto plano (.csv, .txt)
--   más universales, más fáciles de versionar con Git
 
 ## Organizacion tabla
 
@@ -88,56 +46,52 @@ Un conjunto de datos está ordenado (tidy) cuando:
 
 ## Tidyverse
 
-El universo ordenado.
+::::: columns
+::: {.column width="50%"}
 
-El tidyverse es una colección de paquetes de R - Para hacer más fácil y coherente el trabajo con datos. - Todos comparten una filosofía común: - Filosofía: Los datos deben ser ordenados (tidy), el código legible y los resultados reproducibles
+### El universo ordenado
 
-## Código limpio
+El tidyverse es una colección de paquetes de R 
 
--   Comentarios útiles
--   Divide en pasos lógicos
--   Usa bien la sangría y los espacios
--   Usa bien los nombres
--   Guarda solo objetos útiles (R se va llenando)
+- Para hacer más fácil y coherente el trabajo con datos. 
+- Los datos deben ser ordenados (tidy)
+- El código legible 
+- Resultados reproducibles
 
-## Tips
 
--   control + shift + C (des)comenta todo a la vez
--   control + shift + A reformatea el código
--   control + click se abre la tabla en RStudio
 
-## Importar los datos
+:::
 
+::: {.column width="50%"}
+### Estructura y formato
+
+-   Cada variable en una columna
+-   Cada observación en una fila
+-   Cada valor tiene su propia celda
+
+![Ejemplo organización "tidy"](images/tidy-table.png)
+:::
+:::::
+
+## Tidyverse
 ```{r}
 #| echo: true
 
-library(dplyr)
-library(here)
-
-glimpse(iris) # datos incluidos en dplyr
-
-cobertura <- read.csv(here("data/cobertura.csv"))
-glimpse(cobertura)
-
-
+tidyverse::tidyverse_packages()
 ```
 
-------------------------------------------------------------------------
-
-### Pipes: cómo encadenar operaciones
-
-Los "pipes" permiten escribir código paso a paso, de forma legible:
+### Pipes 
+- %>% y |>
 
 ```{r}
 #| echo: true
 
 library(dplyr)
 
-# El propio de dplyr
+# El propio de dplyr  (control  (command) + shift + M)
 iris %>%
   filter(Sepal.Length > 5) %>%
-  summarise(promedio = mean(Sepal.Width))
-# (control  (command) + shift + M)
+  summarise(promedio = mean(Sepal.Width)) 
 
 # el de R desde hace unos años
 iris |>
@@ -145,130 +99,390 @@ iris |>
   summarise(promedio = mean(Sepal.Width))
 
 ```
+- Cómo encadenar operaciones: los "pipes" permiten escribir código paso a paso, de forma legible.
 
-## Empecemos a manejar datos
+## Empecemos con el manejo de datos
+-   Vamos a trabajar exclusivamente con dplyr
+-   tip: qué queremos hacer con los datos (escribir a mano?)
 
-Cosas importantes!
+## Leer, observar los datos
+Nuestro ejemplo: **pingüinos** (penguins) \
+Tres especies en tres islas distintas datos recogidos durante tres años.\
+Datos sobre la longitud y profundidad del pico, la aleta, peso.
+![penguins data presentation"](images/penguins.png)
 
--   Primero pensar qué queremos hacer con los datos
--   El orden donde ponemos los argumentos
--   Si van dentro de paréntesis o no
--   dónde va la base de datos a la que hacemos referencia
 
-## Ejemplo datos de pingüinos
-
+## Leer, observar los datos
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
- 
-# 1. Cargar librerías
 
 library(dplyr)
-library(ggplot2)
-library(readr)
 library(palmerpenguins)
 library(scico)
 
-# 2. Leer datos
 data(package = 'palmerpenguins')
-
-# 3. Explorar
 glimpse (penguins)
 
-unique(penguins$island)
+```
 
-datos_filtrados <- penguins %>% filter (year == 2007)
+------------------------------------------------------------------------
 
-datos_filtrados <- penguins %>% filter (year == 2007, sex == "female")
+## Importante
+```{r}
+#| echo: true
+#| eval: false
 
-datos_filtrados <- penguins %>% filter (year == 2007, sex == "female", island %in% c("Dream", "Bicoe"))
-# island == c("Dream", "Bicoe")) NO VALE!
-# summarize
-head (datos_filtrados, 3)
+BASE DE DATOS %>%
+    FUNCION (nombre_nuevo = hacemos algo aquí dentro,
+             nombre_nuevo_2 = que esto == sea igual a esto) %>%
+    OTRAFUNCION (calculamos la media) %>%
+    ULTIMAFUNCION (filtramos por unos datos,
+                   filtramos por otra columna)
+```
+
+## 1. Renombrar las variables con 'rename'
+Traducir al español
+
+```{r}
+#| echo: true
+
+penguins %>% rename (long_pico = bill_length_mm)
+
+```
+
+## 1. Renombrar las variables con 'rename'
+Traducir todas las columnas al español
+
+```{r}
+#| echo: true
+
+penguins %>% rename (long_pico = bill_length_mm, 
+                     anchura_pico = bill_depth_mm, 
+                     long_aleta = flipper_length_mm, 
+                     masa = body_mass_g,
+                     sexo = sex,
+                     año = year,
+                     especies = species,
+                     isla = island)
+
+```
+
+## 2. Seleccionar columnas con 'select'
+
+Queremos todas las columnas, menos la de la isla
+
+```{r}
+#| echo: true
+
+penguins %>% select (island, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex, year)
+penguins %>% select (-species) #sería lo mismo
+
+```
+## 2. Seleccionar columnas con 'select'
+
+Queremos todas las columnas, menos la del año y la del sexo del pingüino.
+
+```{r}
+#| echo: true
+# concatenamos variables con c()
+penguins %>% select (-c(sex, year))
+```
+
+## 2. Seleccionar columnas con 'select'
+
+Podemos seleccionar, cambiar el orden y renombrar al mismo tiempo con 'select'
+
+```{r}
+#| echo: true
+
+penguins %>% select (year, sex, species, 
+                     long_pico = bill_length_mm, 
+                     anchura_pico = bill_depth_mm, 
+                     long_aleta = flipper_length_mm)
+```
+
+
+## 3. Valores únicos con 'distinct'
+
+```{r}
+#| echo: true
 
 penguins %>%
-  filter(species == "Adelie") %>%
-  summarise(promedio_pico = mean(bill_length_mm, na.rm = TRUE))
+  distinct(island)
+
+penguins %>%
+  distinct(species, island)
 
 ```
 
-## Limpiar los datos
+## 4. Filtrar con 'filter'
 
+Filtrar por un valor (asignaciones lógicas)
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
- 
-# 4. Limpiar: eliminar filas con NA
-datos_limpios <- penguins %>%
+# recordad: == para condición lógica de "igual a"
+penguins_filtered  <- penguins %>% filter (year == 2007)
+
+```
+
+Filtrar por varios valores
+```{r}
+#| echo: true
+
+penguins_filtered  <- penguins %>% filter (year == 2007, sex == "female")
+```
+
+Filtrar por varios valores que incluyen varias condiciones
+```{r}
+#| echo: true
+
+penguins_filtered  <- penguins %>% 
+  filter (year > 2008, sex == "female", 
+          island %in% c("Dream", "Biscoe"))
+
+penguins_filtered %>%
+  select (island, year, sex) %>% 
+  distinct()
+```
+
+## 4. Filtrar con 'filter'
+
+Filtrar fuera, quitar valores
+```{r}
+#| echo: true
+
+penguins_filtered <- penguins %>%
   filter(!is.na(body_mass_g))
 
-head(datos_limpios, 4)
+penguins_filtered <- penguins %>%
+  filter(year != 2007)
+
+penguins_filtered <- penguins %>%
+  filter(!year == 2007)
+
+penguins_filtered %>% select(year) %>% distinct()
+
 ```
 
-## Transformar variables
+## 5. Transformar variables con 'mutate'
+
+Crear nuevas variables
+```{r}
+#| echo: true
+
+# Masa en kg
+penguins_mut <- penguins %>%
+  mutate(body_mass_kg = body_mass_g / 1000) 
+
+# Ratio del pico
+penguins %>%
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm) %>%
+  select(bill_length_mm, bill_depth_mm, bill_ratio)
+
+```
+## 6. Resumir variables con 'summarise'
+
+Dentro de summarise podemos hacer operaciones que van asignadas a una variable con un nombre nuevo.
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
- 
-# 5. Transformar: crear nueva variable
-datos_limpios_kg <- datos_limpios %>%
-  mutate(body_mass_kg = body_mass_g / 1000)
+
+penguins %>%
+  summarise (mean (body_mass_g, na.rm = TRUE))
+
+# Añadimos nombre de la columna nueva
+penguins %>%
+  summarise (promedio_pico = mean (body_mass_g, na.rm = TRUE))
+
+# Podemos hacer otros cálculos
+penguins %>% 
+  group_by (species) %>%
+  summarise (promedio_peso_kg = mean (body_mass_g, na.rm = TRUE)/1000)
+
+```
+
+Muy útil para explorar los datos y resumirlos en una tabla para un artículo.
+
+## 7. Agrupar variables con 'group_by'
+
+```{r}
+#| echo: true
+
+penguins %>% 
+  group_by(species) %>%
+  summarise (promedio_peso_kg = mean (body_mass_g, na.rm = TRUE)/1000)
+
+penguins %>% 
+  group_by(species) %>%
+  summarise (promedio_peso_kg = mean (body_mass_g, na.rm = TRUE)/1000,
+             conteo_años = n_distinct(year)
+  )
+```
+
+## 8. Aplicar condiciones con 'if_else'
+Muy útil para corregir datos
+
+```{r}
+#| echo: true
+# Queremos que data vez que ponga 2008, sea en realidad 2010
+penguins_filtered <- penguins %>%
+  mutate(year_2 = if_else(year == 2008, 2010, year))
+
+penguins %>%
+  mutate(year_2 = if_else(year == 2008, 2010, year)) %>%
+  arrange(desc(year_2)) %>% select (year, year_2) %>% distinct()
+
+# Que los NA en realidad corresponden con los polluelos
+penguins_filtered <- penguins %>% 
+  mutate (family = if_else(is.na(sex), "chick", sex))
+
+penguins %>% 
+  mutate (family = if_else(is.na(sex), "chick", sex)) %>% 
+   select (sex, family) %>% distinct()
+```
+
+## 8. Aplicar condiciones con 'if_else'
+
+O reclasificar: convertir el sexo en una categoría binaria o dummy
+
+```{r}
+#| echo: true
+penguins %>% 
+  mutate (sex_binary = if_else(sex=="male", 0, 1))
+
+```
+
+## Otras funciones interesantes
+
+- case_when () para filtrar datos por casos\
+- pivot_wider () para convertir a formato corto\
+- pivor_longer () para convertir a formato largo\
+- arrange() ordenar de mayor a menor, menor a mayor
+- relotate() cambiar las columnas de orden
+
+Sois autodidactas (bibliografía, chatgpt, google, stackoverflow, etc)
+
+## Combinar dos bases de datos con 'join'
+1) datos con los nombres taxonómicos (nombres de las especies)\
+2) datos con los rasgos de las especies\
+
+```{r}
+#| echo: true
+
+taxonomy <- data.frame (species = unique(penguins$species),
+                    species_name = c("Pygoscelis adeliae",  
+                                     "Pygoscelis papua", 
+                                     "Pygoscelis antarcticus"))
+taxonomy
+```
+Ambas tienen la especie en común\
+```{r}
+#| echo: true
+
+setdiff(taxonomy$species, penguins$species)
+
+penguins_join <- penguins %>% 
+  left_join (taxonomy, by ="species") 
+glimpse(penguins)
+```
+
+***
+```{r}
+#| echo: true
+
+library(DT)
+datatable(penguins_join)
+
+
 ```
 
 ## Ejemplo datos inscripción curso
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
 
-library(here)
-library(tidyverse)
 library(tm)
 library(wordcloud2)
 library(readxl)
+library(here)
+library(stringr)
 
-# se puede importar tablas desde excel, csv, ggsheets, txt...
-
-datos_curso = read_excel(here("data/datos-curso.xlsx"))
-
-
+datos_curso <- read_excel(here("data/datos-curso.xlsx"))
+datos_curso
 ```
 
-------------------------------------------------------------------------
+
+***
+¿Qué otra función podríamos usar para ver los datos?
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
+
 colnames(datos_curso) # Miramos las columnas que tiene
 ```
 
-------------------------------------------------------------------------
+***
+```{r}
+#| echo: true
+
+glimpse(datos_curso) 
+```
+
+***
+### Vamos a filtrar y ordenar un poco nuestra bbdd
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.2em'"
-#| fig-width: 3     # ancho en pulgadas
-#| fig-height: 3    # alto en pulgadas
-#| fig-align: "center"
 
-datos_curso_filtrado <- datos_curso |>
+datos_curso_filtrado <- datos_curso %>%
   rename (
     curso = "Curso de la primera matrícula en el programa de doctorado",
     experiencia = "Cuéntanos tu experiencia con R",
     comentarios = "Observaciones",
     email = "Correo electrónico"
-  ) |>
+  ) %>%
+  select (curso, experiencia, comentarios, email) %>%
+  mutate (email = str_replace(email, "anonymous", "anónimo")) 
+
+glimpse(datos_curso_filtrado)
+
+```
+***
+
+```{r}
+#| echo: true
+
+words <- tolower(unlist(strsplit(datos_curso_filtrado$experiencia, " ")))
+
+words <- gsub("[[:punct:][:digit:]]", "", words)
+stop_es <- stopwords("spanish")
+words_clean <- words[!words %in% stop_es]
+
+# Plot
+word_course_r <-  wordcloud2(
+  data = table(words_clean),
+  size = 0.5,
+  color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20)
+)
+
+```
+
+![WordCloud](images/wordcloud.png)
+
+```{r}
+#| echo: false
+
+datos_curso_filtrado <- datos_curso |> 
+  rename (
+    curso = "Curso de la primera matrícula en el programa de doctorado",
+    experiencia = "Cuéntanos tu experiencia con R",
+    comentarios = "Observaciones",
+    email = "Correo electrónico"
+  ) |> 
   select (curso, experiencia, comentarios, email) |>
   mutate (email = str_replace(email, "anonymous", "anónimo")) |>
-  filter (curso == "2022-23") # filtrado y sin filtrar otra diapo.
-  
+  filter (curso == "2022-23")
+
 words <- tolower(unlist(strsplit(datos_curso_filtrado$experiencia, " ")))
 
 words <- gsub("[[:punct:][:digit:]]", "", words)
@@ -279,31 +493,51 @@ words_clean <- words[!words %in% stop_es]
 wordcloud2(
   data = table(words_clean),
   size = 0.5,
-  color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 20)
+  color = rep(RColorBrewer::brewer.pal(11, "PRGn"), 4)
 )
 
 
 ```
 
-## Ejercicios manejo de datos
+![WordCloud](images/wordcloud_filt.png)
 
-Mismo ejercicio que ayer pero con dplyr.
 
-Base de datos de flores: Por cada sitio y pantrap, tenemos el numero de flores que tienen las especies de plantas en Doñana. code = código de la planta
+## Ejercicios manejo de datos {.smaller}
 
-Ejercicio: Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas. Luego, crea una base de datos con el número de individuos por especie (no de flores). Guardala como csv.
+#### Como ayer pero con dplyr! 
+
+Base de datos de flores en Doñana
+
+::::: columns
+::: {.column width="50%"}
+
+code = código de la observación\
+site_id = lugar y numero de visita\
+pantrap = número de pantrap 1:9\
+species = especie de planta\
+abundance = número de flores por individuo\
+
+Ejercicio 1. Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas, crea una base de datos con el número de individuos por especie. Guardala como csv. 
+
+:::
+
+::: {.column width="50%"}
+![Pantrap](images/pantrap.png)
+:::
+:::::
+
+## Resolvemos
+
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
-#| attr-output: "style='font-size: 0.3em'"
 
-flores <- read.csv(here("data/flores.csv"))
+flores <- read.csv (here("data/flores.csv"))
 
 # Estructura de los datos
-glimpse(flores)
+glimpse (flores)
 
-# Promedio de abundancia
+# Media de abundancia
 flores %>% 
   summarise (media_abundancia = mean(abundance, na.rm = TRUE))
 
@@ -315,11 +549,92 @@ flores %>%
 flores %>% 
   distinct(species)
 
+```
+***
+
+```{r}
+#| echo: true
+
+# Crea una base de datos con el número de individuos por especie. Guardala como csv. 
+
 # Conteo de registros por especie
-flores %>% 
-  count(species, sort = TRUE)
+count_flowers <- flores %>% count(species)
+count_flowers
+
+write.csv (count_flowers, here("data/count_flowers.csv"))
+
+```
+
+## Otro ejercicio 🪐 
+
+#### La base de datos "starwars" 
+
+Tema: personajes de Star Wars (altura, peso, planeta, especie, etc.)
+
+1.
+Selecciona las columnas name, species, height, mass, homeworld\
+Filtra solo humanos y droides\
+Crea una columna con la variable del IMC\
+Clasifica un IMC mayor de 25 en "alto" y menor en "bajo" en otra columna\
+Guardalo en una base de datos nueva\
+
+2.
+Resume por especie la media de la masas y la altura en metros\
+Quién puede alcanzar una masa corporal mayor, los humanos o droides?
+
+3. 
+¿Qué personajes pesan más de 100 kg y pertenecen a la especie Human?
+
+4.
+¿Cuántos personajes hay por cada tipos de pelo? Si hay NA, crea una categoría que sea "no_hair".
 
 
+## Resolvemos
+```{r}
+#| echo: true
 
+# glimpse (starwars)
+
+#1
+star_filtered <- starwars %>%
+  select (name, species, height, mass, homeworld) %>%
+  filter (species %in% c("Human", "Droid")) %>%
+  mutate (imc = mass/(height/100)^2) %>%
+  mutate (img_cat = if_else (imc > 25, "alto", "bajo"))
+
+
+starwars %>%
+  group_by(species) %>%
+  summarise (mass_mean = mean (mass, na.rm = T),
+             height_mean = mean (height, na.rm = T)/100)
+```
+## Resolvemos
+```{r}
+#| echo: true
+
+#2
+starwars %>%
+ filter (species %in% c("Human", "Droid")) %>%
+  group_by(species) %>%
+  summarise (mass_max = max (mass, na.rm = T))
+```
+## Resolvemos
+```{r}
+#| echo: true
+
+#3
+starwars %>%
+  filter (mass>100, species == "Human")
+```
+## Resolvemos
+```{r}
+#| echo: true
+
+#4
+
+starwars %>%
+  mutate (hair_color = if_else (is.na(hair_color), "no_hear", hair_color)) %>%
+  group_by (hair_color) %>%
+  summarise (color = n_distinct(name))
 
 ```
