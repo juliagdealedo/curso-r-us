@@ -159,7 +159,7 @@ p3 + p4
 [Estudio sobre el efecto del uso de suelo sobre los polinizadores. En 38 puntos utlizando círculos
 concéntricos de radio 100, 250, 500 y 750 m, se midieron diferentes coberturas y usos de suelo y, posteriormente, se estimaron el número de polinizadores. Se midieron 8 coberturas distntas: área urbanizada (Prop_imp), hábitats ricos en flores (Prop_fow), infraestructuras doméstcas (incluyendo parques) (Prop_domestcinfrastructure), jardines (Prop_gard), áreas con cobertura arbolada (Prop_tree), suelo agrícola (Prop_ag), áreas abiertas (Prop_open) y carreteras (Prop_road).]{style="font-size:30px"}
 
-[Se quiere construir un modelo que nos permita investgar la relación entre el número de
+[Se quiere construir un modelo que nos permita investigar la relación entre el número de
 polinizadores (peak_colony) y las diferentes coberturas del suelo medidas en un radio de 750
 m.]{style="font-size:30px"}
 
@@ -167,7 +167,7 @@ m.]{style="font-size:30px"}
 
 #### Objetvos:
 
-1. Reducir la dimensionalidad de las variables de cobertura del suelo y sintetzar toda esta
+1. Reducir la dimensionalidad de las variables de cobertura del suelo y sintetizar toda esta
 variabilidad en unas pocas variables (máximo 2).
 
 2. Generar un modelo estadístco que permita explicar el número de polinizadores en

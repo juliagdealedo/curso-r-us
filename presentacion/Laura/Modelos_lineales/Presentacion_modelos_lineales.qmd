@@ -386,7 +386,7 @@ Hipótesis: comparación medias distintos grupos (niveles de factor)
 
 ### Ejemplo
 
-Pregunta: Diferencias longitud pico tres especies de pingüino
+Pregunta: Diferencias longitud aleta tres especies de pingüino
 
 ***
 
