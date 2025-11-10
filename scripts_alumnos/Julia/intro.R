@@ -133,6 +133,12 @@ nombres %in% c("Laura", "Rocio")
 # Ejercicios
 # Escribe aquí tu código
 
+edades <- c(12, 18, 3, 44, 25, 15, 30)
+sum (edades >= 18)
+sum (edades < 18)
+
+
+
 # Queremos la media de nuestros números  y la media de estos transformados a logaritmo
 
 vector <- seq(1, 100, 10)
@@ -176,10 +182,32 @@ for (i in nombres) {
 
 # Bucle con objeto vacío
 tiro <- c()
+
 for (i in 1:100) {
-  tiro[[i]] <- sample(1:6, 1)
+  tiro[i] <- sample(1:6, 1)
 }
+
+tiro
+
 unlist(tiro)
+
+
+datos <- data.frame (n_mascotas = c(2, 1, 2, 17, 1, 1),
+                     dueño = c("Gaia", "Paula", "Alejandro", "Carmen", 
+                               "Julia", "Laura"))
+datos
+
+datos$año2030 <- NA
+
+for (i in 1:length(datos$dueño)) {
+  año2030 <- datos$n_mascotas[i]*2
+  datos$año2030[i] <- año2030
+}
+  
+datos
+  
+  
+
 
 # Bucle medias normales
 filas <- c()
@@ -197,6 +225,37 @@ for (i in 1:5) {
   tabla <- rbind(tabla, nueva_fila)
 }
 tabla
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tabla <- data.frame (numero_de_gatos = sample(1:5), 
+                     dueñxs = c("Laura","Julia", "Rocio", "Gabriel", "Pati")
+)
+
+tabla_resultado <- c()
+
+for (i in 1:length(tabla$dueñxs)) {
+  en2030 <- tabla$numero_de_gatos[i] + 100
+  tabla_resultado <- cbind(tabla, en2030)
+}
+
+tabla_resultado
 
 # Condicionales
 x <- 10
@@ -223,10 +282,12 @@ edad <- c(23, 35, 29)
 altura <- c(1.65, 1.80, 1.70)
 profesion <- c("Bióloga", "Informática", "Médica")
 
-personas <- data.frame(NAME = nombres,
-                       AGE = edad,
-                       HEIGHT = altura,
-                       JOB = profesion)
+personas <- data.frame(
+  NAME = nombres,
+  AGE = edad,
+  HEIGHT = altura,
+  JOB = profesion
+)
 personas
 
 # Seleccionar datos
@@ -238,7 +299,7 @@ personas$NAME
 library(here)
 datos_csv <- read.csv(here("data/personas.csv"))
 head(datos_csv)
-
+View(datos_csv)
 library(readxl)
 datos_excel <- read_excel(here("data/herbarium_df.xlsx"))
 
@@ -251,7 +312,45 @@ library(readr)
 write_csv(datos_gs, "data/datos_gs.csv")
 fwrite(datos_gs, "data/datos_gs.csv")
 
+temp <- c(1,45,54,2,3,42)
+
+resultado = c()
+
+for (i in 1:length(temp)) {
+  
+fila = if (temp[i] > 25){
+  "es mayor que 25"
+} else {
+  "es menor que 25"
+}
+
+resultado <- cbind(c(resultado, fila), temp)
+}
+
+resultado
+
 # Ejercicio con base de datos
 # escribe aquí tu código
+
+# Base de datos de flores: Por cada sitio y trampa, tenemos el numero de flores que tienen
+# las especies de plantas en Doñana.
+# 
+# Ejercicio: Importa la base de datos “flores.csv” de la carpeta “data”,
+# explora la base de datos, calcula la abundancia media de flores total,
+# indica cuantas especies distintas hay de plantas.
+# Luego, crea una base de datos con el número de individuos por especie (no de flores).
+# Guardala como csv.
+
+library(here)
+
+datos_csv <- read.csv(here("data/flores.csv"))
+
+setwd("/Users/juliag.dealedo/ONE/UAM_Doctorado/github/curso-r-us/data")
+dir()
+datos_csv <- read.csv("flores.csv")
+
+
+
+
 
 ## Fin de la clase!

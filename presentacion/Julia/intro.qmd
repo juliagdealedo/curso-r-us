@@ -632,11 +632,11 @@ sum (tiro == 2)
 
 ## Ejercicio bucle
 
-Genera un objeto que contenga 100 medias de 50 valores aleatorios generados a partir de una distribucion normal
+General 50 valores aleatorios generados a partir de una distribucion normal y calcula 100 medias, una para cada aleatorización con un bucle.
 
 ## Ejercicio bucle
 
-Genera un objeto que contenga 100 medias de 50 valores aleatorios generados a partir de una distribucion normal
+General 50 valores aleatorios generados a partir de una distribucion normal y calcula 100 medias, una para cada aleatorización con un bucle.
 ```{r}
 #| echo: true
 
