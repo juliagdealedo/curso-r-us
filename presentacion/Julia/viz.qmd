@@ -30,15 +30,25 @@ Porque una imagen resume más que una tabla
 
 ![Matetja et al](images/plot.png)
 
-## Colores
+## Colores 🎨
 
-Colores... https://www.fabiocrameri.ch/colourmaps/
+En R, los colores se pueden definir por nombre ("red", "blue") o por su código hexadecimal 
 
+- "#72874E" → formato #RRGGBB
 
-https://github.com/jbgb13/peRReo
-https://github.com/BlakeRMills/MetBrewer
-scale_fill_manual (values=c("#72874EFF", "#FED789FF"))
+- "#72874EFF" → formato #RRGGBBAA, donde AA es la transparencia
 
+### Paletas ya hechas
+- RColorBrewer → paletas clásicas para mapas y gráficos 
+- viridis → paletas perceptualmente uniformes y accesibles.
+- MetBrewer → paletas inspiradas en obras de arte.
+- peRReo → paletas con inspiración musical y estética moderna.
+- scico → paletas científicamente equilibradas.
+
+[scico](https://cran.r-project.org/web/packages/scico/readme/README.html)
+[maps](https://www.fabiocrameri.ch/colourmaps/)
+[met](https://github.com/BlakeRMills/MetBrewer)
+[prr](https://github.com/jbgb13/peRReo)
 
 ## En R, desde gráficos muy simples
 
@@ -68,7 +78,7 @@ plot(x=rnorm(100), y=rnorm(100))
 
 ![quién habla con quién en "The Office"](images/complex_graph.png){width="550px" height="550px" fig-align="center"} [Código](https://r-graph-gallery.com/character-interaction-analysis.html)
 
-## R base versus ggplot
+## R base versus ggplot - simple
 
 ::::: columns
 ::: {.column width="50%"}
@@ -95,37 +105,60 @@ ggplot(penguins,
 :::::
 
 
-## Sin adornos
+
+## R base versus ggplot - complejo
+
+::::: columns
+::: {.column width="50%"}
 
 ```{r}
 #| echo: true
 
-ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + geom_point()
+ggplot (data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = body_mass_g)) +
+  scico::scale_color_scico(palette = "bamako", direction = -1) +
+  scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
+  scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5),
+                     limits = c(12.5, 22.5)) + theme_minimal () +
+  labs( title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
+    x = 'Bill Length (mm)',
+    y = 'Bill Depth (mm)',
+    color = 'Body mass (g)'
+    ) + theme_minimal ()
+
 
 ```
 
+:::
+::: {.column width="50%"}
 
-## Con muchos adornos 
+
 ```{r}
-#| echo: false
+#| echo: true
 
-ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
-geom_point(aes(color = body_mass_g), pch=21) +
-  scico::scale_color_scico(palette = "bamako", direction = -1)+ 
-## custom axes scaling
-scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
-scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5), limits = c(12.5, 22.5)) +
-## custom labels
-labs(
-title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
-subtitle = 'A scatter plot of bill depth versus bill length.',
-caption = 'data = Gorman, Williams & Fraser (2014) PLoS ONE, graph = Cédric Scherer',
-x = 'Bill Length (mm)',
-y = 'Bill Depth (mm)',
-color = 'Body mass (g)'
-) + theme_minimal () 
+cols <- scico(100, palette = "bamako", direction = -1)
+color_values <- cols[
+  as.numeric(cut(penguins$body_mass_g, breaks = 100))
+]
 
+plot(
+  penguins$bill_length_mm, penguins$bill_depth_mm,
+  col = color_values, pch = 21, bg = color_values,  
+  xlim = c(30, 60),  ylim = c(12.5, 22.5),
+  xaxt = "n",  yaxt = "n",
+  xlab = "Bill Length (mm)",
+  ylab = "Bill Depth (mm)",
+  main = "Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)",
+  sub = "A scatter plot of bill depth versus bill length."
+)
+
+# Le falta la leyenda aún
 ```
+:::
+:::::
+
 
 ## Bases de ggplot
 
@@ -195,6 +228,12 @@ Así tenemos resultados más flexibles y personalizables.
 ## Scales
 Scales se puede modificar el tipo de variable, transformarla, tamaño, color, nombre etc.
 
+-  scale_x_continuous() - transformar en continua
+-  scale_x_sqrt() - transformar en raíz cuadrada
+-  scale_colour_discrete()  - añadir colores discretos
+-  scale_colour_brewer() - añadir colores de una paleta
+-  scale_fill_continuous () - añadir colores de relleno continuos
+  
 ## Facets
 - facet_wrap() 
 - facet_grid() 
@@ -206,16 +245,36 @@ Scales se puede modificar el tipo de variable, transformarla, tamaño, color, no
 ## Themes
 
 ![geeksforgeeks](images/themes.png)
+Se pueden hacer personalizados también
 
 ## Empecemos a visualizar
-
-Cosas importantes!
 
 - Primero pensar qué queremos visualizar (dibujo?)
 - El orden donde ponemos los argumentos
 - Si van dentro de paréntesis o no
 - dónde va la base de datos a la que hacemos referencia
 
+```{r}
+#| echo: true
+#| eval: false
+
+# Dónde va la base de datos?
+ggplot (BASE DE DATOS, aes (x, y, fill, color)) +
+    geom_xxx () +
+    theme ()
+
+# Si trabajamos con dplyr antes
+BASE DE DATOS %>%
+    ggplot (aes (x, y, fill, color)) +
+    geom_xxx () +
+    theme ()
+
+# Si trabajamos con varias bases de datos
+ggplot () +
+    geom_point (base_de_datos1, aes (x, y, fill, color)) +
+    geom_line (base_de_datos2, aes (x, y, fill, color)) +
+    theme ()
+```
 
 ## LA CAPA 'DATA'
 Volvemos con los pingüinos. 
@@ -230,6 +289,9 @@ ggplot(penguins)
 
 ## LA CAPA 'AESTHETICS'
 
+::::: columns
+::: {.column width="50%"}
+
 ggplot = base de datos + aesthetics
 ```{r}
 #| echo: true
@@ -239,8 +301,12 @@ ggplot(penguins,
 
 ```
 
+:::
+
+::: {.column width="50%"}
+
 La base de datos puede antes con el pipe de dplyr
-ggplot = base de datos + aesthetics
+
 ```{r}
 #| echo: true
 
@@ -249,28 +315,20 @@ penguins %>%
 
 ```
 
-***
+:::
+:::::
+
 ## LA CAPA 'GEOMETRIC'
 
 ggplot + base de datos + aesthetics + geoms
 ```{r}
 #| echo: true
 
-ggplot(penguins, 
-       aes(x = flipper_length_mm)) + 
-  geom_histogram() 
+ggplot(penguins, aes(x = flipper_length_mm)) +
+  geom_histogram()
 
 ```
-***
-ggplot + base de datos + aesthetics + geoms
-aesthetics puede ir en ggplot o en geoms
-```{r}
-#| echo: true
 
-ggplot(penguins) + 
-  geom_histogram(aes(x = flipper_length_mm)) 
-
-```
 ## Gráfico de densidad 
 
 ```{r}
@@ -351,30 +409,14 @@ ggplot(aes(x=species, y=bill_length_mm, color=species)) +
 ```
 
 ***
-
-tip: sin leyenda 
-guides (fill=FALSE)
-
-
-```{r}
-#| echo: true
-
-penguins %>%
-ggplot(aes(x=species, y=bill_length_mm, fill=species)) +
-    geom_bar(stat="identity")+
-    guides(fill=FALSE)
-
-```
-
-***
 Añadimos el labs y theme 
 
 ```{r}
 #| echo: true
 
-
+library(ggplot2)
 penguins %>%
-  ggplot(aes(x = species, y = bill_length_mm, fill = species)) +
+  ggplot(aes(x = species, y = bill_length_mm, fill=species)) +
   geom_bar(stat = "identity") +
   guides(fill = FALSE) +
   labs(
@@ -534,7 +576,18 @@ penguins %>%
 
 ***
 
-#### Cuidado con el argumento color y fill
+## Plotear texto
+geom_text()
+
+```{r}
+#| echo: true
+
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_text(aes(label = 'pingus')) +
+  theme_minimal()
+```
+
+## Cuidado con el argumento color y fill
 Hay que estar atentos dónde están colocados
 Si van dentro de aes() tiene que ser una variable y no un color per se.
 
@@ -718,7 +771,7 @@ penguins %>%
 
 ```
 
-## LA CAPA FACETS
+## LA CAPA 'FACETS'
 
 Dividir por especie
 ```{r}
@@ -761,27 +814,6 @@ penguins %>%
 
 ```
 
-## Plotear texto
-geom_text()
-
-```{r}
-#| echo: true
-
-ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
-  geom_text(aes(label = 'pingus')) +
-  theme_minimal()
-```
-
-***
-
-```{r}
-#| echo: true
-#| 
-ggplot (penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
-  geom_text (aes(label = species, color = species)) +
-  theme_minimal() 
-
-```
 ## Patchwork
 
 Guardamos los ggplots como objetos y los "sumamos"
@@ -790,21 +822,31 @@ Guardamos los ggplots como objetos y los "sumamos"
 #| echo: true
 
 library(patchwork)
-p1 <- ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
-  geom_text(aes(label = 'pingus')) +
-  theme_minimal()
-p2 <- ggplot (penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
-  geom_text (aes(label = species, color = species)) +
-  theme_minimal() 
 
-p1 + p2
+p1 <- penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, color = species, fill=species)) +
+  geom_point(alpha=.5) + theme_light()  + geom_smooth(method = "lm")
+
+p2 <- penguins %>% 
+  ggplot (aes(fill = species, x = bill_length_mm)) + 
+  geom_density(alpha=.5) + theme_light() + coord_flip()
+
+p1 + p2 
 ```
 ***
-o "dividimos"
+o "separamos"
 ```{r}
 #| echo: true
 
-p1 / p2
+p1 <- penguins %>% 
+  ggplot (aes(x = flipper_length_mm, y = bill_length_mm, color = species, fill=species)) +
+  geom_point(alpha=.5) + theme_light()  + geom_smooth(method = "lm")
+
+p2 <- penguins %>% 
+  ggplot (aes(fill = species, x = flipper_length_mm)) + 
+  geom_density(alpha=.5) + theme_light() 
+
+p1 / p2 
 ```
 
 ## Mapas I
@@ -814,7 +856,7 @@ p1 / p2
 
 ## Mapas II
 
-![Apicultores en Alemania](images/bee.png){width="300px" height="600px" fig-align="left"} 
+![Apicultores en Alemania](images/bee.png){width="600px" height="600px" fig-align="left"} 
 [Código](https://www.cedricscherer.com/top/dataviz/)
 
 ## Nuestros datos georeferenciados
@@ -867,17 +909,13 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ```
 
-## Visualizaciones geniales (ya no solo con r)
-
-[Valentina de Filippo](https://www.behance.net/valentinadefilippo?locale=es_ES)
-
 ## gg cosas
 
-![example ggimaga R logo](images/ggimage.png){width="600px" height="600px" fig-align="left"}
+![example ggimage R logo](images/ggimage.png){width="600px" height="400px" fig-align="left"}
 
 ***
 
-![example ggimage R logo](images/emogg.png){width="600px" height="600px" fig-align="left"}
+![example emogg R logo](images/emogg.png){width="600px" height="600px" fig-align="left"}
 
 ***
 
@@ -885,7 +923,8 @@ map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 ***
 
-ggDNAvis is an R package that uses ggplot2 to visualise genetic data.
+### ggDNAvis 
+It is an R package that uses ggplot2 to visualise genetic data
 
 ```{r}
 #| echo: true
@@ -925,7 +964,6 @@ visualise_single_sequence(
 [Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
 [Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
 
-
 [ggbasics](http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html)
 
 [book](https://link.springer.com/book/10.1007/0-387-28695-0)
@@ -949,13 +987,10 @@ penguins %>%
   theme_light() + theme(rect = element_rect(fill = "transparent"))
 ```
 
-***
 
-2. Lee la base de datos de "flores.csv" 
-
-Haz un scatterplot comparando biomasa y cobertura, señalando las diferencias entre sequia o lluvia. 
-
-Haz un boxplot por los dos tipos de sequía y la cobertura de árboles
+2. Lee la base de datos de "cobertura.csv" 
+- Haz un scatterplot comparando biomasa y cobertura, señalando las diferencias entre sequia o lluvia. 
+- Haz un boxplot por los dos tipos de sequía y la cobertura de árboles
 
 
 ## Resolvemos los ejercicios
@@ -988,5 +1023,21 @@ ggplot(cobertura) +
 
 ggplot(cobertura) +
   geom_boxplot(aes(x=biomasa, y =cobertura, group=sequia))
+```
+
+***
+
+tip: sin leyenda 
+guides (fill=FALSE)
+
+
+```{r}
+#| echo: true
+
+penguins %>%
+ggplot(aes(x=species, y=bill_length_mm, fill=species)) +
+    geom_bar(stat="identity")+
+    guides(fill=FALSE)
+
 ```
 

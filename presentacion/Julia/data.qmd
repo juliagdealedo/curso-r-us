@@ -201,8 +201,22 @@ penguins %>% select (year, sex, species,
                      long_aleta = flipper_length_mm)
 ```
 
+## 3. Contar valores con 'count'
 
-## 3. Valores únicos con 'distinct'
+```{r}
+#| echo: true
+
+# ¿Cuántos valores hay por isla? (número de filas)
+penguins %>%
+  count(island)
+
+# ¿Cuántos valores hay por isla y por especie?
+penguins %>%
+  count(species, island)
+
+```
+
+## 4. Valores únicos con 'distinct'
 
 ```{r}
 #| echo: true
@@ -215,7 +229,7 @@ penguins %>%
 
 ```
 
-## 4. Filtrar con 'filter'
+## 5. Filtrar con 'filter'
 
 Filtrar por un valor (asignaciones lógicas)
 ```{r}
@@ -245,7 +259,7 @@ penguins_filtered %>%
   distinct()
 ```
 
-## 4. Filtrar con 'filter'
+## 5. Filtrar con 'filter'
 
 Filtrar fuera, quitar valores
 ```{r}
@@ -264,7 +278,7 @@ penguins_filtered %>% select(year) %>% distinct()
 
 ```
 
-## 5. Transformar variables con 'mutate'
+## 6. Transformar variables con 'mutate'
 
 Crear nuevas variables
 ```{r}
@@ -280,7 +294,7 @@ penguins %>%
   select(bill_length_mm, bill_depth_mm, bill_ratio)
 
 ```
-## 6. Resumir variables con 'summarise'
+## 7. Resumir variables con 'summarise'
 
 Dentro de summarise podemos hacer operaciones que van asignadas a una variable con un nombre nuevo.
 
@@ -303,7 +317,7 @@ penguins %>%
 
 Muy útil para explorar los datos y resumirlos en una tabla para un artículo.
 
-## 7. Agrupar variables con 'group_by'
+## 8. Agrupar variables con 'group_by'
 
 ```{r}
 #| echo: true
@@ -319,7 +333,7 @@ penguins %>%
   )
 ```
 
-## 8. Aplicar condiciones con 'if_else'
+## 9. Aplicar condiciones con 'if_else'
 Muy útil para corregir datos
 
 ```{r}
@@ -341,7 +355,7 @@ penguins %>%
    select (sex, family) %>% distinct()
 ```
 
-## 8. Aplicar condiciones con 'if_else'
+## 9. Aplicar condiciones con 'if_else'
 
 O reclasificar: convertir el sexo en una categoría binaria o dummy
 
@@ -357,12 +371,12 @@ penguins %>%
 - case_when () para filtrar datos por casos\
 - pivot_wider () para convertir a formato corto\
 - pivor_longer () para convertir a formato largo\
-- arrange() ordenar de mayor a menor, menor a mayor
-- relotate() cambiar las columnas de orden
+- arrange () ordenar de mayor a menor, menor a mayor
+- relotate () cambiar las columnas de orden
 
 Sois autodidactas (bibliografía, chatgpt, google, stackoverflow, etc)
 
-## Combinar dos bases de datos con 'join'
+## 10. Combinar dos bases de datos con 'join'
 1) datos con los nombres taxonómicos (nombres de las especies)\
 2) datos con los rasgos de las especies\
 
@@ -517,7 +531,7 @@ pantrap = número de pantrap 1:9\
 species = especie de planta\
 abundance = número de flores por individuo\
 
-Ejercicio 1. Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas, crea una base de datos con el número de individuos por especie. Guardala como csv. 
+Ejercicio 1. Importa la base de datos "flores.csv" de la carpeta "data", explora la base de datos, calcula la abundancia media de flores total, indica cuantas especies distintas hay de plantas, crea una base de datos con el número de registros (o individuos) por especie. Guardala como csv. 
 
 :::
 
