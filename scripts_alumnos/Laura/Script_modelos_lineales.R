@@ -27,26 +27,25 @@ ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_kg)) +
        y = "Masa corporal (kg)",                   
        title = "Relación entre masa corporal y longitud aleta "   
   ) +
-  theme_minimal()       
+  theme_minimal()        
 
-#### 2. Ajuste modelo de regresión
+# 2. Ajuste modelo de regresión
   
 lm_reg1 <- lm(body_mass_kg ~ flipper_length_mm, data = penguins_clean)
 
-#### 3. Variación explicada por el modelo y resolución hipótesis
-
+# 3. Variación explicada por el modelo y resolución hipótesis
+  
 anova(lm_reg1)
 
-#### 4. Interpretación del modelo
+# 4. Interpretación del modelo
   
 summary(lm_reg1)
 
-#### 5. Predicciones con el modelo
+# 5. Predicciones con el modelo
   
 preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
 preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
-
 ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +     
   geom_line(aes(y = .fitted)) +
@@ -55,84 +54,98 @@ ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +
        y = "Masa corporal (kg)",                   
        title = "Predicciones modelo de regresión"   
   ) +
-  theme_minimal()         
+  theme_minimal()        
 
-#### 6. Revisión supuestos del modelo
+# 6. Revisión supuestos del modelo
   
 par(mfrow=c(2,2))
 plot(lm_reg1)      
 
+# tests
+
+# Normalidad
+
 shapiro.test(residuals(lm_reg1))
+
+# Linealidad
 
 resettest(lm_reg1)
 
+# Homocedasticidad
+
 ncvTest(lm_reg1)
 
-## Modelos factoriales: ANOVA y ANCOVA
-
-### Análisis de la varianza (ANOVA)
+## Análisis de la varianza (ANOVA)
   
-#### 1. Explorar gráficamente la relación entre las variables
+# 1. Explorar gráficamente la relación entre las variables
+  
+# Calculamos ratio del pico
+penguins2 = penguins %>%
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm)
 
-ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species)) +  
+ggplot(data = penguins2, aes(x = species, y = bill_ratio, fill = species)) +  
   geom_boxplot(alpha = 0.8, color = "gray30") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud aleta (mm)",                   
-       title = "Diferencias longitud aleta entre especies"   
+       y = "Ratio del pico",                   
+       title = "Diferencias ratio del pico entre especies"   
   ) +
-  theme_minimal()         
+  theme_minimal()        
 
-#### 2. Ajuste modelo factorial
+# 2. Ajuste modelo factorial
 
-penguins <- penguins %>%
+penguins2 <- penguins2 %>%
   mutate(species = as.factor(species))
-lm_reg2 <- lm(flipper_length_mm ~ species, data = penguins)
+lm_reg2 <- lm(bill_ratio ~ species, data = penguins2)
 
-#### 3. Variación explicada por el modelo y resolución hipótesis
-
+# 3. Variación explicada por el modelo y resolución hipótesis
+  
 anova(lm_reg2)
 
-#### 4. Interpretación del modelo y comparaciones *post-hoc*
-  
+# 4. Interpretación del modelo 
+
 summary(lm_reg2)
 
-contrasts(penguins$species)
+# Ver el nivel de referencia del factor
 
+contrasts(penguins2$species)
+
+# Comparaciones post-hoc entre los distintos grupos
+  
 posthoc_species <- glht(lm_reg2, linfct=mcp(species="Tukey"))
 summary(posthoc_species)
 
-#### 5. Representación gráfica diferencias significativas
+# 5. Representación gráfica diferencias significativas
   
-ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species, color = species)) +  
-  geom_boxplot(alpha = 0.8, color = "black") +
+ggplot(data = penguins2, aes(x = species, y = bill_ratio, fill = species, color = species)) +  
   geom_jitter(width = 0.15, alpha = 0.6, size = 2, shape=21, color="black") +
+  geom_boxplot(alpha = 0.8, color = "black") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud aleta (mm)",                   
+       y = "Ratio del pico",                   
        title = "Diferencias longitud aleta entre especies"   
   ) +
   theme_minimal() +
-  geom_text(data = penguins[2,], aes(y = 240, label = "a"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "a"), color="black", 
             size=5, nudge_x = 0) +
-  geom_text(data = penguins[2,], aes(y = 240, label = "b"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "b"), color="black", 
             size=5, nudge_x = 1) +
-  geom_text(data = penguins[2,], aes(y = 240, label = "c"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "c"), color="black", 
             size=5, nudge_x = 2) 
 
-#### 6. Revisión supuestos del modelo
+# 6. Revisión supuestos del modelo
   
 par(mfrow=c(2,2))
 plot(lm_reg2)      
 
-#### Cambiar nivel de referencia del factor
+# Cambiar nivel de referencia del factor
   
-levels(penguins$species)
-penguins$species <- relevel(penguins$species, ref = "Gentoo")
-levels(penguins$species)
+levels(penguins2$species)
+penguins2$species <- relevel(penguins2$species, ref = "Gentoo")
+levels(penguins2$species)
 
-### Análisis de la covarianza (ANCOVA)
+## Análisis de la covarianza (ANCOVA)
   
 ggplot(subset(penguins, !is.na(sex)), aes(x = bill_length_mm, y = body_mass_g)) +
   geom_point(color = "steelblue", size = 2) +
@@ -145,13 +158,15 @@ ggplot(subset(penguins, !is.na(sex)), aes(x = bill_length_mm, y = body_mass_g)) 
   ) +
   theme_minimal()
 
-#### Ajuste modelo 
+# Ajuste modelo 
   
 lm_3 <- lm(body_mass_g ~ bill_length_mm*sex, data = penguins)
 
-#### Comprobación de hipótesis
+# Comprobación de hipótesis
 
 anova(lm_3)
+
+# Sin interaccion 
 
 lm_4 <- lm(body_mass_g ~ bill_length_mm+sex, data = penguins)
 anova(lm_4)
@@ -183,7 +198,7 @@ ggplot(data = subset(penguins, !is.na(sex)), aes(x = sex, y = body_mass_g, fill 
   geom_text(data = penguins[2,], aes(y = 6500, label = "b"), color="black", 
             size=5, nudge_x = 1)         
 
-## Caso con pendientes significativamente distintas 
+# Ejemplo pendientes significativas
 
 ggplot(subset(penguins, !is.na(species)), aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(color = "steelblue", size = 2) +
@@ -192,19 +207,18 @@ ggplot(subset(penguins, !is.na(species)), aes(x = flipper_length_mm, y = body_ma
   labs(
     title = "Relación longitud aleta y masa corporal",
     x = "Longitud aleta (mm)",
-    y = "Masa corporal (g)"
+    y = "Masa corporal (kg)"
   ) +
   theme_minimal()
 
 datos_limpios <- penguins %>%
   filter(!is.na(flipper_length_mm))
+
 lm_5 <- lm(body_mass_g ~ flipper_length_mm*species, data = datos_limpios)
 anova(lm_5)
 
 summary(lm_5)
 
-#### Gráfica de predicciones
-  
 newdata <- expand.grid(
   flipper_length_mm = seq(min(datos_limpios$flipper_length_mm), max(datos_limpios$flipper_length_mm), length.out = 100),
   species = levels(datos_limpios$species)
@@ -223,7 +237,7 @@ ggplot(datos_limpios, aes(x = flipper_length_mm, y = body_mass_g, color = specie
   ) +
   theme_minimal()
 
-#### Supuestos del modelo
+# Supuestos del modelo
 
 par(mfrow=c(2,2))
 plot(lm_5)
