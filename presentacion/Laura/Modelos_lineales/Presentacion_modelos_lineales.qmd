@@ -25,13 +25,13 @@ Hora
 
 - 9:30 a 10:30 teoría
 
-- 10:30 a 11:15 ejercicios
+- 10:30 a 11:30 ejercicios
 
-- 11:15 a 11:30 break
+- 11:30 a 11:45 break
 
-- 11 a 12:30 teoría
+- 11:45 a 12:45 teoría
 
-- 12 a 13:30 ejercicios y dudas
+- 12:45 a 13:30 ejercicios y dudas
 :::
 
 ::: {.column width="50%"}
@@ -61,17 +61,17 @@ Temario
 
 ## Definición
 
-[Relación lineal entre dos o más variables, dependiendo una (variable dependiente) de la(s) otra(s) (variable(s) explicativa(s))]{style="font-size:30px"}
+[Relación lineal entre dos o más variables, dependiendo una (variable dependiente) de la(s) otra(s) (variable(s) explicativa(s))]{style="font-size:25px"} 
 
-[Variable dependiente: *y*]{style="font-size:30px"}
+[Variable dependiente: *y*]{style="font-size:25px"} 
+[Variable(s) explicativa(s): *x*]{style="font-size:25px"} 
 
-[Variable(s) explicativa(s): *x*]{style="font-size:30px"}
-
-[Modelo matemático lineal: *y = 2x* o *y = 3 - 2x*]{style="font-size:30px"}
-
+[Modelo matemático lineal: *y = 2x* o *y = 3 - 2x*]{style="font-size:25px"}
 
 ```{r}
 #| echo: false
+#| fig-width: 13    # ancho en pulgadas
+#| fig-height: 8    # alto en pulgadas
 library(palmerpenguins)
 library(ggplot2)
 data(penguins)
@@ -147,13 +147,13 @@ Parte estocástica: *Ɛ~i~ ~ N(0,σ^2^)*
 
 Residuos
 
-![Visualización modelo lineal](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Residuos.jpg){width="600px" height="550px" fig-align="left"}
+![Visualización modelo lineal](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Residuos.jpg){width="700px" height="550px" fig-align="left"}
 
 ***
 
-![Normalidad y homocedasticidad en los residuos](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Normalidad.jpg){width="500px" height="400px" fig-align="left"}
+![Normalidad y homocedasticidad en los residuos](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/Normalidad.jpg){width="700px" height="500px" fig-align="left"}
 
-Ajuste modelo lineal
+[Ajuste modelo lineal]{style="font-size:30px"}
 
 [Función lm(y \~ x)]{style="font-size:25px"}
 
@@ -234,9 +234,9 @@ lm_reg1 <- lm(body_mass_kg ~ flipper_length_mm, data = penguins_clean)
 anova(lm_reg1)
 ```
 
-[Suma de cuadrados: variabilidad de la variable *y*]{style="font-size:30px"}
+[Suma de cuadrados: variabilidad de la variable *y*]{style="font-size:27px"}
 
-[Coeficiente de determinación (R^2^): bondad de ajuste del modelo (0-1)]{style="font-size:30px"}
+[Coeficiente de determinación (R^2^): bondad de ajuste del modelo (0-1)]{style="font-size:27px"}
 
 ------------------------------------------------------------------------
 
@@ -259,7 +259,7 @@ summary(lm_reg1)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 #| fig-width: 7     # ancho en pulgadas
 #| fig-height: 5    # alto en pulgadas
@@ -270,7 +270,6 @@ library(dplyr)
 preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
 preds <- preds %>%
   mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
-  
 ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +  
   geom_point(color = "blue", size = 2) +     
   geom_line(aes(y = .fitted)) +
@@ -286,11 +285,11 @@ ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +
  
 #### 6. Revisión supuestos del modelo
 
-[Supuestos de linealidad, normalidad y homocedasticidad]{style="font-size:30px"}
+[Supuestos de linealidad, normalidad y homocedasticidad]{style="font-size:27px"}
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.4em'"
 #| fig-width: 6     # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
@@ -301,24 +300,27 @@ plot(lm_reg1)
 
 ***
 
-[Supuestos linealidad, normalidad, homocedasticidad]{style="font-size:18px"}
+[Supuestos linealidad, normalidad, homocedasticidad]{style="font-size:30px"}
 
-![Residuos frente a valores predichos](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos1.png){width="425px" height="200px" fig-align="left"}
-
-[Supuesto normalidad]{style="font-size:18px"}
-
-![Gráfico Q-Q](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos2.png){width="425px" height="200px" fig-align="left"}
+![Residuos frente a valores predichos](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos1.png){width="725px" height="350px" fig-align="left"}
 
 ***
 
-[Supuesto homocedasticidad]{style="font-size:18px"}
+[Supuesto normalidad]{style="font-size:30px"}
 
-![Gráfico dispersión varianza residual](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos3.png){width="425px" height="200px" fig-align="left"}
+![Gráfico Q-Q](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos2.png){width="725px" height="350px" fig-align="left"}
 
+***
 
-[Datos sobreinfluyentes en el análisis]{style="font-size:18px"}
+[Supuesto homocedasticidad]{style="font-size:30px"}
 
-![Valores distancia de Cook](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos4.png){width="425px" height="200px" fig-align="left"}
+![Gráfico dispersión varianza residual](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos3.png){width="725px" height="350px" fig-align="left"}
+
+***
+
+[Datos sobreinfluyentes en el análisis]{style="font-size:30px"}
+
+![Valores distancia de Cook](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/supuestos4.png){width="725px" height="350px" fig-align="left"}
 
 ***
 [Normalidad:]{style="font-size:30px"}
@@ -344,7 +346,7 @@ resettest(lm_reg1)
 library(car)
 ncvTest(lm_reg1)
 ```
-[Si no se cumplen supuestos del modelo: transformación variables (logarítmica, raíz cuadrada, Box-Cox, log-log, etc.)]{style="font-size:22px"}
+[Si no se cumplen supuestos del modelo: transformación variables (logarítmica, raíz cuadrada, Box-Cox, log-log, etc.)]{style="font-size:30px"}
 
 ***
 
@@ -356,13 +358,13 @@ ncvTest(lm_reg1)
 
 ***
 
-[Suma de cuadrados tipo I o III]{style="font-size:20px"}
+[Suma de cuadrados tipo I o III]{style="font-size:35px"}
 
 ![Suma de cuadrados: tipos (Cayuela y de la Cruz,) 2022](F:/Nextcloud13102025/CursoR/Github/curso-r-us/presentacion/Laura/Modelos_lineales/sumacuadrados.png){width="800px" height="225px" fig-align="left"}
 
-[Suma de cuadrados tipo I: anova()]{style="font-size:20px"}
+[Suma de cuadrados tipo I: anova()]{style="font-size:25px"}
 
-[Suma de cuadrados tipo III: Anova(lm,type="III")(library(car))]{style="font-size:20px"}
+[Suma de cuadrados tipo III: Anova(lm,type="III")(library(car))]{style="font-size:25px"}
 
 ::: {.center .middle}
 ## Modelos factoriales: ANOVA y ANCOVA
@@ -386,13 +388,13 @@ Hipótesis: comparación medias distintos grupos (niveles de factor)
 
 ### Ejemplo
 
-Pregunta: Diferencias longitud aleta tres especies de pingüino
+Pregunta: Diferencias ratio del pico (longitud/profundidad) de tres especies de pingüino
 
 ***
 
 Hipótesis
 
-*H~0~* (hipótesis nula): no existe diferencias en las medias de la longitud de la aleta para las tres especies
+*H~0~* (hipótesis nula): no existe diferencias en las medias del ratio del pico para las tres especies
 
 ::: r-stack
 *H~0~ : µ~adelie~ = µ~gentoo~ = µ~chinstrap~ = µ*
@@ -415,12 +417,14 @@ Hipótesis
 #| fig-width: 7     # ancho en pulgadas
 #| fig-height: 5    # alto en pulgadas
 #| fig-align: "center"
-ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species)) +  
+penguins2 = penguins %>%
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm)
+ggplot(data = penguins2, aes(x = species, y = bill_ratio, fill = species)) +  
   geom_boxplot(alpha = 0.8, color = "gray30") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   labs(x = "Species",         
-       y = "Longitud aleta (mm)",                   
-      title = "Diferencias longitud aleta entre especies"   
+       y = "Ratio del pico",                   
+      title = "Diferencias ratio del pico entre especies"   
   ) +
   theme_minimal()        
 ```
@@ -431,9 +435,9 @@ ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species))
 
 ```{r}
 #| echo: true
-penguins <- penguins %>%
+penguins2 <- penguins2 %>%
   mutate(species = as.factor(species))
-lm_reg2 <- lm(flipper_length_mm ~ species, data = penguins)
+lm_reg2 <- lm(bill_ratio ~ species, data = penguins2)
 ```
 
 ***
@@ -454,17 +458,15 @@ anova(lm_reg2)
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.6em'"
-#| attr-output: "style='font-size: 0.3em'"
+#| attr-output: "style='font-size: 0.5em'"
 summary(lm_reg2)
 ```
 
-[Variables indicadoras o variables *dummy*]{style="font-size:20px"}
+[Variables indicadoras o variables *dummy*. Un nivel es la coordenada en el origen (nivel de referencia)]{style="font-size:20px"}
 
-[*y~i,j~ = β~1~x~1~ + β~2~x~2~ + β~3~x~3~ + Ɛ~i~*]{style="font-size:20px"}
+[*y~i,j~ = β~1~x~1~ + β~2~x~2~ + β~3~x~3~ + Ɛ~i~*]{style="font-size:25px"}
 
-[Un nivel es la coordenada en el origen (nivel de referencia)]{style="font-size:20px"}
-
-[Ecuación: *y~i~* = 186.95 + 5.86*Chinstrap* + 27.23*Gentoo*]{style="font-size:20px"}
+[*y~i~* = 2.12 + 0.53*Chinstrap* + 1.06*Gentoo*]{style="font-size:25px"}
 
 ***
 
@@ -473,7 +475,7 @@ summary(lm_reg2)
 
 ```{r}
 #| echo: true
- contrasts(penguins$species)
+ contrasts(penguins2$species)
 ```
 
 ***
@@ -498,21 +500,21 @@ summary(posthoc_species)
 #| fig-width: 9    # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
 #| fig-align: "center"
-ggplot(data = penguins, aes(x = species, y = flipper_length_mm, fill = species, color = species)) +  
+ggplot(data = penguins2, aes(x = species, y = bill_ratio, fill = species, color = species)) +  
   geom_boxplot(alpha = 0.8, color = "black") +
   geom_jitter(width = 0.15, alpha = 0.6, size = 2, shape=21, color="black") +
   scale_fill_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
   scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
  labs(x = "Species",         
-       y = "Longitud aleta (mm)",                   
+       y = "Ratio del pico",                   
       title = "Diferencias longitud aleta entre especies"   
   ) +
   theme_minimal() +
-  geom_text(data = penguins[2,], aes(y = 240, label = "a"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "a"), color="black", 
             size=5, nudge_x = 0) +
-  geom_text(data = penguins[2,], aes(y = 240, label = "b"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "b"), color="black", 
             size=5, nudge_x = 1) +
-  geom_text(data = penguins[2,], aes(y = 240, label = "c"), color="black", 
+  geom_text(data = penguins2[2,], aes(y = 4, label = "c"), color="black", 
             size=5, nudge_x = 2) 
 ```
 
@@ -537,9 +539,9 @@ plot(lm_reg2)
 
 ```{r}
 #| echo: true
-levels(penguins$species)
-penguins$species <- relevel(penguins$species, ref = "Gentoo")
-levels(penguins$species)
+levels(penguins2$species)
+penguins2$species <- relevel(penguins2$species, ref = "Gentoo")
+levels(penguins2$species)
 ```
 
 ***
@@ -712,7 +714,7 @@ ggplot(data = subset(penguins, !is.na(sex)), aes(x = sex, y = body_mass_g, fill 
 
 ***
 
-#### [Pendientes significativamente distintas]{style="font-size:25px"}
+[Pendientes significativamente distintas]{style="font-size:25px"}
 
 [Relación masa corporal con longitud de la aleta, teniendo en cuenta la especie]{style="font-size:20px"}
 ```{r}
