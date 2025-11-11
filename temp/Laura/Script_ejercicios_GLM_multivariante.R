@@ -8,6 +8,7 @@ library(aods3)
 library(MASS)
 library(visreg)
 library(car)
+library(here)
 
 # Ejercicio 1: GLM binomial
   
@@ -85,8 +86,8 @@ p3 + p4
 # Ejercicio 2: GLM y multivariante
   
 # Cargar los datos
-  
-poli <- read.table("polinizacion.txt",header=T)
+here()
+poli <- read.table("data/polinizacion.txt",header=T)
 head(poli)
 
 # Análisis exploratorios

@@ -5,9 +5,11 @@ library(aods3)
 library(MASS)
 library(vegan)
 library(visreg)
+library(here)
 
 # cargar los datos
-clima <- read.table("exoticas.txt", header = T, sep = "\t")
+here()
+clima <- read.table("data/exoticas.txt", header = T, sep = "\t")
 str(clima)
 
 # Explorar correlación de las variables
