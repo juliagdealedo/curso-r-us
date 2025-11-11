@@ -282,3 +282,88 @@ ggplot() +
 map_distribution(genus = "Lavandula", species = "stoechas", size = 0.9)
 
 # Ejercicios
+
+
+cobertura = read.csv("data/cobertura.csv")
+glimpse (cobertura)
+# Haz un scatterplot comparando biomasa y cobertura, 
+# señalando las diferencias entre sequia o lluvia.
+# Haz un boxplot por los dos tipos de sequía y la cobertura de árboles
+library(ggplot2)
+library(dplyr)
+
+cobertura %>%
+  ggplot(aes(x = sequia, y = cobertura)) +
+  geom_jitter (aes(color=sequia), size=2, alpha=0.5) +
+  geom_boxplot (aes(fill=sequia),  alpha=0.8) +
+  scale_fill_manual (values = c("#5F5AA2", "#F4D06F")) +
+  scale_color_manual (values = c("#5F5AA2", "#F4D06F")) +
+  theme (
+    axis.text.x = element_text(size = 15, 
+                               face = "bold")
+  ) +
+  labs(x="Tipo de sequía estival", 
+       y = "Cobertura (%)", 
+       title = "Comparación entre los tipos de sequía en la cobertura de árboles",
+       subtitle = "Nos interesa conocer la relación entre estas dos variables",
+       caption = "Datos obtenidos de: misdatos2025") 
+
+
+  
+  
+  
+cobertura %>%
+  ggplot(aes(x = biomasa, y = cobertura, size=cobertura, color=sequia)) +
+  geom_point(alpha=0.6) +
+  scale_color_manual (values = c("#5F5AA2", "#F4D06F"))+
+  theme_minimal()+
+  theme (
+    axis.text.x = element_text(
+      size = 10,
+      angle = 90,
+      hjust = 1,
+      vjust = 0.5,
+      face = "italic"
+    ),
+    axis.text.y = element_text(size = 10, 
+                               face = "bold")
+  ) +
+  labs(x="Biomasa en g/m3", 
+       y = "Cobertura (%)", 
+       title = "Biomasa de árboles en España",
+       subtitle = "Nos interesa conocer la relación entre estas dos variables",
+       caption = "Y su diferencia entre lluvia y sequía")
+
+starwars %>% distinct(name) 
+
+colnames(starwars)
+str(starwars)
+
+# haz un scatterplot con las predicciones de un modelo lineal prediciendo la altura en 
+# función de la masa, el sexo como grupo y muestralo en tres plots distintos, 
+# eliminando los outliers y los NA previamente
+
+
+
+starwars %>% 
+  #filter (!species == "Hutt") %>%
+  ggplot(aes(x=mass, y=height, color=sex)) +
+  geom_point() + geom_smooth (method="lm") + theme_minimal() + facet_wrap(~sex)
+
+# haz un gráfico de barras solo de las especies driod, human, Kaminoan y Mirilan
+# indicando la altura de los personajes dividiendo por species 
+# y cambia los ejes de la x para que salga el nombre en vertical y en cursiva
+
+starwars %>% 
+  filter (species %in% c("Droid", "Human", "Kaminoan", "Mirialan")) %>%
+  ggplot() +
+  geom_violin(aes(x=species, y=height, fill=species)) +
+  theme (
+    axis.text.x = element_text(
+      size = 10,
+      angle = 90,
+      hjust = 1,
+      vjust = 0.5,
+      face = "italic")) 
+
+
