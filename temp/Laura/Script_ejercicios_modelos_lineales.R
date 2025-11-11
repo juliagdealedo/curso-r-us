@@ -7,6 +7,7 @@ library(car)
 library(broom)
 library(tidyverse)
 library(dplyr)
+library(here)
 
 # EJERCICIO REGRESIÓN MÚLTIPLE
 
@@ -154,7 +155,7 @@ ggplot(data = preds, aes(x = log_area, y = log_Sp)) +
   
 ### Cargar los datos
   
-cobertura <- read.csv("cobertura.csv")
+cobertura <- read.csv(here("data/cobertura.csv"))
 head(cobertura)
 
 ### 1. Análisis exploratorios

@@ -754,7 +754,7 @@ anova(lm_5)
 summary(lm_5)
 ```
 
-[*y~i~ = -6787.3 + 4251.4 Adelie + 3750.1 Chinstrap + (54.6 - 21.8 Adelie -20.0) flipper_length*]{style="font-size:25px"}
+[*y~i~ = -2535.84 - 501.36 Chinstrap - 4251.44 Gentoo + (32.83 + 1.74 Chinstrap + 21.79 Gentoo) flipper_length*]{style="font-size:25px"}
 
 ***
 #### [Gráfica de predicciones]{style="font-size:25px"}
