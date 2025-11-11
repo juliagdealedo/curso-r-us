@@ -108,9 +108,9 @@ plot1 + plot2 + plot3
 library(GGally)
 ggcorr(gala[,c(1,3:5)], label = TRUE)
 ```
-[Parece relación estre riqueza especies y área y elevación. Convertir a log podría ayudar.]{style="font-size:20px"}
+[Parece relación entre área y elevación. Convertir a log podría ayudar.]{style="font-size:25px"}
 
-[Relación entre área y elevación. ¿Qué se podría hacer? Quitar una.]{style="font-size:20px"}
+[Relación entre área y elevación. ¿Qué se podría hacer? Quitar una.]{style="font-size:25px"}
 
 ***
 
@@ -138,6 +138,12 @@ plot(lm.gal0)
 [Ausencia de homocedasticidad, normalidad y linealidad. Y valores atípicos.]{style="font-size:25px"}
 [No sirve modelo.]{style="font-size:25px"}
 
+***
+
+### Factor de inflación de la varianza (VIF)
+
+Cómo incrementa la varianza de un coeficiente estimado del modelo de regresión cuando los predictores están correlacionados entre sí
+
 ```{r}
 #| echo: true
 library(car)
@@ -150,7 +156,7 @@ Transformación variable respuesta
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.2em'"
 gala$log_Sp <- log(gala$Species)
 plot1 <- ggplot(data = gala, aes(x = Area , y = log_Sp)) +  
@@ -180,7 +186,7 @@ plot3 <- ggplot(data = gala, aes(x = Nearest , y = log_Sp)) +
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 15     # ancho en pulgadas
 #| fig-height: 5    # alto en pulgadas
@@ -197,7 +203,7 @@ plot1 + plot2 + plot3
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.6em'"
+#| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.2em'"
 gala$log_area <- log(gala$Area)
 gala$log_elevacion <- log(gala$Elevation)
@@ -356,7 +362,8 @@ Pasos que seguir
 
 ```{r}
 #| echo: true
-cobertura <- read.csv("cobertura.csv")
+library(here)
+cobertura <- read.csv(here("data/cobertura.csv"))
 head(cobertura)
 ```
 
@@ -367,7 +374,7 @@ head(cobertura)
 
 ```{r}
 #| echo: true
-#| attr-source: "style='font-size: 0.5em'"
+#| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
 #| fig-width: 15     # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
@@ -416,12 +423,15 @@ plot(lm_bio1)
 ```
 
 ***
+#### Interpretación del modelo
 ```{r}
 #| echo: true
 #| attr-source: "style='font-size: 0.7em'"
 #| attr-output: "style='font-size: 0.4em'"
 summary(lm_bio1)
 ```
+
+[*y~i~ = 25.91 - 1.79 seco + (1.34 - 0.72 seco) cobertura*]{style="font-size:25px"}
 
 ***
 

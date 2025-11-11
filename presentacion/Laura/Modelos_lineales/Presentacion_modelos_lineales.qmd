@@ -236,7 +236,7 @@ anova(lm_reg1)
 
 [Suma de cuadrados: variabilidad de la variable *y*]{style="font-size:27px"}
 
-[Coeficiente de determinación (R^2^): bondad de ajuste del modelo (0-1)]{style="font-size:27px"}
+[Coeficiente de determinación (R^2^): proporción de la variabilidad de *y* que es explicada por el modelo (0-1)]{style="font-size:27px"}
 
 ------------------------------------------------------------------------
 
@@ -355,6 +355,18 @@ ncvTest(lm_reg1)
 *y~i~ = β~0~ + β~1~x~1~ + ... + β~1~x~n~ + Ɛ~i~*
 
 *Ɛ~i~ ~N(0,σ^2^)*
+
+***
+
+### Dificultades
+
+Multicolinealidad: dos o más predictores muy correlacionados entre sí. Aportan información redundante al modelo.
+
+Consecuencias:
+
+- Coeficientes pueden volverse inestables
+
+- Los p-valores de los coeficientes se vuelven poco fiables
 
 ***
 
@@ -754,7 +766,7 @@ anova(lm_5)
 summary(lm_5)
 ```
 
-[*y~i~ = -2535.84 - 501.36 Chinstrap - 4251.44 Gentoo + (32.83 + 1.74 Chinstrap + 21.79 Gentoo) flipper_length*]{style="font-size:25px"}
+[*y~i~ = -2535.84 - 501.36 Chinstrap - 4251.44 Gentoo + (32.83 + 1.74 Chinstrap + 21.79 Gentoo) flipper_length*]{style="font-size:28px"}
 
 ***
 #### [Gráfica de predicciones]{style="font-size:25px"}
