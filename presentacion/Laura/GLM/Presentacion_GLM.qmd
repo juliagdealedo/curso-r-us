@@ -200,7 +200,7 @@ Hipótesis:
 #| echo: true
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.2em'"
-#| fig-width: 9    # ancho en pulgadas
+#| fig-width: 11    # ancho en pulgadas
 #| fig-height: 6    # alto en pulgadas
 #| fig-align: "center"
 library(ggplot2)
@@ -423,7 +423,7 @@ glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
 anova(glm_algas1, test= "Chi")
 ```
 
-Interacción no significativa
+[Interacción no significativa]{style="font-size:28px"} 
 
 ***
 

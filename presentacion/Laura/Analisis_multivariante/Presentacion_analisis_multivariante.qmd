@@ -77,7 +77,8 @@ Modelar riqueza de especies exóticas utilizando variables climáticas.
 
 ```{r}
 #| echo: true
-clima <- read.table("exoticas.txt", header = T, sep = "\t")
+library(here)
+clima <- read.table(here("data/exoticas.txt", header = T, sep = "\t"))
 str(clima)
 ```
 
