@@ -154,5 +154,15 @@ wordcloud2(
 
 # 11. EJERCICIO FLORES
 
+datos_curso <- read.csv(here("data/flores.csv"))
+datos_curso %>% 
+  summarise (mean(abundance)) %>% 
+  group_by(species) 
+
+
+
+
+
+
 # 12. EJERCICIO STARWARS
 
