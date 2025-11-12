@@ -84,10 +84,10 @@ ggplot(algas, aes(x = Long, y = Estado, color = Sp)) +
 #### Ajuste del modelo
 
 glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
-anova(glm_algas1, test= "Chi")
+Anova(glm_algas1, type= "III")
 
 glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
-anova(glm_algas2, test= "Chi")
+Anova(glm_algas2, type= "III")
 print(D2 <- 1 - (341.6/476.38))
 
 #### Supuestos del modelo
@@ -111,10 +111,9 @@ newdata <- expand.grid(Long = x_seq, Sp = levels(algas$Sp))
 pred <- predict(glm_algas2, newdata, type = "link", se.fit = TRUE)
 
 # Calcular intervalos de confianza
-crit <- qnorm(0.975)  # 95%
 newdata$fit_link <- pred$fit
-newdata$lwr_link <- pred$fit - crit * pred$se.fit
-newdata$upr_link <- pred$fit + crit * pred$se.fit
+newdata$lwr_link <- pred$fit - 1.96 * pred$se.fit
+newdata$upr_link <- pred$fit + 1.96 * pred$se.fit
 
 # Convertir a escala de probabilidad (logística)
 inv_logit <- function(x) exp(x) / (1 + exp(x))
@@ -143,7 +142,7 @@ newdat <- expand.grid(
 )
 
 # Predicciones de probabilidad
-pred <- predict(glm_algas2, newdat, type = "link", se.fit = TRUE)
+pred <- predict(glm_algas2, newdat, type = "response", se.fit = TRUE)
 
 # Convertir de escala logit a probabilidad
 newdat$fit <- plogis(pred$fit)

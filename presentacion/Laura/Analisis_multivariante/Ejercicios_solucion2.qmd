@@ -18,7 +18,7 @@ format:
 
 ## Ejercicio: GLM binomial
 
-Tenemos datos de la presencia de una especie en varios puntos de muestreo en los que también contamos con información de la temperatura media anual (bio_1) y la precipitación anual (bio_12). Queremos saber si exista una relación entre la presencia de la especie en los lugares de muestreo y dichas variables climáticas.
+Tenemos datos de la presencia de una especie en varios puntos de muestreo en los que también contamos con información de la temperatura media anual (bio_1) y la precipitación anual (bio_12). Queremos saber si existe una relación entre la presencia de la especie en los lugares de muestreo y dichas variables climáticas.
 
 ***
 
@@ -65,6 +65,7 @@ p1 + p2
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.3em'"
 glm_bino1<-glm(Sp ~ bio_1 * bio_12, enm_data, family = "binomial")
+library(car)
 anova(glm_bino1, test = "Chi")
 ```
 
@@ -107,7 +108,7 @@ plot(glm_bino1)
 
 newdat <- with(enm_data, expand.grid(bio_1 = seq(min(bio_1), max(bio_1), length = 100),
                  bio_12 = quantile(bio_12, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9))))
-pred <- predict(glm_bino1, newdat, type = "link", se.fit = TRUE)
+pred <- predict(glm_bino1, newdat, type = "response", se.fit = TRUE)
 newdat$pred <- plogis(pred$fit)
 newdat$lwr <- plogis(pred$fit - 1.96 * pred$se.fit)
 newdat$upr <- plogis(pred$fit + 1.96 * pred$se.fit)

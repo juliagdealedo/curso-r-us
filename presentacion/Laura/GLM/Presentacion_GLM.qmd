@@ -156,23 +156,25 @@ Argumento family:
 - Gamma(link = "inverse")
 - poisson(link = "log")
 
+glm(y ~ x, data = data, family = "family")
+
 ::: {.center .middle}
 ## Ejemplo con datos tipo conteo
 :::
 
 ***
 
-Estudio del efecto de la ganadería en la regeneración de araucaria. Muestreo de número de plantas de araucaria en dos tipos de ganadería: pequeños propietarios, con uso más intensivo de la tierra, y grandes empresas forestales, que mantienen algunos remanente de bosque nativo. Actividad ganado medida por número de bostas.
+Datos de un estudio sobre el efecto de la ganadería y dos tipos de ganadería sobre la regeneración de la araucaria. En este trabajo se muestreó el número de plántulas de araucaria en 36 parcelas repartidas entre dos tipos de ganadería: pequeños propietarios, que hacían un uso más intensivo de la tierra, y grandes empresas forestales, que mantenían dentro de sus explotaciones algunos remanentes de bosque nativo. La actividad del ganado se midió de forma indirecta contando el número de bostas en cada una de las parcelas.
 
 ***
 
 Variables:
 
-- Número de plántulas de araucaria
+- seedlings: Número de plántulas de araucaria
 
-- Número de bostas (proxy actividad del ganado)
+- dungs: Número de bostas (proxy actividad del ganado)
 
-- Dos tipos de ganadería: pequeños propietarios y grandes empresas
+- property: Dos tipos de ganadería: pequeños propietarios y grandes empresas
 
 
 ```{r}
@@ -366,7 +368,7 @@ Curva sigmoidea entre 0-1
 
 ***
 
-[Estrategia reproductora de un alga invasora con dos especies nativas.]{style="font-size:25px"}
+[Datos de un estudio que investiga la estrategia reproductora de una especie invasora de alga en relación a dos especies nativas. Una de las preguntas es si la probabilidad de encontrar estructuras reproductoras para individuos de la misma talla es diferente entre la especie invasora y las dos especies nativas.]{style="font-size:25px"}
 
 [¿Probabilidad de encontrar estructuras reproductoras es diferente entre la especie invasora y las nativas teniendo en cuenta la talla del individuo?]{style="font-size:25px"}
 
@@ -420,7 +422,7 @@ facet_wrap(~Sp) +
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 glm_algas1 <- glm(Estado ~ Long*Sp, algas, family = "binomial")
-anova(glm_algas1, test= "Chi")
+Anova(glm_algas1, type= "III")
 ```
 
 [Interacción no significativa]{style="font-size:28px"} 
@@ -432,7 +434,7 @@ anova(glm_algas1, test= "Chi")
 #| attr-source: "style='font-size: 0.6em'"
 #| attr-output: "style='font-size: 0.4em'"
 glm_algas2 <- glm(Estado ~ Long+Sp, algas, family = "binomial")
-anova(glm_algas2, test= "Chi")
+Anova(glm_algas2, type= "III")
 print(D2 <- 1 - (341.6/476.38))
 ```
 
@@ -475,12 +477,11 @@ summary(glm_algas2)
 x_seq <- seq(min(algas$Long), max(algas$Long), length.out = 100)
 newdata <- expand.grid(Long = x_seq, Sp = levels(algas$Sp))
 # Obtener predicciones en escala de respuesta (probabilidades)
-pred <- predict(glm_algas2, newdata, type = "link", se.fit = TRUE)
+pred <- predict(glm_algas2, newdata, type = "response", se.fit = TRUE)
 # Calcular intervalos de confianza
-crit <- qnorm(0.975)  # 95%
 newdata$fit_link <- pred$fit
-newdata$lwr_link <- pred$fit - crit * pred$se.fit
-newdata$upr_link <- pred$fit + crit * pred$se.fit
+newdata$lwr_link <- pred$fit - 1.96 * pred$se.fit
+newdata$upr_link <- pred$fit + 1.96 * pred$se.fit
 # Convertir a escala de probabilidad (logística)
 inv_logit <- function(x) exp(x) / (1 + exp(x))
 newdata$fit <- inv_logit(newdata$fit_link)
@@ -514,7 +515,7 @@ newdat <- expand.grid(
 )
 
 # Predicciones de probabilidad
-pred <- predict(glm_algas2, newdat, type = "link", se.fit = TRUE)
+pred <- predict(glm_algas2, newdat, type = "response", se.fit = TRUE)
 
 # Convertir de escala logit a probabilidad
 newdat$fit <- plogis(pred$fit)
