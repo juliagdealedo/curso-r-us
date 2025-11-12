@@ -207,3 +207,61 @@ ggplot(cobertura, aes(x = cobertura, y = biomasa, color = sequia)) +
     color = "Sequía"
   ) +
   theme_minimal()
+
+## Probando con augment - Julia
+
+library(dplyr)
+data("penguins", package = "palmerpenguins")
+
+# eliminamos NAs variables que vamos a utilizar y pasamos masa corporal a kg
+
+penguins_clean <- penguins %>%
+  filter(!is.na(flipper_length_mm), !is.na(body_mass_g))
+penguins_clean$body_mass_kg <- penguins_clean$body_mass_g/1000
+
+ggplot(data = penguins_clean, aes(x = flipper_length_mm, y = body_mass_kg)) +  
+  geom_point(color = "blue", size = 2) +      
+  labs(x = "Longitud aleta (mm)",         
+       y = "Masa corporal (kg)",                   
+       title = "Relación entre masa corporal y longitud aleta "   
+  ) +
+  theme_minimal()        
+
+# 2. Ajuste modelo de regresión
+
+lm_reg1 <- lm(body_mass_kg ~ flipper_length_mm, data = penguins_clean)
+
+preds <- augment(lm_reg1, type.predict = "response", se_fit = TRUE)
+
+preds <- preds %>%
+  mutate(lower = .fitted - 1.96 * .se.fit,upper = .fitted + 1.96 * .se.fit)
+ggplot(data = preds, aes(x = flipper_length_mm, y = body_mass_kg)) +
+  geom_point(color = "blue", size = 2) +
+  geom_line(aes(y = .fitted)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
+  labs(x = "Longitud aleta (mm)",
+       y = "Masa corporal (kg)",
+       title = "Predicciones modelo de regresión"
+  ) +
+  theme_minimal()
+
+
+#### Incluyendo los niveles del factor
+
+lm_5 <- lm(body_mass_g ~ flipper_length_mm*species, data = datos_limpios)
+anova(lm_5)
+summary(lm_5)
+
+predicciones_grid <- augment(lm_5, type.predict = "response", se_fit = TRUE)
+ggplot(datos_limpios, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predicciones_grid, aes(x= flipper_length_mm, y = .fitted, group = species, color = species), size = 1.2) +
+  scale_color_manual(values = c("#F8BBD0", "#C8E6C9", "#B3E5FC")) +
+  labs(
+    title = "ANCOVA: predicciones por especie",
+    x = "Longitud aleta (mm)",
+    y = "Masa corporal (g)",
+    color = "Especie"
+  ) +
+  theme_minimal()
+
