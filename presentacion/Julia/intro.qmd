@@ -365,7 +365,7 @@ R es muy potente generando distribuciones con funciones ya integradas.\
 - runif () - uniforme
 - rnorm () - normal
 - rpois () - poisson
-- rbinom () - binomial negativa
+- rbinom () - binomial
 
 Una distribución describe cómo se reparten los valores de una variable, cómo de frecuentes son.
 
@@ -414,7 +414,7 @@ x <- rpois(1000, lambda = 3)
 hist(x, col = "lightgreen")
 ```
 
-## Distribución binomial negativa
+## Distribución binomial
 Resultados de “éxito o fracaso” (como lanzar una moneda) 
 ```{r}
 #| echo: true

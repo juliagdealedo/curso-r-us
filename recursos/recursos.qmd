@@ -1,0 +1,51 @@
+---
+title: "Materiales y recursos"
+subtitle: "Curso R US noviembre 2025"
+format: 
+  revealjs:
+    theme: solarized    
+    smaller: true
+    slide-number: true  
+    self-contained: true
+  html: 
+    self-contained: true
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: TRUE
+    toc-location: left
+    toc-depth: 3
+    theme: flatly
+---
+
+## Introducción
+
+Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+
+## Dplyr
+
+
+## Ggplot
+
+
+[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+
+[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
+
+[ggbasics](http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html)
+
+[book](https://link.springer.com/book/10.1007/0-387-28695-0)
+
+[grphs](https://r-graphics.org/RECIPE-QUICK-SCATTER.html)
+
+[geels](https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/)
+
+[Flora ibérica - paqueta](https://github.com/Pakillo/FloraIberica)
+
+[Gráficos interactivos](https://r-graph-gallery.com/package/ggiraph.html)
+
+[Gráficos interactivos](https://www.geeksforgeeks.org/r-language/create-interactive-ggplot2-graphs-with-plotly-in-r/)
+
+[GIS](https://rpubs.com/lpenuelam/660563)
+
+
