@@ -13,3 +13,8 @@ gitcreds::gitcreds_set()
 
 
 usethis::git_remotes()
+
+# me parece que he instlado perjoef
+sjvdñkcns
+Plot japjddj
+
