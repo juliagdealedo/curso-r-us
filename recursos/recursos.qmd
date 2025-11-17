@@ -20,10 +20,12 @@ format:
 
 ## Introducción
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+Links a paquetes, libros y otros materiales utiles durante el curso y en el futuro.
 
 ## Dplyr
+
 [tidyverse](https://tidyverse.org/packages/)
+
 [Libro R for data science](https://r4ds.had.co.nz/index.html)
 
 [tidydata](https://github.com/gadenbuie/tidyexplain#tidy-data)
@@ -32,7 +34,11 @@ Quarto enables you to weave together content and executable code into a finished
 
 ## Ggplot
 
-[Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+[cool data viz](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
+
+[dataviz](https://www.cedricscherer.com/)
+
+[mapdataviz](https://dominicroye.github.io/blog/)
 
 [ggbasics](http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html)
 
@@ -47,7 +53,6 @@ Quarto enables you to weave together content and executable code into a finished
 [Gráficos interactivos](https://www.geeksforgeeks.org/r-language/create-interactive-ggplot2-graphs-with-plotly-in-r/)
 
 [ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
-
 
 ## Github
 
