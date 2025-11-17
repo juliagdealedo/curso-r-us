@@ -23,14 +23,16 @@ format:
 Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
 
 ## Dplyr
+[tidyverse](https://tidyverse.org/packages/)
+[Libro R for data science](https://r4ds.had.co.nz/index.html)
 
+[tidydata](https://github.com/gadenbuie/tidyexplain#tidy-data)
+
+[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
 
 ## Ggplot
 
-
 [Valentina de Filippo](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989#d1e199)
-
-[Tips tables](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012604)
 
 [ggbasics](http://r.qcbs.ca/workshop03/book-en/grammar-of-graphics-gg-basics.html)
 
@@ -38,14 +40,27 @@ Quarto enables you to weave together content and executable code into a finished
 
 [grphs](https://r-graphics.org/RECIPE-QUICK-SCATTER.html)
 
-[geels](https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/)
-
-[Flora ibérica - paqueta](https://github.com/Pakillo/FloraIberica)
+[colors](https://www.geeksforgeeks.org/r-language/themes-and-background-colors-in-ggplot2-in-r/)
 
 [Gráficos interactivos](https://r-graph-gallery.com/package/ggiraph.html)
 
 [Gráficos interactivos](https://www.geeksforgeeks.org/r-language/create-interactive-ggplot2-graphs-with-plotly-in-r/)
 
+[ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
+
+
+## Github
+
+[github set up](https://happygitwithr.com/)
+
+## Paquetes
+
+[Flora ibérica - paquete](https://github.com/Pakillo/FloraIberica)
+
 [GIS](https://rpubs.com/lpenuelam/660563)
 
+[rmarkdown](https://rstudio.github.io/cheatsheets/html/rmarkdown.html)
 
+[cleanworkflow](https://github.com/baumer-lab/fertile)
+
+[citarpaquetes](https://pakillo.github.io/grateful/reference/cite_packages.html)
